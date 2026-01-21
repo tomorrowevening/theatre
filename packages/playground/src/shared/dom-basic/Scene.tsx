@@ -1,6 +1,5 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import type {CSSProperties} from 'react'
-import {types} from '@theatre/core'
 import type {IProject} from '@theatre/core'
 import {Box3D, BoxSize} from './Box3D'
 
@@ -17,25 +16,26 @@ const SceneCSS: CSSProperties = {
 
 export const Scene: React.FC<{project: IProject}> = ({project}) => {
   const containerRef = useRef<HTMLDivElement>(null!)
-  const sheet = project.sheet('DOM')
+  const [projectReady, setProjectReady] = useState(false)
 
+  // Check Sequence markers
   useEffect(() => {
-    const container = containerRef.current!
-    const sheetObj = sheet.object('Container', {
-      perspective: types.number(
-        Math.max(window.innerWidth, window.innerHeight),
-        {range: [0, 2000]},
-      ),
-      originX: types.number(50, {range: [0, 100]}),
-      originY: types.number(50, {range: [0, 100]}),
+    if (!projectReady) return
+
+    const sheet = project.sheet('DOM')
+    console.log(
+      'Markers:',
+      sheet.sequence.getMarkerPosition('start'),
+      sheet.sequence.getMarkerPosition('mid'),
+      sheet.sequence.getMarkerPosition('end'), // doesn't exist, should return undefined
+    )
+  }, [projectReady])
+
+  // Sets Project Ready
+  useEffect(() => {
+    project.ready.then(() => {
+      setProjectReady(true)
     })
-    const unsubscribe = sheetObj.onValuesChange((values: any) => {
-      container.style.perspective = `${values.perspective}px`
-      container.style.perspectiveOrigin = `${values.originX}% ${values.originY}%`
-    })
-    return () => {
-      unsubscribe()
-    }
   }, [])
 
   const padding = 100
@@ -43,11 +43,15 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
   const bottom = window.innerHeight - padding - BoxSize
 
   return (
-    <div ref={containerRef} style={SceneCSS}>
-      <Box3D sheet={sheet} name="Top Left" x={padding} y={padding} />
-      <Box3D sheet={sheet} name="Top Right" x={right} y={padding} />
-      <Box3D sheet={sheet} name="Bottom Left" x={padding} y={bottom} />
-      <Box3D sheet={sheet} name="Bottom Right" x={right} y={bottom} />
-    </div>
+    <>
+      {projectReady && (
+        <div ref={containerRef} style={SceneCSS}>
+          <Box3D project={project} name="Top Left" x={padding} y={padding} />
+          <Box3D project={project} name="Top Right" x={right} y={padding} />
+          <Box3D project={project} name="Bottom Left" x={padding} y={bottom} />
+          <Box3D project={project} name="Bottom Right" x={right} y={bottom} />
+        </div>
+      )}
+    </>
   )
 }

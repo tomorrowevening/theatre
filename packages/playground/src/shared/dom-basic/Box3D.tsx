@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
 import type {CSSProperties} from 'react'
 import {types} from '@theatre/core'
-import type {ISheet} from '@theatre/core'
+import type {IProject} from '@theatre/core'
 
 // Box element
 export const BoxSize = 100
@@ -25,16 +25,17 @@ const Box3DTextCSS: CSSProperties = {
 }
 
 export const Box3D: React.FC<{
-  sheet: ISheet
+  project: IProject
   name: string
   x: number
   y: number
-}> = ({sheet, name, x, y}) => {
+}> = ({project, name, x, y}) => {
   const elementRef = useRef<HTMLDivElement>(null)
 
   // Animation
   useEffect(() => {
     const element = elementRef.current!
+    const sheet = project.sheet('DOM')
     const sheetObj = sheet.object(`Box - ${name}`, {
       background: types.rgba({r: 16 / 255, g: 16 / 255, b: 16 / 255, a: 1}),
       opacity: types.number(1, {range: [0, 1]}),
@@ -66,6 +67,7 @@ export const Box3D: React.FC<{
       const transform = `${scale3D} ${translate3D} ${rotate3D}`
       element.style.transform = transform
     })
+
     return () => {
       unsubscribe()
     }
