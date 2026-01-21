@@ -126,6 +126,8 @@ export type StudioHistoricState = {
     PaneInstanceId,
     PaneInstanceDescriptor
   >
+  /** Tracks the order in which panes were last focused (last item is most recent) */
+  paneFocusOrder?: PaneInstanceId[]
   autoKey: boolean
   coreByProject: Record<ProjectId, ProjectState_Historic>
 }

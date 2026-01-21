@@ -12,6 +12,7 @@ import {IoClose} from 'react-icons/all'
 import getStudio from '@theatre/studio/getStudio'
 import {panelZIndexes} from '@theatre/studio/panels/BasePanel/common'
 import type {PaneInstanceId, UIPanelId} from '@theatre/shared/utils/ids'
+import {useVal} from '@theatre/react'
 
 const defaultPosition: PanelPosition = {
   edges: {
@@ -38,12 +39,12 @@ const ExtensionPaneWrapper: React.FC<{
   )
 }
 
-const Container = styled(PanelWrapper)`
+const Container = styled(PanelWrapper)<{$zIndex: number}>`
   display: flex;
   flex-direction: column;
 
   box-shadow: 0px 5px 12px -4px rgb(0 0 0 / 22%);
-  z-index: ${panelZIndexes.pluginPanes};
+  z-index: ${(props) => props.$zIndex};
 `
 
 const Title = styled.div`
@@ -155,8 +156,28 @@ const Content: React.FC<{paneInstance: PaneInstance<$FixMe>}> = ({
     )
   }, [paneInstance])
 
+  const bringToFront = useCallback(() => {
+    getStudio().paneManager.bringPaneToFront(
+      paneInstance.instanceId as PaneInstanceId,
+    )
+  }, [paneInstance])
+
+  // Calculate z-index based on focus order
+  const focusOrder = useVal(getStudio().atomP.historic.paneFocusOrder) ?? []
+  const focusIndex = focusOrder.indexOf(
+    paneInstance.instanceId as PaneInstanceId,
+  )
+  const zIndex =
+    focusIndex >= 0
+      ? panelZIndexes.pluginPanes + focusIndex
+      : panelZIndexes.pluginPanes
+
   return (
-    <Container data-testid={`theatre-pane-wrapper-${paneInstance.instanceId}`}>
+    <Container
+      data-testid={`theatre-pane-wrapper-${paneInstance.instanceId}`}
+      $zIndex={zIndex}
+      onMouseDown={bringToFront}
+    >
       <PanelDragZone>
         <TitleBar>
           <PaneTools>

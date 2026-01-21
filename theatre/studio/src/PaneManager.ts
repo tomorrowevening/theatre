@@ -96,6 +96,17 @@ export default class PaneManager {
         instanceId,
         paneClass,
       }
+
+      // Add to focus order (bring new pane to front)
+      if (!drafts.historic.paneFocusOrder) {
+        drafts.historic.paneFocusOrder = []
+      }
+      const focusOrder = drafts.historic.paneFocusOrder
+      const existingIndex = focusOrder.indexOf(instanceId)
+      if (existingIndex !== -1) {
+        focusOrder.splice(existingIndex, 1)
+      }
+      focusOrder.push(instanceId)
     })
 
     return this._getAllPanes().getValue()[instanceId]!
@@ -111,6 +122,28 @@ export default class PaneManager {
 
     this._studio.transaction(({drafts}) => {
       delete drafts.historic.panelInstanceDesceriptors[instanceId]
+
+      // Remove from focus order
+      if (drafts.historic.paneFocusOrder) {
+        const index = drafts.historic.paneFocusOrder.indexOf(instanceId)
+        if (index !== -1) {
+          drafts.historic.paneFocusOrder.splice(index, 1)
+        }
+      }
+    })
+  }
+
+  bringPaneToFront(instanceId: PaneInstanceId): void {
+    this._studio.transaction(({drafts}) => {
+      if (!drafts.historic.paneFocusOrder) {
+        drafts.historic.paneFocusOrder = []
+      }
+      const focusOrder = drafts.historic.paneFocusOrder
+      const existingIndex = focusOrder.indexOf(instanceId)
+      if (existingIndex !== -1) {
+        focusOrder.splice(existingIndex, 1)
+      }
+      focusOrder.push(instanceId)
     })
   }
 }

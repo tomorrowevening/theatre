@@ -33,6 +33,15 @@ const PanelDragZone: React.FC<
 
         const unlock = panelStuff.addBoundsHighlightLock()
 
+        // Bring pane to front when starting to drag
+        const panelId = stuffBeforeDrag.panelId
+        if (panelId.startsWith('pane-')) {
+          const paneInstanceId = panelId.slice(5) // Remove 'pane-' prefix
+          getStudio()!.paneManager.bringPaneToFront(
+            paneInstanceId as $IntentionalAny,
+          )
+        }
+
         return {
           onDrag(dx, dy) {
             const newDims: typeof panelStuff['dims'] = {
