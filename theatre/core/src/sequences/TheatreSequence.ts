@@ -149,6 +149,66 @@ export interface ISequence {
   __experimental_getKeyframes(prop: Pointer<{}>): Keyframe[]
 
   /**
+   * Finds a marker by its label and returns its position.
+   *
+   * @param markerName - The label of the marker to find
+   * @returns The position of the marker in the sequence, or undefined if not found
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const position = sheet.sequence.getMarkerPosition('My Marker')
+   * if (position !== undefined) {
+   *   console.log('Marker found at position:', position)
+   * }
+   * ```
+   */
+  getMarkerPosition(markerName: string): number | undefined
+
+  /**
+   * Finds a marker by its label, sets the sequence's position to the marker's position, and plays the sequence.
+   *
+   * @param markerName - The label of the marker to go to
+   * @param conf - Optional playback configuration (same as sequence.play())
+   * @returns A promise that resolves when playback completes, or rejects if the marker is not found
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * // Go to marker and play from there
+   * sheet.sequence.goToAndPlay('My Marker')
+   *
+   * // Go to marker and play at 2x speed
+   * sheet.sequence.goToAndPlay('My Marker', {rate: 2})
+   * ```
+   */
+  goToAndPlay(
+    markerName: string,
+    conf?: {
+      iterationCount?: number
+      range?: IPlaybackRange
+      rate?: number
+      direction?: IPlaybackDirection
+      rafDriver?: IRafDriver
+    },
+  ): Promise<boolean>
+
+  /**
+   * Finds a marker by its label and sets the sequence's position to the marker's position.
+   *
+   * @param markerName - The label of the marker to go to
+   * @throws Error if the marker is not found
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * // Go to marker and pause there
+   * sheet.sequence.goToAndStop('My Marker')
+   * ```
+   */
+  goToAndStop(markerName: string): void
+
+  /**
    * Attaches an audio source to the sequence. Playing the sequence automatically
    * plays the audio source and their times are kept in sync.
    *
@@ -332,6 +392,48 @@ export default class TheatreSequence implements ISequence {
 
   get pointer(): ISequence['pointer'] {
     return privateAPI(this).pointer
+  }
+
+  getMarkerPosition(markerName: string): number | undefined {
+    return privateAPI(this).getMarkerPosition(markerName)
+  }
+
+  goToAndPlay(
+    markerName: string,
+    conf?: Partial<{
+      iterationCount: number
+      range: IPlaybackRange
+      rate: number
+      direction: IPlaybackDirection
+      rafDriver: IRafDriver
+    }>,
+  ): Promise<boolean> {
+    const priv = privateAPI(this)
+    if (priv._project.isReady()) {
+      const ticker = conf?.rafDriver
+        ? privateAPI(conf.rafDriver).ticker
+        : getCoreTicker()
+      return priv.goToAndPlay(markerName, conf ?? {}, ticker)
+    } else {
+      if (process.env.NODE_ENV !== 'production') {
+        notify.warning(
+          "Sequence can't go to marker",
+          'You seem to have called `sequence.goToAndPlay()` before the project has finished loading.\n\n' +
+            'This would **not** a problem in production when using `@theatre/core`, since Theatre.js loads instantly in core mode. ' +
+            'However, it seems that you are using `@theatre/studio`, which takes a few milliseconds to load, because it' +
+            'contains a lot of code responsible for the editing UI.\n\n' +
+            'To fix this, wait for `project.ready` to resolve, and only then call `sequence.goToAndPlay()`.\n\n' +
+            'Learn more at https://www.theatrejs.com/docs/latest/manual/projects#state',
+        )
+      }
+      const d = defer<boolean>()
+      d.resolve(true)
+      return d.promise
+    }
+  }
+
+  goToAndStop(markerName: string): void {
+    return privateAPI(this).goToAndStop(markerName)
   }
 }
 

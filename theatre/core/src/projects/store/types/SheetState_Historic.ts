@@ -2,6 +2,7 @@ import type {PathToProp_Encoded} from '@theatre/shared/utils/addresses'
 import type {
   KeyframeId,
   ObjectAddressKey,
+  SequenceMarkerId,
   SequenceTrackId,
 } from '@theatre/shared/utils/ids'
 import type {
@@ -43,6 +44,11 @@ export type HistoricPositionalSequence = {
    * to a 30fps grid
    */
   subUnitsPerUnit: number
+
+  /**
+   * Markers allow you to mark notable positions in your sequence.
+   */
+  markers?: SequenceMarker[]
 
   tracksByObject: StrictRecord<
     ObjectAddressKey,
@@ -102,4 +108,16 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
    * a single track can technically have multiple different types for each keyframe.
    */
   keyframes: Keyframe[]
+}
+
+/**
+ * Represents a marker in the sequence timeline
+ */
+export type SequenceMarker = {
+  id: SequenceMarkerId
+  label?: string
+  /**
+   * The position this marker takes in the sequence.
+   */
+  position: number
 }

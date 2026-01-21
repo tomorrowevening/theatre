@@ -94,4 +94,32 @@ export default async function initialiseProjectState(
       }
     }
   })
+
+  // Load markers from disk state into studio state (if studio is available)
+  if (onDiskState?.sheetsById) {
+    const projectId = project.address.projectId
+    studio.transaction(({stateEditors}: any) => {
+      for (const [sheetId, sheetState] of Object.entries(
+        onDiskState.sheetsById,
+      )) {
+        if (sheetState?.sequence?.markers) {
+          const markers = sheetState.sequence.markers
+
+          // Use the replaceMarkers state editor to load markers
+          if (
+            stateEditors?.studio?.historic?.projects?.stateByProjectId
+              ?.stateBySheetId?.sequenceEditor?.replaceMarkers
+          ) {
+            stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceMarkers(
+              {
+                sheetAddress: {projectId, sheetId},
+                markers: markers,
+                snappingFunction: (p: number) => p,
+              },
+            )
+          }
+        }
+      }
+    })
+  }
 }

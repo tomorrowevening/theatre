@@ -26,6 +26,7 @@ import {
 } from './persistStateOfStudio'
 import type {OnDiskState} from '@theatre/core/projects/store/storeTypes'
 import {generateDiskStateRevision} from './generateDiskStateRevision'
+import cloneDeep from 'lodash-es/cloneDeep'
 
 import createTransactionPrivateApi from './createTransactionPrivateApi'
 import type {ProjectId} from '@theatre/shared/utils/ids'
@@ -209,8 +210,49 @@ export default class StudioStore {
         projectId
       ]
 
-    const generatedOnDiskState: OnDiskState = {
-      ...projectHistoricState,
+    const studioState =
+      this._reduxStore.getState().$persistent.historic.innerState.projects
+        ?.stateByProjectId[projectId]
+
+    const generatedOnDiskState: OnDiskState = cloneDeep(projectHistoricState)
+
+    // Copy markers from studio state to the exported state
+    if (studioState?.stateBySheetId) {
+      for (const [sheetId, sheetState] of Object.entries(
+        studioState.stateBySheetId,
+      )) {
+        if (sheetState?.sequenceEditor?.markerSet) {
+          const markerSet = sheetState.sequenceEditor.markerSet
+          if (markerSet.allIds && Object.keys(markerSet.allIds).length > 0) {
+            // Ensure the sheet exists in the generated state
+            if (!generatedOnDiskState.sheetsById[sheetId]) {
+              generatedOnDiskState.sheetsById[sheetId] = {
+                staticOverrides: {byObject: {}},
+              }
+            }
+
+            const sheet = generatedOnDiskState.sheetsById[sheetId]
+
+            // Ensure the sequence exists
+            if (!sheet.sequence) {
+              sheet.sequence = {
+                type: 'PositionalSequence',
+                length: 10,
+                subUnitsPerUnit: 30,
+                tracksByObject: {},
+              }
+            }
+
+            // Convert PointableSet to array
+            const markers = Object.entries(markerSet.byId)
+              .map(([id, marker]) => marker)
+              .filter((marker) => marker !== undefined)
+              .sort((a, b) => a.position - b.position)
+
+            sheet.sequence.markers = markers
+          }
+        }
+      }
     }
 
     return generatedOnDiskState

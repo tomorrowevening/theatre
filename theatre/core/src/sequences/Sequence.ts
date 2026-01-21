@@ -409,6 +409,51 @@ To fix this, either set \`conf.range[1]\` to be less the duration of the sequenc
     oldController.destroy()
     playbackController.gotoPosition(time)
   }
+
+  getMarkerPosition(markerName: string): number | undefined {
+    const sheetState =
+      this._project.pointers.historic.sheetsById[this._sheet.address.sheetId]
+    const markers = val(sheetState.sequence.markers)
+
+    if (!markers) return undefined
+
+    const marker = markers.find((m) => m.label === markerName)
+    return marker?.position
+  }
+
+  async goToAndPlay(
+    markerName: string,
+    conf: Partial<{
+      iterationCount: number
+      range: IPlaybackRange
+      rate: number
+      direction: IPlaybackDirection
+    }>,
+    ticker: Ticker,
+  ): Promise<boolean> {
+    const position = this.getMarkerPosition(markerName)
+
+    if (position === undefined) {
+      throw new Error(
+        `Marker "${markerName}" not found in sequence "${this._sheet.address.sheetId}"`,
+      )
+    }
+
+    this.position = position
+    return this.play(conf, ticker)
+  }
+
+  goToAndStop(markerName: string): void {
+    const position = this.getMarkerPosition(markerName)
+
+    if (position === undefined) {
+      throw new Error(
+        `Marker "${markerName}" not found in sequence "${this._sheet.address.sheetId}"`,
+      )
+    }
+
+    this.position = position
+  }
 }
 
 export interface ISequencePositionFormatter {
