@@ -153,7 +153,17 @@ const Content: React.VFC<{}> = () => {
       )
       .getValue()
 
-    if (val(layoutP.tree.children).length === 0) return <></>
+    // Show sequence editor if there are keyframed properties, or if there's a sequence duration or markers
+    const hasChildren = val(layoutP.tree.children).length > 0
+    const sequenceState = val(
+      sheet.project.pointers.historic.sheetsById[sheet.address.sheetId]
+        .sequence,
+    )
+    const hasSequenceData =
+      (sequenceState.length && sequenceState.length > 0) ||
+      (sequenceState.markers && sequenceState.markers.length > 0)
+
+    if (!hasChildren && !hasSequenceData) return <></>
 
     const containerRef = prism.memo(
       'containerRef',
