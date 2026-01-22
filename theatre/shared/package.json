@@ -1,8 +1,8 @@
 {
-  "name": "@theatre/shared",
+  "name": "@tomorrowevening/theatre-shared",
   "license": "Apache-2.0",
   "dependencies": {
-    "@theatre/core": "workspace:*",
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*",
+    "@tomorrowevening/theatre-studio": "workspace:*"
   }
 }

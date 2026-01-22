@@ -1,15 +1,15 @@
 {
-  "name": "@theatre/react",
-  "version": "0.7.1",
+  "name": "@tomorrowevening/theatre-react",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "author": {
-    "name": "Aria Minaei",
-    "email": "aria@theatrejs.com",
-    "url": "https://github.com/AriaMinaei"
+    "name": "Colin Duffy",
+    "email": "colin@tomorrowevening.com",
+    "url": "https://tomorrowevening.com/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AriaMinaei/theatre",
+    "url": "https://github.com/tomorrowevening/theatre",
     "directory": "packages/react"
   },
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
     "typescript": "5.1.6"
   },
   "dependencies": {
-    "@theatre/dataverse": "workspace:*",
+    "@tomorrowevening/theatre-dataverse": "workspace:*",
     "lodash-es": "^4.17.21",
     "queue-microtask": "^1.2.3"
   },

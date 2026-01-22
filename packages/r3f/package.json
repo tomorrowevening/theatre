@@ -1,6 +1,6 @@
 {
-  "name": "@theatre/r3f",
-  "version": "0.7.1",
+  "name": "@tomorrowevening/theatre-r3f",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "authors": [
     {
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/AriaMinaei/theatre",
+    "url": "https://github.com/tomorrowevening/theatre",
     "directory": "packages/r3f"
   },
   "main": "dist/index.js",
@@ -49,8 +49,8 @@
   "devDependencies": {
     "@react-three/drei": "^9.80.1",
     "@react-three/fiber": "^8.13.6",
-    "@theatre/dataverse": "workspace:*",
-    "@theatre/react": "workspace:*",
+    "@tomorrowevening/theatre-dataverse": "workspace:*",
+    "@tomorrowevening/theatre-react": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^15.6.2",
@@ -78,8 +78,8 @@
   },
   "peerDependencies": {
     "@react-three/fiber": "^8.13.6",
-    "@theatre/core": "*",
-    "@theatre/studio": "*",
+    "@tomorrowevening/theatre-core": "*",
+    "@tomorrowevening/theatre-studio": "*",
     "react": ">=17.0.2",
     "react-dom": ">=17.0.2",
     "three": ">=0.155.0"
