@@ -7,6 +7,12 @@ const root = path.join(__dirname, '..')
 
 const prog = sade('cli').describe('CLI for Theatre.js development')
 
+// Use PowerShell on Windows
+if (os.platform() === 'win32') {
+  $.shell = 'powershell.exe'
+  $.prefix = ''
+}
+
 // better quote function from https://github.com/google/zx/pull/167
 $.quote = function quote(arg) {
   if (/^[a-z0-9/_.-]+$/i.test(arg)) {
