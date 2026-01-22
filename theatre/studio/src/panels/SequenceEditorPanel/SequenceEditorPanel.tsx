@@ -160,8 +160,8 @@ const Content: React.VFC<{}> = () => {
         .sequence,
     )
     const hasSequenceData =
-      (sequenceState.length && sequenceState.length > 0) ||
-      (sequenceState.markers && sequenceState.markers.length > 0)
+      (sequenceState?.length && sequenceState.length > 0) ||
+      (sequenceState?.markers && sequenceState.markers.length > 0)
 
     if (!hasChildren && !hasSequenceData) return <></>
 

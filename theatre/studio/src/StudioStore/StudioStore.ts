@@ -232,24 +232,28 @@ export default class StudioStore {
             }
 
             const sheet = generatedOnDiskState.sheetsById[sheetId]
-
-            // Ensure the sequence exists
-            if (!sheet.sequence) {
-              sheet.sequence = {
-                type: 'PositionalSequence',
-                length: 10,
-                subUnitsPerUnit: 30,
-                tracksByObject: {},
+            if (sheet !== undefined) {
+              // Ensure the sequence exists
+              if (!sheet.sequence) {
+                sheet.sequence = {
+                  type: 'PositionalSequence',
+                  length: 10,
+                  subUnitsPerUnit: 30,
+                  tracksByObject: {},
+                }
               }
+
+              // Convert PointableSet to array
+              const markers = Object.entries(markerSet.byId)
+                .map(([id, marker]) => marker)
+                .filter(
+                  (marker): marker is NonNullable<typeof marker> =>
+                    marker !== undefined,
+                )
+                .sort((a, b) => a.position - b.position)
+
+              sheet.sequence.markers = markers
             }
-
-            // Convert PointableSet to array
-            const markers = Object.entries(markerSet.byId)
-              .map(([id, marker]) => marker)
-              .filter((marker) => marker !== undefined)
-              .sort((a, b) => a.position - b.position)
-
-            sheet.sequence.markers = markers
           }
         }
       }
