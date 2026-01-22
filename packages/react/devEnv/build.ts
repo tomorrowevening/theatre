@@ -8,6 +8,11 @@ const externalPlugin = (patterns: RegExp[]): Plugin => {
 
     setup(build) {
       build.onResolve({filter: /.*/}, (args) => {
+        // Don't mark the entry point as external
+        if (args.kind === 'entry-point') {
+          return
+        }
+
         const external = patterns.some((p) => {
           return p.test(args.path)
         })
