@@ -1,5 +1,5 @@
 {
-  "name": "@theatre/compat-tests",
+  "name": "@tomorrowevening/theatre-compat-tests",
   "private": true,
   "scripts": {
     "install-fixtures": "node -r esbuild-register ./scripts/install-fixtures.ts",

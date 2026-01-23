@@ -4,8 +4,8 @@
  * @packageDocumentation
  */
 
-import type {Prism} from '@theatre/dataverse'
-import {prism, val, Atom} from '@theatre/dataverse'
+import type {Prism} from '@tomorrowevening/theatre-dataverse'
+import {prism, val, Atom} from '@tomorrowevening/theatre-dataverse'
 import {findIndex} from 'lodash-es'
 import queueMicrotask from 'queue-microtask'
 import {useCallback, useLayoutEffect, useRef, useState} from 'react'
@@ -15,7 +15,7 @@ type $IntentionalAny = any
 type VoidFn = () => void
 
 /**
- * Enables a few traces and debug points to help identify performance glitches in `@theatre/react`.
+ * Enables a few traces and debug points to help identify performance glitches in `@tomorrowevening/theatre-react`.
  * Look up references to this value to see how to make use of those traces.
  */
 const TRACE: boolean = false && process.env.NODE_ENV !== 'production'
@@ -376,7 +376,7 @@ export function usePrismInstance<T>(der: Prism<T>, debugLabel?: string): T {
  *
  * Usage
  * ```tsx
- * import {useAtom, useVal} from '@theatre/react'
+ * import {useAtom, useVal} from '@tomorrowevening/theatre-react'
  * import {useEffect} from 'react'
  *
  * function MyComponent() {

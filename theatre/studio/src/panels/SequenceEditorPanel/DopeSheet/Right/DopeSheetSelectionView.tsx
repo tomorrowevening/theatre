@@ -1,30 +1,30 @@
-import getStudio from '@theatre/studio/getStudio'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useKeyDown from '@theatre/studio/uiComponents/useKeyDown'
-import useValToAtom from '@theatre/studio/uiComponents/useValToAtom'
-import mutableSetDeep from '@theatre/shared/utils/mutableSetDeep'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import {usePrism} from '@theatre/react'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
-import type {Pointer} from '@theatre/dataverse'
-import {val} from '@theatre/dataverse'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useKeyDown from '@tomorrowevening/theatre-studio/uiComponents/useKeyDown'
+import useValToAtom from '@tomorrowevening/theatre-studio/uiComponents/useValToAtom'
+import mutableSetDeep from '@tomorrowevening/theatre-shared/utils/mutableSetDeep'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
 import type {
   DopeSheetSelection,
   SequenceEditorPanelLayout,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
   SequenceEditorTree_AllRowTypes,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import DopeSnap from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
-import type {ILogger, IUtilLogger} from '@theatre/shared/logger'
-import {useLogger} from '@theatre/studio/uiComponents/useLogger'
+import type {ILogger, IUtilLogger} from '@tomorrowevening/theatre-shared/logger'
+import {useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
 
 const HITBOX_SIZE_PX = 5
 

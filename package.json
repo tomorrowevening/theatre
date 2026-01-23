@@ -17,7 +17,7 @@
     "typecheck": "yarn run build:ts",
     "build:ts": "tsc --build ./devEnv/typecheck-all-projects/tsconfig.all.json",
     "test": "jest",
-    "test:compat:install": "yarn workspace @theatre/compat-tests run install-fixtures",
+    "test:compat:install": "yarn workspace @tomorrowevening/theatre-compat-tests run install-fixtures",
     "test:compat:run": "jest --config jest.compat-tests.config.js",
     "postinstall": "husky install",
     "lint:all": "eslint . --ext ts,tsx --ignore-path=.gitignore --rulesdir ./devEnv/eslint/rules"

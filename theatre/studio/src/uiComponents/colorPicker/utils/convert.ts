@@ -6,7 +6,7 @@ import type {
   HslColor,
   HsvaColor,
   HsvColor,
-} from '@theatre/studio/uiComponents/colorPicker/types'
+} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/types'
 
 /**
  * Valid CSS <angle> units.

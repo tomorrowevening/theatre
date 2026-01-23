@@ -9,8 +9,8 @@ import defaultEditableFactoryConfig from './defaultEditableFactoryConfig'
 import type {EditableFactoryConfig} from './editableFactoryConfigUtils'
 import {makeStoreKey} from './utils'
 import type {$FixMe, $IntentionalAny} from '../types'
-import type {ISheetObject} from '@theatre/core'
-import {notify} from '@theatre/core'
+import type {ISheetObject} from '@tomorrowevening/theatre-core'
+import {notify} from '@tomorrowevening/theatre-core'
 import {useCurrentRafDriver} from './RafDriverProvider'
 
 const createEditable = <Keys extends keyof JSX.IntrinsicElements>(

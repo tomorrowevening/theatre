@@ -1,8 +1,8 @@
 import React from 'react'
-import ToolbarIconButton from '@theatre/studio/uiComponents/toolbar/ToolbarIconButton'
+import ToolbarIconButton from '@tomorrowevening/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
 import styled from 'styled-components'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
-import type {ToolConfigIcon} from '@theatre/studio/TheatreStudio'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
+import type {ToolConfigIcon} from '@tomorrowevening/theatre-studio/TheatreStudio'
 
 const Container = styled(ToolbarIconButton)`
   ${pointerEventsAutoInNormalMode};

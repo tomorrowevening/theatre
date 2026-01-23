@@ -1,15 +1,15 @@
-import getStudio from '@theatre/studio/getStudio'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
-import useContextMenu from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import {val} from '@theatre/dataverse'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import {clamp} from 'lodash-es'
 import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
 import {transformBox} from './Curve'
 import type KeyframeEditor from './KeyframeEditor'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 
 export const dotSize = 6
 

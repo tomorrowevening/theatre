@@ -1,5 +1,5 @@
-import studio from '@theatre/studio'
-import {getProject} from '@theatre/core'
+import studio from '@tomorrowevening/theatre-studio'
+import {getProject} from '@tomorrowevening/theatre-core'
 
 studio.initialize({usePersistentStorage: false})
 

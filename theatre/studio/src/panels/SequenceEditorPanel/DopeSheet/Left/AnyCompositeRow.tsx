@@ -1,15 +1,15 @@
-import {theme} from '@theatre/studio/css'
+import {theme} from '@tomorrowevening/theatre-studio/css'
 import type {
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import type {VoidFn} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
 import React, {useRef} from 'react'
 import {HiOutlineChevronRight} from 'react-icons/all'
 import styled from 'styled-components'
-import {propNameTextCSS} from '@theatre/studio/propEditors/utils/propNameTextCSS'
+import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 
 export const LeftRowContainer = styled.li<{depth: number}>`

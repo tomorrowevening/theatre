@@ -1,13 +1,13 @@
-import type {StudioSheetItemKey} from '@theatre/shared/utils/ids'
-import type {StrictRecord} from '@theatre/shared/utils/types'
+import type {StudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
 import React, {useMemo} from 'react'
 import {useEffect} from 'react'
 import {useLogger} from './useLogger'
-import {prism, pointerToPrism} from '@theatre/dataverse'
-import {Atom} from '@theatre/dataverse'
-import {usePrismInstance} from '@theatre/react'
-import {selectClosestHTMLAncestor} from '@theatre/studio/utils/selectClosestHTMLAncestor'
-import pointerDeep from '@theatre/shared/utils/pointerDeep'
+import {prism, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
+import {usePrismInstance} from '@tomorrowevening/theatre-react'
+import {selectClosestHTMLAncestor} from '@tomorrowevening/theatre-studio/utils/selectClosestHTMLAncestor'
+import pointerDeep from '@tomorrowevening/theatre-shared/utils/pointerDeep'
 
 /** To mean the presence value */
 export enum PresenceFlag {

@@ -1,4 +1,4 @@
-import type {VoidFn} from '@theatre/shared/utils/types'
+import type {VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
 import React, {useContext, useEffect} from 'react'
 import ContextMenu from './ContextMenu/ContextMenu'
 import type {
@@ -7,7 +7,7 @@ import type {
 } from './ContextMenu/ContextMenu'
 import useRequestContextMenu from './useRequestContextMenu'
 import type {IRequestContextMenuOptions} from './useRequestContextMenu'
-import {contextMenuShownContext} from '@theatre/studio/panels/DetailPanel/DetailPanel'
+import {contextMenuShownContext} from '@tomorrowevening/theatre-studio/panels/DetailPanel/DetailPanel'
 
 // re-exports
 export type {

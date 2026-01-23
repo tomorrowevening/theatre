@@ -1,4 +1,4 @@
-import type {Pointer} from '@theatre/dataverse'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import type {PathToProp} from './addresses'
 import type {$IntentionalAny} from './types'
 

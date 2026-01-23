@@ -1,5 +1,5 @@
 {
-  "name": "@theatre/react",
+  "name": "@tomorrowevening/theatre-react",
   "version": "0.7.1",
   "license": "Apache-2.0",
   "author": {
@@ -40,7 +40,7 @@
     "typescript": "5.1.6"
   },
   "dependencies": {
-    "@theatre/dataverse": "workspace:*",
+    "@tomorrowevening/theatre-dataverse": "workspace:*",
     "lodash-es": "^4.17.21",
     "queue-microtask": "^1.2.3"
   },

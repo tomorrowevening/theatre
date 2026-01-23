@@ -1,7 +1,7 @@
-import {getProject} from '@theatre/core'
+import {getProject} from '@tomorrowevening/theatre-core'
 import React, {useEffect, useRef} from 'react'
 import {Canvas} from '@react-three/fiber'
-import {editable as e, SheetProvider, PerspectiveCamera} from '@theatre/r3f'
+import {editable as e, SheetProvider, PerspectiveCamera} from '@tomorrowevening/theatre-r3f'
 import state from './state.json'
 
 // credit: https://codesandbox.io/s/camera-pan-nsb7f

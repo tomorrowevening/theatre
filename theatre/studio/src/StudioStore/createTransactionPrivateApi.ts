@@ -1,22 +1,22 @@
-import type {Pointer} from '@theatre/dataverse'
-import {isSequence, isSheetObject} from '@theatre/shared/instanceTypes'
-import type {$FixMe, $IntentionalAny} from '@theatre/shared/utils/types'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {isSequence, isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
+import type {$FixMe, $IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 import get from 'lodash-es/get'
 import isInteger from 'lodash-es/isInteger'
 import type {ITransactionPrivateApi} from './StudioStore'
-import forEachPropDeep from '@theatre/shared/utils/forEachDeep'
-import getDeep from '@theatre/shared/utils/getDeep'
-import type {SequenceTrackId} from '@theatre/shared/utils/ids'
-import {getPointerParts} from '@theatre/dataverse'
+import forEachPropDeep from '@tomorrowevening/theatre-shared/utils/forEachDeep'
+import getDeep from '@tomorrowevening/theatre-shared/utils/getDeep'
+import type {SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {getPointerParts} from '@tomorrowevening/theatre-dataverse'
 import type {
   PropTypeConfig,
   PropTypeConfig_AllSimples,
   PropTypeConfig_Compound,
-} from '@theatre/core/propTypes'
-import type {PathToProp} from '@theatre/shared/src/utils/addresses'
-import {getPropConfigByPath} from '@theatre/shared/propTypes/utils'
+} from '@tomorrowevening/theatre-core/propTypes'
+import type {PathToProp} from '@tomorrowevening/theatre-shared/src/utils/addresses'
+import {getPropConfigByPath} from '@tomorrowevening/theatre-shared/propTypes/utils'
 import {isPlainObject} from 'lodash-es'
-import userReadableTypeOfValue from '@theatre/shared/utils/userReadableTypeOfValue'
+import userReadableTypeOfValue from '@tomorrowevening/theatre-shared/utils/userReadableTypeOfValue'
 
 /**
  * Deep-clones a plain JS object or a `string | number | boolean`. In case of a plain

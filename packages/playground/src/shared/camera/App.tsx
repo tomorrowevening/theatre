@@ -3,9 +3,9 @@ import {
   RefreshSnapshot,
   SheetProvider,
   PerspectiveCamera,
-} from '@theatre/r3f'
+} from '@tomorrowevening/theatre-r3f'
 import {Stars} from '@react-three/drei'
-import {getProject} from '@theatre/core'
+import {getProject} from '@tomorrowevening/theatre-core'
 import React, {Suspense, useRef, useState} from 'react'
 import {Canvas} from '@react-three/fiber'
 import {useGLTF} from '@react-three/drei'

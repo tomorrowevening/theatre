@@ -1,7 +1,7 @@
-import type {PropTypeConfig_Boolean} from '@theatre/core/propTypes'
+import type {PropTypeConfig_Boolean} from '@tomorrowevening/theatre-core/propTypes'
 import React, {useCallback} from 'react'
 import styled from 'styled-components'
-import BasicCheckbox from '@theatre/studio/uiComponents/form/BasicCheckbox'
+import BasicCheckbox from '@tomorrowevening/theatre-studio/uiComponents/form/BasicCheckbox'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
 
 const Input = styled(BasicCheckbox)`

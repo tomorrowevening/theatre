@@ -1,4 +1,4 @@
-import {Atom, prism} from '@theatre/dataverse'
+import {Atom, prism} from '@tomorrowevening/theatre-dataverse'
 import type {KeyboardEvent} from 'react'
 import React, {
   useEffect,
@@ -9,8 +9,8 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import fuzzy from 'fuzzy'
-import getStudio from '@theatre/studio/getStudio'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
 import CurveSegmentEditor from './CurveSegmentEditor'
 import EasingOption from './EasingOption'
 import type {CSSCubicBezierArgsString, CubicBezierHandles} from './shared'
@@ -21,10 +21,10 @@ import {
   areEasingsSimilar,
 } from './shared'
 import {COLOR_BASE, COLOR_POPOVER_BACK} from './colors'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 import {useUIOptionGrid, Outcome} from './useUIOptionGrid'
-import type {KeyframeConnectionWithAddress} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/selections'
+import type {KeyframeConnectionWithAddress} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 
 const PRESET_COLUMNS = 3
 const PRESET_SIZE = 53

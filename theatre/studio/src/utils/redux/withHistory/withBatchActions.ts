@@ -1,9 +1,9 @@
-import actionCreator from '@theatre/studio/utils/redux/actionCreator'
+import actionCreator from '@tomorrowevening/theatre-studio/utils/redux/actionCreator'
 import type {
   $FixMe,
   GenericAction,
   ReduxReducer,
-} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-shared/utils/types'
 
 export const batchedAction = actionCreator(
   '@@batched',

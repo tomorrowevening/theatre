@@ -3,10 +3,10 @@ import type {
   ColorModel,
   AnyColor,
   HsvaColor,
-} from '@theatre/studio/uiComponents/colorPicker/types'
-import {equalColorObjects} from '@theatre/studio/uiComponents/colorPicker/utils/compare'
+} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/types'
+import {equalColorObjects} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/compare'
 import {useEventCallback} from './useEventCallback'
-import {useEditing} from '@theatre/studio/uiComponents/colorPicker/components/EditingProvider'
+import {useEditing} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/components/EditingProvider'
 
 export function useColorManipulation<T extends AnyColor>(
   colorModel: ColorModel<T>,

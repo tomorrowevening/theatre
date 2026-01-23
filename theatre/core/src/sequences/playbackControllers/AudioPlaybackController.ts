@@ -1,17 +1,17 @@
 import type {
   IPlaybackDirection,
   IPlaybackRange,
-} from '@theatre/core/sequences/Sequence'
-import {defer} from '@theatre/shared/utils/defer'
-import {InvalidArgumentError} from '@theatre/shared/utils/errors'
-import noop from '@theatre/shared/utils/noop'
-import type {Prism, Pointer, Ticker} from '@theatre/dataverse'
-import {Atom} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-core/sequences/Sequence'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import {InvalidArgumentError} from '@tomorrowevening/theatre-shared/utils/errors'
+import noop from '@tomorrowevening/theatre-shared/utils/noop'
+import type {Prism, Pointer, Ticker} from '@tomorrowevening/theatre-dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
 import type {
   IPlaybackController,
   IPlaybackState,
 } from './DefaultPlaybackController'
-import {notify} from '@theatre/shared/notify'
+import {notify} from '@tomorrowevening/theatre-shared/notify'
 
 export default class AudioPlaybackController implements IPlaybackController {
   _mainGain: GainNode

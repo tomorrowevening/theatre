@@ -1,4 +1,4 @@
-import type {PropTypeConfig} from '@theatre/core/propTypes'
+import type {PropTypeConfig} from '@tomorrowevening/theatre-core/propTypes'
 
 export type PropConfigForType<K extends PropTypeConfig['type']> = Extract<
   PropTypeConfig,

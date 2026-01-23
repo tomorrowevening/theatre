@@ -1,4 +1,4 @@
-import type {Ticker} from '@theatre/dataverse'
+import type {Ticker} from '@tomorrowevening/theatre-dataverse'
 import {privateAPI} from './privateAPIs'
 import type {IRafDriver, RafDriverPrivateAPI} from './rafDrivers'
 import {createRafDriver} from './rafDrivers'

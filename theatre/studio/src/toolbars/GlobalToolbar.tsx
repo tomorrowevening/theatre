@@ -1,12 +1,12 @@
-import {usePrism, useVal} from '@theatre/react'
-import getStudio from '@theatre/studio/getStudio'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
-import type {$IntentionalAny} from '@theatre/dataverse/dist/types'
-import useTooltip from '@theatre/studio/uiComponents/Popover/useTooltip'
-import ErrorTooltip from '@theatre/studio/uiComponents/Popover/ErrorTooltip'
-import BasicTooltip from '@theatre/studio/uiComponents/Popover/BasicTooltip'
-import {val} from '@theatre/dataverse'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-dataverse/dist/types'
+import useTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/useTooltip'
+import ErrorTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/ErrorTooltip'
+import BasicTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicTooltip'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import ExtensionToolbar from './ExtensionToolbar/ExtensionToolbar'
 import PinButton from './PinButton'
 import {
@@ -14,16 +14,16 @@ import {
   Ellipsis,
   Outline,
   Bell,
-} from '@theatre/studio/uiComponents/icons'
-import DoubleChevronLeft from '@theatre/studio/uiComponents/icons/DoubleChevronLeft'
-import DoubleChevronRight from '@theatre/studio/uiComponents/icons/DoubleChevronRight'
-import ToolbarIconButton from '@theatre/studio/uiComponents/toolbar/ToolbarIconButton'
-import usePopover from '@theatre/studio/uiComponents/Popover/usePopover'
+} from '@tomorrowevening/theatre-studio/uiComponents/icons'
+import DoubleChevronLeft from '@tomorrowevening/theatre-studio/uiComponents/icons/DoubleChevronLeft'
+import DoubleChevronRight from '@tomorrowevening/theatre-studio/uiComponents/icons/DoubleChevronRight'
+import ToolbarIconButton from '@tomorrowevening/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
+import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
 import MoreMenu from './MoreMenu/MoreMenu'
 import {
   useNotifications,
   useEmptyNotificationsTooltip,
-} from '@theatre/studio/notify'
+} from '@tomorrowevening/theatre-studio/notify'
 
 const Container = styled.div`
   height: 36px;

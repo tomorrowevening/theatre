@@ -1,5 +1,5 @@
-import type {SheetId} from '@theatre/shared/utils/ids'
-import type {StrictRecord} from '@theatre/shared/utils/types'
+import type {SheetId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
 import type {SheetState_Historic} from './types/SheetState_Historic'
 
 type ProjectLoadingState =
@@ -27,7 +27,7 @@ export interface ProjectEphemeralState {
 }
 
 /**
- * This is the state of each project that is consumable by `@theatre/core`.
+ * This is the state of each project that is consumable by `@tomorrowevening/theatre-core`.
  * If the studio is present, this part of the state joins the studio's historic state,
  * at {@link StudioHistoricState.coreByProject}
  */

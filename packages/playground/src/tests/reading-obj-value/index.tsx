@@ -1,5 +1,5 @@
-import studio from '@theatre/studio'
-import {getProject, types} from '@theatre/core'
+import studio from '@tomorrowevening/theatre-studio'
+import {getProject, types} from '@tomorrowevening/theatre-core'
 import state from './reading obj value.theatre-project-state.json'
 studio.initialize({usePersistentStorage: false})
 

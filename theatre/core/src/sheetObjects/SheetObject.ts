@@ -1,27 +1,27 @@
-import type {InterpolationTriple} from '@theatre/core/sequences/interpolationTripleAtPosition'
-import interpolationTripleAtPosition from '@theatre/core/sequences/interpolationTripleAtPosition'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type {SheetObjectAddress} from '@theatre/shared/utils/addresses'
-import deepMergeWithCache from '@theatre/shared/utils/deepMergeWithCache'
-import type {SequenceTrackId} from '@theatre/shared/utils/ids'
-import pointerDeep from '@theatre/shared/utils/pointerDeep'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
+import type {InterpolationTriple} from '@tomorrowevening/theatre-core/sequences/interpolationTripleAtPosition'
+import interpolationTripleAtPosition from '@tomorrowevening/theatre-core/sequences/interpolationTripleAtPosition'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type {SheetObjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import deepMergeWithCache from '@tomorrowevening/theatre-shared/utils/deepMergeWithCache'
+import type {SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import pointerDeep from '@tomorrowevening/theatre-shared/utils/pointerDeep'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
 import type {
   $FixMe,
   $IntentionalAny,
   DeepPartialOfSerializableValue,
   SerializableMap,
   SerializableValue,
-} from '@theatre/shared/utils/types'
-import {valToAtom} from '@theatre/shared/utils/valToAtom'
-import type {PointerToPrismProvider, Prism, Pointer} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-shared/utils/types'
+import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
+import type {PointerToPrismProvider, Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
 
-import {Atom, getPointerParts, pointer, prism, val} from '@theatre/dataverse'
+import {Atom, getPointerParts, pointer, prism, val} from '@tomorrowevening/theatre-dataverse'
 import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
-import type {Interpolator, PropTypeConfig} from '@theatre/core/propTypes'
-import {getPropConfigByPath} from '@theatre/shared/propTypes/utils'
-import type {ILogger, IUtilContext} from '@theatre/shared/logger'
+import type {Interpolator, PropTypeConfig} from '@tomorrowevening/theatre-core/propTypes'
+import {getPropConfigByPath} from '@tomorrowevening/theatre-shared/propTypes/utils'
+import type {ILogger, IUtilContext} from '@tomorrowevening/theatre-shared/logger'
 
 /**
  * Internally, the sheet's actual configured value is not a specific type, since we
@@ -99,7 +99,7 @@ export default class SheetObject implements PointerToPrismProvider {
          * recalculations are cheap.
          *
          * Question: What about object.initialValue which _could_ change on every frame, but isn't layerd on last?
-         * Answer: initialValue is seldom used (it's only used in `@theatre/r3f` as far as we know). So this won't
+         * Answer: initialValue is seldom used (it's only used in `@tomorrowevening/theatre-r3f` as far as we know). So this won't
          * affect the majority of use cases. And in case it _is_ used, it's better for us to implement an alternative
          * to `object.getValues()` that does not layer initialValue (and also skips defaultValue too). This is discussed
          * in issue [P-208](https://linear.app/theatre/issue/P-208/use-overrides-rather-than-final-values-in-r3f).

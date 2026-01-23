@@ -1,7 +1,7 @@
-import type {PropTypeConfig_StringLiteral} from '@theatre/core/propTypes'
+import type {PropTypeConfig_StringLiteral} from '@tomorrowevening/theatre-core/propTypes'
 import React, {useCallback} from 'react'
-import BasicSwitch from '@theatre/studio/uiComponents/form/BasicSwitch'
-import BasicSelect from '@theatre/studio/uiComponents/form/BasicSelect'
+import BasicSwitch from '@tomorrowevening/theatre-studio/uiComponents/form/BasicSwitch'
+import BasicSelect from '@tomorrowevening/theatre-studio/uiComponents/form/BasicSelect'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
 
 function StringLiteralPropEditor<TLiteralOptions extends string>({

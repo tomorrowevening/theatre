@@ -2,22 +2,22 @@ import type {
   PropTypeConfig,
   PropTypeConfig_AllSimples,
   PropTypeConfig_Compound,
-} from '@theatre/core/propTypes'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type {IPropPathToTrackIdTree} from '@theatre/core/sheetObjects/SheetObjectTemplate'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type {PathToProp} from '@theatre/shared/utils/addresses'
+} from '@tomorrowevening/theatre-core/propTypes'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type {IPropPathToTrackIdTree} from '@tomorrowevening/theatre-core/sheetObjects/SheetObjectTemplate'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type {PathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
-} from '@theatre/shared/utils/ids'
-import {createStudioSheetItemKey} from '@theatre/shared/utils/ids'
-import type {$FixMe, $IntentionalAny} from '@theatre/shared/utils/types'
-import {prism, val, pointerToPrism} from '@theatre/dataverse'
-import logger from '@theatre/shared/logger'
-import {titleBarHeight} from '@theatre/studio/panels/BasePanel/common'
-import type {Studio} from '@theatre/studio/Studio'
-import type {UnknownValidCompoundProps} from '@theatre/core/propTypes/internals'
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {$FixMe, $IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import {prism, val, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
+import logger from '@tomorrowevening/theatre-shared/logger'
+import {titleBarHeight} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
+import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
+import type {UnknownValidCompoundProps} from '@tomorrowevening/theatre-core/propTypes/internals'
 
 /**
  * Base "view model" for each row with common

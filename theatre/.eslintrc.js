@@ -6,13 +6,13 @@ module.exports = {
       'warn',
       {
         aliases: [
-          {name: '@theatre/core', path: path.resolve(__dirname, './core/src')},
+          {name: '@tomorrowevening/theatre-core', path: path.resolve(__dirname, './core/src')},
           {
-            name: '@theatre/shared',
+            name: '@tomorrowevening/theatre-shared',
             path: path.resolve(__dirname, './shared/src'),
           },
           {
-            name: '@theatre/studio',
+            name: '@tomorrowevening/theatre-studio',
             path: path.resolve(__dirname, './studio/src'),
           },
         ],

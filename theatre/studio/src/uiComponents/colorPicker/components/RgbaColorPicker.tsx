@@ -6,12 +6,12 @@ import type {
   ColorPickerBaseProps,
   HsvaColor,
   RgbaColor,
-} from '@theatre/studio/uiComponents/colorPicker/types'
-import {equalColorObjects} from '@theatre/studio/uiComponents/colorPicker/utils/compare'
+} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/types'
+import {equalColorObjects} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/compare'
 import {
   rgbaToHsva,
   hsvaToRgba,
-} from '@theatre/studio/uiComponents/colorPicker/utils/convert'
+} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/convert'
 import {EditingProvider} from './EditingProvider'
 
 const normalizeRgba = (rgba: RgbaColor) => {

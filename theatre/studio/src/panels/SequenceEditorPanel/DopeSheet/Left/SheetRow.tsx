@@ -1,10 +1,10 @@
-import type {SequenceEditorTree_Sheet} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@theatre/react'
+import type {SequenceEditorTree_Sheet} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {usePrism} from '@tomorrowevening/theatre-react'
 import React from 'react'
 import LeftSheetObjectRow from './SheetObjectRow'
 import AnyCompositeRow from './AnyCompositeRow'
-import {setCollapsedSheetItem} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
-import uniqueKeyForAnyObject from '@theatre/shared/utils/uniqueKeyForAnyObject'
+import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
+import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
 
 const SheetRow: React.VFC<{
   leaf: SequenceEditorTree_Sheet

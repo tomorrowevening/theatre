@@ -2,22 +2,22 @@ import projectsSingleton from './projects/projectsSingleton'
 import type {OnDiskState} from './projects/store/storeTypes'
 import type {IProject, IProjectConfig} from './projects/TheatreProject'
 import TheatreProject from './projects/TheatreProject'
-import globals from '@theatre/shared/globals'
+import globals from '@tomorrowevening/theatre-shared/globals'
 import * as types from './propTypes'
-import {InvalidArgumentError} from '@theatre/shared/utils/errors'
-import {validateName} from '@theatre/shared/utils/sanitizers'
-import userReadableTypeOfValue from '@theatre/shared/utils/userReadableTypeOfValue'
+import {InvalidArgumentError} from '@tomorrowevening/theatre-shared/utils/errors'
+import {validateName} from '@tomorrowevening/theatre-shared/utils/sanitizers'
+import userReadableTypeOfValue from '@tomorrowevening/theatre-shared/utils/userReadableTypeOfValue'
 import deepEqual from 'fast-deep-equal'
-import type {PointerType, Prism} from '@theatre/dataverse'
-import {isPointer} from '@theatre/dataverse'
-import {isPrism, pointerToPrism} from '@theatre/dataverse'
-import type {$IntentionalAny, VoidFn} from '@theatre/shared/utils/types'
-import type {ProjectId} from '@theatre/shared/utils/ids'
+import type {PointerType, Prism} from '@tomorrowevening/theatre-dataverse'
+import {isPointer} from '@tomorrowevening/theatre-dataverse'
+import {isPrism, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
+import type {$IntentionalAny, VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {_coreLogger} from './_coreLogger'
 import {getCoreTicker} from './coreTicker'
 import type {IRafDriver} from './rafDrivers'
 import {privateAPI} from './privateAPIs'
-export {notify} from '@theatre/shared/notify'
+export {notify} from '@tomorrowevening/theatre-shared/notify'
 export {types}
 export {createRafDriver} from './rafDrivers'
 export type {IRafDriver} from './rafDrivers'
@@ -26,14 +26,14 @@ export type {IRafDriver} from './rafDrivers'
  * Returns a project of the given id, or creates one if it doesn't already exist.
  *
  * @remarks
- * If \@theatre/studio is also loaded, then the state of the project will be managed by the studio.
+ * If \@tomorrowevening/theatre-studio is also loaded, then the state of the project will be managed by the studio.
  *
  * [Learn more about exporting](https://www.theatrejs.com/docs/latest/manual/projects#state)
  *
  * @example
  * Usage:
  * ```ts
- * import {getProject} from '@theatre/core'
+ * import {getProject} from '@tomorrowevening/theatre-core'
  * const config = {} // the config can be empty when starting a new project
  * const project = getProject("a-unique-id", config)
  * ```
@@ -41,7 +41,7 @@ export type {IRafDriver} from './rafDrivers'
  * @example
  * Usage with an explicit state:
  * ```ts
- * import {getProject} from '@theatre/core'
+ * import {getProject} from '@tomorrowevening/theatre-core'
  * import state from './saved-state.json'
  * const config = {state} // here the config contains our saved state
  * const project = getProject("a-unique-id", config)
@@ -144,7 +144,7 @@ const validateProjectIdOrThrow = (value: string) => {
  * @example
  * Usage:
  * ```ts
- * import {getProject, onChange} from '@theatre/core'
+ * import {getProject, onChange} from '@tomorrowevening/theatre-core'
  *
  * const obj = getProject("A project").sheet("Scene").object("Box", {position: {x: 0}})
  *
@@ -192,7 +192,7 @@ export function onChange<
  *
  * Usage
  * ```ts
- * import {val, getProject} from '@theatre/core'
+ * import {val, getProject} from '@tomorrowevening/theatre-core'
  *
  * const obj = getProject("A project").sheet("Scene").object("Box", {position: {x: 0}})
  *

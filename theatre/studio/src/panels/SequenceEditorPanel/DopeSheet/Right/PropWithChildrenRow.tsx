@@ -1,16 +1,16 @@
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@theatre/react'
-import type {Pointer} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import PrimitivePropRow from './PrimitivePropRow'
 import RightRow from './Row'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
-import {ProvideLogger, useLogger} from '@theatre/studio/uiComponents/useLogger'
+import {ProvideLogger, useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
 
 export const decideRowByPropType = (
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp,

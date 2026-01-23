@@ -1,23 +1,23 @@
-import getStudio from '@theatre/studio/getStudio'
-import {val} from '@theatre/dataverse'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import type {
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
-} from '@theatre/shared/utils/ids'
-import {createStudioSheetItemKey} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   Keyframe,
   TrackData,
-} from '@theatre/core/projects/store/types/SheetState_Historic'
-import {encodePathToProp} from '@theatre/shared/utils/addresses'
+} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import {encodePathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
 import {uniq} from 'lodash-es'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 
 /**
  * An index over a series of keyframes that have been collected from different tracks.

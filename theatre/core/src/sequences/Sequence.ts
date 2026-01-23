@@ -1,19 +1,19 @@
-import type Project from '@theatre/core/projects/Project'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import {encodePathToProp} from '@theatre/shared/utils/addresses'
-import type {SequenceAddress} from '@theatre/shared/utils/addresses'
-import didYouMean from '@theatre/shared/utils/didYouMean'
-import {InvalidArgumentError} from '@theatre/shared/utils/errors'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import {encodePathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {SequenceAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import didYouMean from '@tomorrowevening/theatre-shared/utils/didYouMean'
+import {InvalidArgumentError} from '@tomorrowevening/theatre-shared/utils/errors'
 import type {
   Prism,
   Pointer,
   Ticker,
   PointerToPrismProvider,
-} from '@theatre/dataverse'
-import {getPointerParts} from '@theatre/dataverse'
-import {Atom} from '@theatre/dataverse'
-import {pointer} from '@theatre/dataverse'
-import {prism, val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-dataverse'
+import {getPointerParts} from '@tomorrowevening/theatre-dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
+import {pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import {padStart} from 'lodash-es'
 import type {
   IPlaybackController,
@@ -21,12 +21,12 @@ import type {
 } from './playbackControllers/DefaultPlaybackController'
 import DefaultPlaybackController from './playbackControllers/DefaultPlaybackController'
 import TheatreSequence from './TheatreSequence'
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type {ILogger} from '@theatre/shared/logger'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type {ILogger} from '@tomorrowevening/theatre-shared/logger'
 import type {ISequence} from '..'
-import {notify} from '@theatre/shared/notify'
-import type {$IntentionalAny} from '@theatre/dataverse/src/types'
-import {isSheetObject} from '@theatre/shared/instanceTypes'
+import {notify} from '@tomorrowevening/theatre-shared/notify'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-dataverse/src/types'
+import {isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
 
 export type IPlaybackRange = [from: number, to: number]
 

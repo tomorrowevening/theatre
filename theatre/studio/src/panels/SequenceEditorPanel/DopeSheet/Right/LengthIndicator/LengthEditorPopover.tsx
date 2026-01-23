@@ -1,13 +1,13 @@
-import type {Pointer} from '@theatre/dataverse'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import React, {useLayoutEffect, useMemo, useRef} from 'react'
 import styled from 'styled-components'
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import {usePrism, useVal} from '@theatre/react'
-import getStudio from '@theatre/studio/getStudio'
-import type {BasicNumberInputNudgeFn} from '@theatre/studio/uiComponents/form/BasicNumberInput'
-import BasicNumberInput from '@theatre/studio/uiComponents/form/BasicNumberInput'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
-import {propNameTextCSS} from '@theatre/studio/propEditors/utils/propNameTextCSS'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {BasicNumberInputNudgeFn} from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
+import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
+import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 
 const greaterThanZero = (v: number) => isFinite(v) && v > 0
 

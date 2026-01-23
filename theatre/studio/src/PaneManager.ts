@@ -1,7 +1,7 @@
-import {prism, val} from '@theatre/dataverse'
-import type {PaneInstanceId} from '@theatre/shared/utils/ids'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
-import type {$IntentionalAny, StrictRecord} from '@theatre/shared/utils/types'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
+import type {PaneInstanceId} from '@tomorrowevening/theatre-shared/utils/ids'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
+import type {$IntentionalAny, StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
 import type {Studio} from './Studio'
 import type {PaneInstance} from './TheatreStudio'
 
@@ -69,7 +69,7 @@ export default class PaneManager {
     const core = this._studio.core
     if (!core) {
       throw new Error(
-        `Can't create a pane because @theatre/core is not yet loaded`,
+        `Can't create a pane because @tomorrowevening/theatre-core is not yet loaded`,
       )
     }
 
@@ -116,7 +116,7 @@ export default class PaneManager {
     const core = this._studio.core
     if (!core) {
       throw new Error(
-        `Can't do this yet because @theatre/core is not yet loaded`,
+        `Can't do this yet because @tomorrowevening/theatre-core is not yet loaded`,
       )
     }
 

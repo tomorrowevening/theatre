@@ -1,24 +1,24 @@
 import type {
   Keyframe,
   TrackData,
-} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type {PathToProp} from '@theatre/shared/utils/addresses'
-import type {SequenceTrackId} from '@theatre/shared/utils/ids'
-import {createStudioSheetItemKey} from '@theatre/shared/utils/ids'
-import type {$IntentionalAny, VoidFn} from '@theatre/shared/utils/types'
-import type {Pointer} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type {PathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {$IntentionalAny, VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import React, {useMemo, useRef, useState} from 'react'
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import {graphEditorColors} from '@theatre/studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import {graphEditorColors} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import KeyframeEditor from './KeyframeEditor/KeyframeEditor'
 import {
   getPropConfigByPath,
   isPropConfigComposite,
   valueInProp,
-} from '@theatre/shared/propTypes/utils'
-import type {PropTypeConfig_AllSimples} from '@theatre/core/propTypes'
-import {useVal} from '@theatre/react'
+} from '@tomorrowevening/theatre-shared/propTypes/utils'
+import type {PropTypeConfig_AllSimples} from '@tomorrowevening/theatre-core/propTypes'
+import {useVal} from '@tomorrowevening/theatre-react'
 
 export type ExtremumSpace = {
   fromValueSpace: (v: number) => number

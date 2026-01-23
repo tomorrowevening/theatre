@@ -1,24 +1,24 @@
-import {privateAPI, setPrivateAPI} from '@theatre/core/privateAPIs'
-import type {IProject} from '@theatre/core/projects/TheatreProject'
-import type {ISheet} from '@theatre/core/sheets/TheatreSheet'
-import type {SheetObjectAddress} from '@theatre/shared/utils/addresses'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
+import {privateAPI, setPrivateAPI} from '@tomorrowevening/theatre-core/privateAPIs'
+import type {IProject} from '@tomorrowevening/theatre-core/projects/TheatreProject'
+import type {ISheet} from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
+import type {SheetObjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
 import type {
   $FixMe,
   DeepPartialOfSerializableValue,
   VoidFn,
-} from '@theatre/shared/utils/types'
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {prism, val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import type SheetObject from './SheetObject'
 import type {
   UnknownShorthandCompoundProps,
   PropsValue,
-} from '@theatre/core/propTypes/internals'
+} from '@tomorrowevening/theatre-core/propTypes/internals'
 import {debounce} from 'lodash-es'
 import type {DebouncedFunc} from 'lodash-es'
-import type {IRafDriver} from '@theatre/core/rafDrivers'
-import {onChange} from '@theatre/core/coreExports'
+import type {IRafDriver} from '@tomorrowevening/theatre-core/rafDrivers'
+import {onChange} from '@tomorrowevening/theatre-core/coreExports'
 
 export interface ISheetObject<
   Props extends UnknownShorthandCompoundProps = UnknownShorthandCompoundProps,

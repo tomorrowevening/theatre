@@ -36,13 +36,13 @@ You can find the documentation and video tutorials [here](https://theatrejs.com/
 
 Join us on [Discord](https://discord.gg/bm9f8F9Y9N), follow the updates on [twitter](https://twitter.com/AriaMinaei) or write us an [email](mailto:hello@theatrejs.com).
 
-## `@theatre/core`
+## `@tomorrowevening/theatre-core`
 
-Theatre.js comes in two packages: `@theatre/core` (the library) and `@theatre/studio` (the editor). This package is the core library.
+Theatre.js comes in two packages: `@tomorrowevening/theatre-core` (the library) and `@tomorrowevening/theatre-studio` (the editor). This package is the core library.
 
 ## Bundle size
 
-`@theatre/core` is currently around 20KiB compressed with all its dependencies.
+`@tomorrowevening/theatre-core` is currently around 20KiB compressed with all its dependencies.
 
 ## License
 

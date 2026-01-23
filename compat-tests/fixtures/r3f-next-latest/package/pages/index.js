@@ -1,6 +1,6 @@
 import React from 'react'
-import studio from '@theatre/studio'
-import extension from '@theatre/r3f/dist/extension'
+import studio from '@tomorrowevening/theatre-studio'
+import extension from '@tomorrowevening/theatre-r3f/dist/extension'
 import App from '../src/App/App'
 
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {

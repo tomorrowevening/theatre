@@ -1,9 +1,9 @@
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 import type {
   PropTypeConfig,
   PropTypeConfig_Compound,
-} from '@theatre/core/propTypes'
-import {isPropConfigComposite} from '@theatre/shared/propTypes/utils'
+} from '@tomorrowevening/theatre-core/propTypes'
+import {isPropConfigComposite} from '@tomorrowevening/theatre-shared/propTypes/utils'
 
 type EncodedPropPath = string
 type Order = number

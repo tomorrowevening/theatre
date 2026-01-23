@@ -1,5 +1,5 @@
 import {InvalidArgumentError} from './errors'
-import {notify} from '@theatre/shared/notify'
+import {notify} from '@tomorrowevening/theatre-shared/notify'
 
 /**
  * Make the given string's "path" slashes normalized with preceding and trailing spaces.

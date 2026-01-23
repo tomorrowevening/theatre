@@ -1,17 +1,17 @@
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 import type {
   DopeSheetSelection,
   SequenceEditorPanelLayout,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import type {SequenceEditorTree_PrimitiveProp} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import type {Pointer} from '@theatre/dataverse'
-import {val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorTree_PrimitiveProp} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
 import SingleKeyframeConnector from './BasicKeyframeConnector'
 import SingleKeyframeDot from './SingleKeyframeDot'
-import type {TrackWithId} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import type {StudioSheetItemKey} from '@theatre/shared/utils/ids'
+import type {TrackWithId} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import type {StudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 
 const SingleKeyframeEditorContainer = styled.div`
   position: absolute;

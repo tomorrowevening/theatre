@@ -1,9 +1,9 @@
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import getStudio from '@theatre/studio/getStudio'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import React from 'react'
-import BaseItem from '@theatre/studio/panels/OutlinePanel/BaseItem'
-import {usePrism} from '@theatre/react'
-import {getOutlineSelection} from '@theatre/studio/selectors'
+import BaseItem from '@tomorrowevening/theatre-studio/panels/OutlinePanel/BaseItem'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
 
 export const ObjectItem: React.VFC<{
   sheetObject: SheetObject

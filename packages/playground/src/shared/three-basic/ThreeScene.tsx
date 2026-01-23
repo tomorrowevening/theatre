@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react'
-import {types} from '@theatre/core'
-import type {ISheetObject, IProject} from '@theatre/core'
+import {types} from '@tomorrowevening/theatre-core'
+import type {ISheetObject, IProject} from '@tomorrowevening/theatre-core'
 import {
   Color,
   DirectionalLight,

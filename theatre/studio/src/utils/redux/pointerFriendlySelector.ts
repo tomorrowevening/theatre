@@ -1,5 +1,5 @@
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
-import type {Pointer} from '@theatre/dataverse'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 
 type PointerFriendlySelector<S, R, Args extends $IntentionalAny[]> = <
   GivenState extends S | Pointer<S>,

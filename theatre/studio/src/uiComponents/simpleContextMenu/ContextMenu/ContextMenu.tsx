@@ -1,4 +1,4 @@
-import useBoundingClientRect from '@theatre/studio/uiComponents/useBoundingClientRect'
+import useBoundingClientRect from '@tomorrowevening/theatre-studio/uiComponents/useBoundingClientRect'
 import type {ElementType} from 'react'
 import {useMemo} from 'react'
 import {useContext} from 'react'
@@ -7,7 +7,7 @@ import {createPortal} from 'react-dom'
 import useWindowSize from 'react-use/esm/useWindowSize'
 import {height as itemHeight} from './Item'
 import {PortalContext} from 'reakit'
-import useOnKeyDown from '@theatre/studio/uiComponents/useOnKeyDown'
+import useOnKeyDown from '@tomorrowevening/theatre-studio/uiComponents/useOnKeyDown'
 import BaseMenu from './BaseMenu'
 
 /**

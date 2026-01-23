@@ -1,13 +1,13 @@
-import type {$FixMe, $IntentionalAny} from '@theatre/shared/utils/types'
-import userReadableTypeOfValue from '@theatre/shared/utils/userReadableTypeOfValue'
-import type {Rgba} from '@theatre/shared/utils/color'
+import type {$FixMe, $IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import userReadableTypeOfValue from '@tomorrowevening/theatre-shared/utils/userReadableTypeOfValue'
+import type {Rgba} from '@tomorrowevening/theatre-shared/utils/color'
 import {
   decorateRgba,
   linearSrgbToOklab,
   oklabToLinearSrgb,
   srgbToLinearSrgb,
   linearSrgbToSrgb,
-} from '@theatre/shared/utils/color'
+} from '@tomorrowevening/theatre-shared/utils/color'
 import {clamp, mapValues} from 'lodash-es'
 import type {
   UnknownShorthandCompoundProps,
@@ -16,8 +16,8 @@ import type {
 } from './internals'
 import {propTypeSymbol, sanitizeCompoundProps} from './internals'
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type {Asset, File} from '@theatre/shared/utils/assets'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type {Asset, File} from '@tomorrowevening/theatre-shared/utils/assets'
 
 // Notes on naming:
 // As of now, prop types are either `simple` or `composite`.

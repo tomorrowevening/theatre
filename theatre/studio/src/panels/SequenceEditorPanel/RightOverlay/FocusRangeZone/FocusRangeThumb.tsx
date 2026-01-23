@@ -1,28 +1,28 @@
-import type {Pointer} from '@theatre/dataverse'
-import {prism, val} from '@theatre/dataverse'
-import {usePrism, useVal} from '@theatre/react'
-import type {$IntentionalAny, IRange} from '@theatre/shared/utils/types'
-import getStudio from '@theatre/studio/getStudio'
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
+import type {$IntentionalAny, IRange} from '@tomorrowevening/theatre-shared/utils/types'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import {
   topStripHeight,
   topStripTheme,
-} from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/TopStrip'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/TopStrip'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
 import {
   lockedCursorCssVarName,
   useCssCursorLock,
-} from '@theatre/studio/uiComponents/PointerEventsHandler'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+} from '@tomorrowevening/theatre-studio/uiComponents/PointerEventsHandler'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import React, {useMemo} from 'react'
 import styled from 'styled-components'
 import {
   includeLockFrameStampAttrs,
   useLockFrameStampPosition,
-} from '@theatre/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
 import {focusRangeStripTheme, RangeStrip} from './FocusRangeStrip'
-import DopeSnap from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 
 const TheDiv = styled.div<{enabled: boolean; type: 'start' | 'end'}>`
   position: absolute;

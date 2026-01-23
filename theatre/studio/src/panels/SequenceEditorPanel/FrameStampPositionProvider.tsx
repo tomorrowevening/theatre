@@ -1,7 +1,7 @@
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {Atom, prism, val} from '@theatre/dataverse'
-import mousePositionD from '@theatre/studio/utils/mousePositionD'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
+import mousePositionD from '@tomorrowevening/theatre-studio/utils/mousePositionD'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 import {inRange, last} from 'lodash-es'
 import React, {
   createContext,

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import type {CSSProperties} from 'react'
-import type {IProject} from '@theatre/core'
+import type {IProject} from '@tomorrowevening/theatre-core'
 import {Box3D, BoxSize} from './Box3D'
 
 // Scene

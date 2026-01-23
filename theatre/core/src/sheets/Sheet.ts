@@ -1,17 +1,17 @@
-import type Project from '@theatre/core/projects/Project'
-import Sequence from '@theatre/core/sequences/Sequence'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 import type {
   SheetObjectActionsConfig,
   SheetObjectPropTypeConfig,
-} from '@theatre/core/sheets/TheatreSheet'
-import TheatreSheet from '@theatre/core/sheets/TheatreSheet'
-import type {SheetAddress} from '@theatre/shared/utils/addresses'
-import {Atom, prism, val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
+import TheatreSheet from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
+import type {SheetAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
 import type SheetTemplate from './SheetTemplate'
-import type {ObjectAddressKey, SheetInstanceId} from '@theatre/shared/utils/ids'
-import type {StrictRecord} from '@theatre/shared/utils/types'
-import type {ILogger} from '@theatre/shared/logger'
+import type {ObjectAddressKey, SheetInstanceId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
+import type {ILogger} from '@tomorrowevening/theatre-shared/logger'
 import {isInteger} from 'lodash-es'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>

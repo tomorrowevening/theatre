@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Atom} from '@theatre/dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
 
 describe(`Atom`, () => {
   test(`Usage of Atom and pointer, without prism`, async () => {

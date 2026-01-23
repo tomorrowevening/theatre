@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.18.11",
-    "@theatre/dataverse": "workspace:*",
+    "@tomorrowevening/theatre-dataverse": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.2",
     "@types/react": "^18.2.18",
@@ -40,9 +40,9 @@
     "typescript": "5.1.6"
   },
   "dependencies": {
-    "@theatre/core": "workspace:*",
-    "@theatre/react": "workspace:*",
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*",
+    "@tomorrowevening/theatre-react": "workspace:*",
+    "@tomorrowevening/theatre-studio": "workspace:*"
   },
   "peerDependencies": {
     "react": "*"

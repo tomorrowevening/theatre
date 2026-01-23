@@ -1,20 +1,20 @@
 import type {
   DopeSheetSelection,
   SequenceEditorPanelLayout,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism, useVal} from '@theatre/react'
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {prism, val, pointerToPrism} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism, val, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
 import React, {useMemo, Fragment} from 'react'
 import styled from 'styled-components'
-import type {IContextMenuItem} from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import useContextMenu from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import type {
   IAggregateKeyframesAtPosition,
   IAggregateKeyframeEditorProps,
@@ -23,37 +23,37 @@ import AggregateKeyframeEditor from './AggregateKeyframeEditor/AggregateKeyframe
 import type {
   AggregatedKeyframes,
   KeyframeWithTrack,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {collectAggregateSnapPositionsObjectOrCompound} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {useLogger} from '@theatre/studio/uiComponents/useLogger'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {collectAggregateSnapPositionsObjectOrCompound} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
 import {getAggregateKeyframeEditorUtilsPrismFn} from './AggregateKeyframeEditor/useAggregateKeyframeEditorUtils'
-import DopeSnap from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
-import type {UseDragOpts} from '@theatre/studio/uiComponents/useDrag'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import {useLockFrameStampPositionRef} from '@theatre/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
-import {useCssCursorLock} from '@theatre/studio/uiComponents/PointerEventsHandler'
-import getStudio from '@theatre/studio/getStudio'
-import type {SheetObjectAddress} from '@theatre/shared/utils/addresses'
+import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+import type {UseDragOpts} from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import {useLockFrameStampPositionRef} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+import {useCssCursorLock} from '@tomorrowevening/theatre-studio/uiComponents/PointerEventsHandler'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {SheetObjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
 import {
   decodePathToProp,
   doesPathStartWith,
   encodePathToProp,
-} from '@theatre/shared/utils/addresses'
-import type {ObjectAddressKey, SequenceTrackId} from '@theatre/shared/utils/ids'
-import type Sequence from '@theatre/core/sequences/Sequence'
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {ObjectAddressKey, SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
 import KeyframeSnapTarget, {
   snapPositionsStateD,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {emptyObject} from '@theatre/shared/utils'
-import type {KeyframeWithPathToPropFromCommonRoot} from '@theatre/studio/store/types'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
+import {emptyObject} from '@tomorrowevening/theatre-shared/utils'
+import type {KeyframeWithPathToPropFromCommonRoot} from '@tomorrowevening/theatre-studio/store/types'
 import {
   collectKeyframeSnapPositions,
   snapToNone,
   snapToSome,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {collectAggregateSnapPositionsSheet} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
+import {collectAggregateSnapPositionsSheet} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 
 const AggregatedKeyframeTrackContainer = styled.div`
   position: relative;

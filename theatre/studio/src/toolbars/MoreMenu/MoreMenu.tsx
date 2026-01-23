@@ -1,6 +1,6 @@
-import {useVal} from '@theatre/react'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
-import getStudio from '@theatre/studio/getStudio'
+import {useVal} from '@tomorrowevening/theatre-react'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import React from 'react'
 import styled from 'styled-components'
 
