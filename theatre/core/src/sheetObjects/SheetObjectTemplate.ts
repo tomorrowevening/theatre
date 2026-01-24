@@ -1,38 +1,38 @@
-import type Project from '@theatre/core/projects/Project'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type SheetTemplate from '@theatre/core/sheets/SheetTemplate'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type SheetTemplate from '@tomorrowevening/theatre-core/sheets/SheetTemplate'
 import type {
   SheetObjectActionsConfig,
   SheetObjectPropTypeConfig,
-} from '@theatre/core/sheets/TheatreSheet'
-import {emptyArray} from '@theatre/shared/utils'
+} from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
+import {emptyArray} from '@tomorrowevening/theatre-shared/utils'
 import type {
   PathToProp,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@theatre/shared/utils/addresses'
-import getDeep from '@theatre/shared/utils/getDeep'
-import type {ObjectAddressKey, SequenceTrackId} from '@theatre/shared/utils/ids'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+import getDeep from '@tomorrowevening/theatre-shared/utils/getDeep'
+import type {ObjectAddressKey, SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
 import type {
   $FixMe,
   $IntentionalAny,
   SerializableMap,
   SerializablePrimitive,
   SerializableValue,
-} from '@theatre/shared/utils/types'
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {Atom, getPointerParts, prism, val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {Atom, getPointerParts, prism, val} from '@tomorrowevening/theatre-dataverse'
 import set from 'lodash-es/set'
 import getPropDefaultsOfSheetObject from './getPropDefaultsOfSheetObject'
 import SheetObject from './SheetObject'
-import logger from '@theatre/shared/logger'
+import logger from '@tomorrowevening/theatre-shared/logger'
 import {
   getPropConfigByPath,
   isPropConfSequencable,
-} from '@theatre/shared/propTypes/utils'
+} from '@tomorrowevening/theatre-shared/propTypes/utils'
 import getOrderingOfPropTypeConfig from './getOrderingOfPropTypeConfig'
-import type {SheetState_Historic} from '@theatre/core/projects/store/types/SheetState_Historic'
+import type {SheetState_Historic} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 import {cloneDeep, unset} from 'lodash-es'
 
 function isObjectEmpty(obj: unknown): boolean {

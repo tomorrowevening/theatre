@@ -1,36 +1,36 @@
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import RoomToClick from '@theatre/studio/uiComponents/RoomToClick'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import {usePrism, useVal} from '@theatre/react'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
-import type {Pointer} from '@theatre/dataverse'
-import {val} from '@theatre/dataverse'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import RoomToClick from '@tomorrowevening/theatre-studio/uiComponents/RoomToClick'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import clamp from 'lodash-es/clamp'
 import React, {useMemo} from 'react'
 import styled from 'styled-components'
-import {zIndexes} from '@theatre/studio/panels/SequenceEditorPanel/SequenceEditorPanel'
+import {zIndexes} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SequenceEditorPanel'
 import {
   includeLockFrameStampAttrs,
   useLockFrameStampPosition,
-} from '@theatre/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
-import usePopover from '@theatre/studio/uiComponents/Popover/usePopover'
-import BasicPopover from '@theatre/studio/uiComponents/Popover/BasicPopover'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
+import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
+import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'
 import PlayheadPositionPopover from './PlayheadPositionPopover'
-import {getIsPlayheadAttachedToFocusRange} from '@theatre/studio/UIRoot/useKeyboardShortcuts'
+import {getIsPlayheadAttachedToFocusRange} from '@tomorrowevening/theatre-studio/UIRoot/useKeyboardShortcuts'
 import {
   lockedCursorCssVarName,
   useCssCursorLock,
-} from '@theatre/studio/uiComponents/PointerEventsHandler'
-import useContextMenu from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import getStudio from '@theatre/studio/getStudio'
-import {generateSequenceMarkerId} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-studio/uiComponents/PointerEventsHandler'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import {generateSequenceMarkerId} from '@tomorrowevening/theatre-shared/utils/ids'
 import DopeSnap from './DopeSnap'
 import {
   snapToAll,
   snapToNone,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 
 const Container = styled.div<{isVisible: boolean}>`
   --thumbColor: #00e0ff;

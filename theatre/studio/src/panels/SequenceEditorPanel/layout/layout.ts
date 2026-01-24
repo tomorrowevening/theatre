@@ -1,16 +1,16 @@
-import type Sheet from '@theatre/core/sheets/Sheet'
-import getStudio from '@theatre/studio/getStudio'
-import type useDrag from '@theatre/studio/uiComponents/useDrag'
-import type {SheetAddress} from '@theatre/shared/utils/addresses'
-import subPrism from '@theatre/shared/utils/subPrism'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import type {SheetAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import subPrism from '@tomorrowevening/theatre-shared/utils/subPrism'
 import type {
   IRange,
   PositionInScreenSpace,
   StrictRecord,
-} from '@theatre/shared/utils/types'
-import {valToAtom} from '@theatre/shared/utils/valToAtom'
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {Atom, prism, val} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-shared/utils/types'
+import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
 import type {SequenceEditorTree} from './tree'
 import {calculateSequenceEditorTree} from './tree'
 import {clamp} from 'lodash-es'
@@ -18,7 +18,7 @@ import type {
   KeyframeId,
   ObjectAddressKey,
   SequenceTrackId,
-} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
 
 // A Side is either the left side of the panel or the right side
 type DimsOfPanelPart = {

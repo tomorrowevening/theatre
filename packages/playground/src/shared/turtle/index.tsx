@@ -4,7 +4,7 @@
  */
 import React, {useMemo, useState} from 'react'
 import ReactDom from 'react-dom/client'
-import {getProject} from '@theatre/core'
+import {getProject} from '@tomorrowevening/theatre-core'
 import type {ITurtle} from './turtle'
 import TurtleRenderer from './TurtleRenderer'
 import {useBoundingClientRect} from './utils'

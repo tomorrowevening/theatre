@@ -1,4 +1,4 @@
-// import getStudio from '@theatre/studio/getStudio'
+// import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 
 // export function createCursorLock(cursor: string) {
 //   const el = getStudio()!.ui.containerShadow.getElementById(

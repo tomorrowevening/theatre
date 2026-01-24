@@ -1,9 +1,9 @@
-import type {Studio} from '@theatre/studio/Studio'
-import delay from '@theatre/shared/utils/delay'
+import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
+import delay from '@tomorrowevening/theatre-shared/utils/delay'
 import {original} from 'immer'
 import type Project from './Project'
 import type {OnDiskState} from './store/storeTypes'
-import globals from '@theatre/shared/globals'
+import globals from '@tomorrowevening/theatre-shared/globals'
 
 /**
  * @remarks

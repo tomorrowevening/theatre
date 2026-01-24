@@ -1,5 +1,5 @@
-import type {IUtilContext} from '@theatre/shared/logger'
-import type {$IntentionalAny, GenericAction} from '@theatre/shared/utils/types'
+import type {IUtilContext} from '@tomorrowevening/theatre-shared/logger'
+import type {$IntentionalAny, GenericAction} from '@tomorrowevening/theatre-shared/utils/types'
 import mapValues from 'lodash-es/mapValues'
 
 /**

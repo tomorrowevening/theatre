@@ -1,5 +1,5 @@
 import padEnd from 'lodash-es/padEnd'
-import logger from '@theatre/shared/logger'
+import logger from '@tomorrowevening/theatre-shared/logger'
 
 /**
  * Returns the _most aesthetically pleasing_ (aka "nicest") number `c`, such that `a <= c <= b`.

@@ -1,16 +1,16 @@
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import type { Pointer} from '@theatre/dataverse';
-import {Atom} from '@theatre/dataverse'
-import {val} from '@theatre/dataverse'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type { Pointer} from '@tomorrowevening/theatre-dataverse';
+import {Atom} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
-import {DopeSnapHitZoneUI} from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnapHitZoneUI'
-import type {ObjectAddressKey, SequenceTrackId} from '@theatre/shared/utils/ids'
+import {DopeSnapHitZoneUI} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnapHitZoneUI'
+import type {ObjectAddressKey, SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   BasicKeyframedTrack,
   HistoricPositionalSequence,
   Keyframe,
-} from '@theatre/core/projects/store/types/SheetState_Historic'
+} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 
 const HitZone = styled.div`
   z-index: 1;

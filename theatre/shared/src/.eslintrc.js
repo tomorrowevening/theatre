@@ -5,7 +5,7 @@ module.exports = {
       {
         selector: `ImportDeclaration[importKind!='type'][source.value=/@theatre\\u002F(core|studio)/]`,
         message:
-          '@theatre/shared may not import @theatre/core or @theatre/studio modules except via type imports.',
+          '@tomorrowevening/theatre-shared may not import @tomorrowevening/theatre-core or @tomorrowevening/theatre-studio modules except via type imports.',
       },
     ],
   },

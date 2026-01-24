@@ -4,43 +4,43 @@ import type {
   Keyframe,
   KeyframeType,
   SheetState_Historic,
-} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type {Drafts} from '@theatre/studio/StudioStore/StudioStore'
+} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type {Drafts} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
 import type {
   ProjectAddress,
   PropAddress,
   SheetAddress,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@theatre/shared/utils/addresses'
-import {commonRootOfPathsToProps} from '@theatre/shared/utils/addresses'
-import {encodePathToProp} from '@theatre/shared/utils/addresses'
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+import {commonRootOfPathsToProps} from '@tomorrowevening/theatre-shared/utils/addresses'
+import {encodePathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {
   StudioSheetItemKey,
   KeyframeId,
   SequenceMarkerId,
   SequenceTrackId,
   UIPanelId,
-} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import {
   generateKeyframeId,
   generateSequenceTrackId,
-} from '@theatre/shared/utils/ids'
-import removePathFromObject from '@theatre/shared/utils/removePathFromObject'
-import {transformNumber} from '@theatre/shared/utils/transformNumber'
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import removePathFromObject from '@tomorrowevening/theatre-shared/utils/removePathFromObject'
+import {transformNumber} from '@tomorrowevening/theatre-shared/utils/transformNumber'
 import type {
   IRange,
   SerializableMap,
   SerializablePrimitive,
   SerializableValue,
-} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-shared/utils/types'
 import {current} from 'immer'
 import findLastIndex from 'lodash-es/findLastIndex'
 import keyBy from 'lodash-es/keyBy'
 import pullFromArray from 'lodash-es/pull'
 import set from 'lodash-es/set'
 import sortBy from 'lodash-es/sortBy'
-import {graphEditorColors} from '@theatre/studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import {graphEditorColors} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import type {
   KeyframeWithPathToPropFromCommonRoot,
   OutlineSelectable,
@@ -57,11 +57,11 @@ import {
   isSheetObject,
   isSheetObjectTemplate,
   isSheetTemplate,
-} from '@theatre/shared/instanceTypes'
-import type SheetTemplate from '@theatre/core/sheets/SheetTemplate'
-import type SheetObjectTemplate from '@theatre/core/sheetObjects/SheetObjectTemplate'
-import type {PropTypeConfig} from '@theatre/core/propTypes'
-import {pointableSetUtil} from '@theatre/shared/utils/PointableSet'
+} from '@tomorrowevening/theatre-shared/instanceTypes'
+import type SheetTemplate from '@tomorrowevening/theatre-core/sheets/SheetTemplate'
+import type SheetObjectTemplate from '@tomorrowevening/theatre-core/sheetObjects/SheetObjectTemplate'
+import type {PropTypeConfig} from '@tomorrowevening/theatre-core/propTypes'
+import {pointableSetUtil} from '@tomorrowevening/theatre-shared/utils/PointableSet'
 
 export const setDrafts__onlyMeantToBeCalledByTransaction = (
   drafts: undefined | Drafts,

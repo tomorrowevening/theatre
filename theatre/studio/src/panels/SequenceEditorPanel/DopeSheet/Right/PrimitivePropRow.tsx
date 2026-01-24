@@ -1,13 +1,13 @@
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import type {SequenceEditorTree_PrimitiveProp} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import getStudio from '@theatre/studio/getStudio'
-import {usePrism} from '@theatre/react'
-import type {Pointer} from '@theatre/dataverse'
-import {val} from '@theatre/dataverse'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorTree_PrimitiveProp} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import RightRow from './Row'
 import BasicKeyframedTrack from './BasicKeyframedTrack/BasicKeyframedTrack'
-import {useLogger} from '@theatre/studio/uiComponents/useLogger'
+import {useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
 
 const PrimitivePropRow: React.VFC<{
   leaf: SequenceEditorTree_PrimitiveProp

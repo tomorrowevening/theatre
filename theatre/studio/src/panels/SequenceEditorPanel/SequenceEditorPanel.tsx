@@ -1,8 +1,8 @@
-import {getOutlineSelection} from '@theatre/studio/selectors'
-import {usePrism} from '@theatre/react'
-import {valToAtom} from '@theatre/shared/utils/valToAtom'
-import type {Pointer} from '@theatre/dataverse'
-import {prism, val} from '@theatre/dataverse'
+import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import React, {useState} from 'react'
 import styled from 'styled-components'
 
@@ -11,14 +11,14 @@ import GraphEditor from './GraphEditor/GraphEditor'
 import type {PanelDims, SequenceEditorPanelLayout} from './layout/layout'
 import {sequenceEditorPanelLayout} from './layout/layout'
 import RightOverlay from './RightOverlay/RightOverlay'
-import BasePanel, {usePanel} from '@theatre/studio/panels/BasePanel/BasePanel'
-import type {PanelPosition} from '@theatre/studio/store/types'
-import PanelDragZone from '@theatre/studio/panels/BasePanel/PanelDragZone'
-import PanelWrapper from '@theatre/studio/panels/BasePanel/PanelWrapper'
+import BasePanel, {usePanel} from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
+import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
+import PanelDragZone from '@tomorrowevening/theatre-studio/panels/BasePanel/PanelDragZone'
+import PanelWrapper from '@tomorrowevening/theatre-studio/panels/BasePanel/PanelWrapper'
 import FrameStampPositionProvider from './FrameStampPositionProvider'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import {isSheet, isSheetObject} from '@theatre/shared/instanceTypes'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import {isSheet, isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
 import {uniq} from 'lodash-es'
 import GraphEditorToggle from './GraphEditorToggle'
 import {
@@ -26,9 +26,9 @@ import {
   TitleBar,
   TitleBar_Piece,
   TitleBar_Punctuation,
-} from '@theatre/studio/panels/BasePanel/common'
-import type {UIPanelId} from '@theatre/shared/utils/ids'
-import {usePresenceListenersOnRootElement} from '@theatre/studio/uiComponents/usePresence'
+} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
+import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 
 const Container = styled(PanelWrapper)`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -160,8 +160,8 @@ const Content: React.VFC<{}> = () => {
         .sequence,
     )
     const hasSequenceData =
-      (sequenceState.length && sequenceState.length > 0) ||
-      (sequenceState.markers && sequenceState.markers.length > 0)
+      (sequenceState?.length && sequenceState.length > 0) ||
+      (sequenceState?.markers && sequenceState.markers.length > 0)
 
     if (!hasChildren && !hasSequenceData) return <></>
 

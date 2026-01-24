@@ -1,7 +1,7 @@
-import logger from '@theatre/shared/logger'
-import type {StudioPersistentState} from '@theatre/studio/store'
-import {studioActions} from '@theatre/studio/store'
-import type {FullStudioState} from '@theatre/studio/store/index'
+import logger from '@tomorrowevening/theatre-shared/logger'
+import type {StudioPersistentState} from '@tomorrowevening/theatre-studio/store'
+import {studioActions} from '@tomorrowevening/theatre-studio/store'
+import type {FullStudioState} from '@tomorrowevening/theatre-studio/store/index'
 import debounce from 'lodash-es/debounce'
 import type {Store} from 'redux'
 

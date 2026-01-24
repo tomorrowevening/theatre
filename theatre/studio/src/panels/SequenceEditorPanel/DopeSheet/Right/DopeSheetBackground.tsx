@@ -1,12 +1,12 @@
-import {theme} from '@theatre/studio/css'
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import {zIndexes} from '@theatre/studio/panels/SequenceEditorPanel/SequenceEditorPanel'
-import {useVal} from '@theatre/react'
-import type {Pointer} from '@theatre/dataverse'
+import {theme} from '@tomorrowevening/theatre-studio/css'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import {zIndexes} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SequenceEditorPanel'
+import {useVal} from '@tomorrowevening/theatre-react'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {darken, transparentize} from 'polished'
 import React from 'react'
 import styled from 'styled-components'
-import FrameGrid from '@theatre/studio/panels/SequenceEditorPanel/FrameGrid/FrameGrid'
+import FrameGrid from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameGrid/FrameGrid'
 
 const Container = styled.div`
   position: absolute;

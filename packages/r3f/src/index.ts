@@ -1,8 +1,8 @@
 export {default as editable} from './main/editable'
 export type {EditableState, BindFunction} from './main/store'
 /**
- * This is a private API that's exported so that `@theatre/r3f/dist/extension`
- * and `@theatre/r3f` can talk to one another. This API _could_ change
+ * This is a private API that's exported so that `@tomorrowevening/theatre-r3f/dist/extension`
+ * and `@tomorrowevening/theatre-r3f` can talk to one another. This API _could_ change
  * between patch releases, so please don't build on it :)
  *
  * @internal
@@ -12,8 +12,8 @@ export {
   allRegisteredObjects as __private_allRegisteredObjects,
 } from './main/store'
 /**
- * This is a private API that's exported so that `@theatre/r3f/dist/extension`
- * and `@theatre/r3f` can talk to one another. This API _could_ change
+ * This is a private API that's exported so that `@tomorrowevening/theatre-r3f/dist/extension`
+ * and `@tomorrowevening/theatre-r3f` can talk to one another. This API _could_ change
  * between patch releases, so please don't build on it :)
  *
  * @internal

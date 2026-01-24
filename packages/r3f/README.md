@@ -1,8 +1,8 @@
-# @theatre/r3f
+# @tomorrowevening/theatre-r3f
 
 A [Theatre.js](https://github.com/AriaMinaei/theatre) extension for [THREE.js](https://threejs.org/) with [React Three Fiber](https://github.com/pmndrs/react-three-fiber).
 
-**Here be dragons! 🐉** `@theatre/r3f` is pre-release software, the API, the internal logic, and even the package name can and will drastically change at any time, without warning.
+**Here be dragons! 🐉** `@tomorrowevening/theatre-r3f` is pre-release software, the API, the internal logic, and even the package name can and will drastically change at any time, without warning.
 
 ## Quickstart
 
@@ -13,17 +13,17 @@ yarn add three
 yarn add @react-three/fiber
 
 # Theatre.js
-yarn add @theatre/core
-yarn add @theatre/studio
+yarn add @tomorrowevening/theatre-core
+yarn add @tomorrowevening/theatre-studio
 
-yarn add @theatre/r3f
+yarn add @tomorrowevening/theatre-r3f
 ```
 
 ```tsx
 import React from 'react';
 import { Canvas } from 'react-three-fiber';
-import {editable as e, SheetProvider, extension} from '@theatre/r3f';
-import studio from '@theatre/studio';
+import {editable as e, SheetProvider, extension} from '@tomorrowevening/theatre-r3f';
+import studio from '@tomorrowevening/theatre-studio';
 
 studio.extend(extension)
 studio.initialize()
@@ -60,7 +60,7 @@ When creating a 3D scene for react-three-fiber, you can choose two routes: you c
 
 The best middle ground so far has been *gltfjsx*, which generates JSX from your exported scene, however it still involves a lot of manual work if you want to split your scene into components, and any modifications you make will have to be reapplied if you make changes to the scene.
 
-`@theatre/r3f` aims to fill this gap by allowing you to set up your scene in JSX, giving you reactivity, while allowing you to tweak the properties of these objects in a visual editor, including their transforms, which you can then bake into a json file to be used by the runtime in production. An explicit goal of the project is to mirror regular react-three-fiber code as much as possible. This lets you add it to an existing project with ease, take it out when you don't need it, and generally use it as little or as much as you want, without feeling locked in.
+`@tomorrowevening/theatre-r3f` aims to fill this gap by allowing you to set up your scene in JSX, giving you reactivity, while allowing you to tweak the properties of these objects in a visual editor, including their transforms, which you can then bake into a json file to be used by the runtime in production. An explicit goal of the project is to mirror regular react-three-fiber code as much as possible. This lets you add it to an existing project with ease, take it out when you don't need it, and generally use it as little or as much as you want, without feeling locked in.
 
 ## API
 
@@ -71,7 +71,7 @@ Use it to make objects editable. The properties on `editable` mirror the intrins
 `editable` is also a function, which allows you to make your custom components editable. Your component does have to be compatible with the interface of the editable object type it is meant to represent. You need to pass it the component you want to wrap, and the object type it represents (see object types).
 
 ```ts
-import { editable } from '@theatre/r3f';
+import { editable } from '@tomorrowevening/theatre-r3f';
 import { PerspectiveCamera } from '@react-three/drei';
 
 const EditableCamera = editable(PerspectiveCamera, 'perspectiveCamera');

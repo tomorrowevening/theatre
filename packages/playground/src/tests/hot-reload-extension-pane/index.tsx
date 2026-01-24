@@ -1,10 +1,10 @@
-import type {IExtension} from '@theatre/studio'
-import studio from '@theatre/studio'
-import '@theatre/core'
+import type {IExtension} from '@tomorrowevening/theatre-studio'
+import studio from '@tomorrowevening/theatre-studio'
+import '@tomorrowevening/theatre-core'
 import {extensionButton} from '../../shared/utils/useExtensionButton'
 
 const ext1: IExtension = {
-  id: '@theatre/hello-world-extension',
+  id: '@tomorrowevening/theatre-hello-world-extension',
   toolbars: {},
   panes: [],
 }

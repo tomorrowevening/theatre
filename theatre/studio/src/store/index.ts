@@ -1,12 +1,12 @@
-import type {StudioState} from '@theatre/studio/store/types'
-import actionCreator from '@theatre/studio/utils/redux/actionCreator'
-import type {IWithHistory} from '@theatre/studio/utils/redux/withHistory/withHistory'
+import type {StudioState} from '@tomorrowevening/theatre-studio/store/types'
+import actionCreator from '@tomorrowevening/theatre-studio/utils/redux/actionCreator'
+import type {IWithHistory} from '@tomorrowevening/theatre-studio/utils/redux/withHistory/withHistory'
 import {
   historicActions,
   withHistory,
-} from '@theatre/studio/utils/redux/withHistory/withHistory'
-import type {ReduxReducer} from '@theatre/shared/utils/types'
-import logger from '@theatre/shared/logger'
+} from '@tomorrowevening/theatre-studio/utils/redux/withHistory/withHistory'
+import type {ReduxReducer} from '@tomorrowevening/theatre-shared/utils/types'
+import logger from '@tomorrowevening/theatre-shared/logger'
 
 const initialState: StudioState = {
   ahistoric: {

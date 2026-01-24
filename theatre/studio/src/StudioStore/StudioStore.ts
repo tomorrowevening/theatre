@@ -1,22 +1,22 @@
-import type {FullStudioState} from '@theatre/studio/store'
+import type {FullStudioState} from '@tomorrowevening/theatre-studio/store'
 import {
   studioActions,
   studioReducer,
   tempActionGroup,
-} from '@theatre/studio/store'
-import type {IStateEditors} from '@theatre/studio/store/stateEditors'
-import {setDrafts__onlyMeantToBeCalledByTransaction} from '@theatre/studio/store/stateEditors'
+} from '@tomorrowevening/theatre-studio/store'
+import type {IStateEditors} from '@tomorrowevening/theatre-studio/store/stateEditors'
+import {setDrafts__onlyMeantToBeCalledByTransaction} from '@tomorrowevening/theatre-studio/store/stateEditors'
 import type {
   StudioAhistoricState,
   StudioEphemeralState,
   StudioHistoricState,
-} from '@theatre/studio/store/types'
-import type {Deferred} from '@theatre/shared/utils/defer'
-import {defer} from '@theatre/shared/utils/defer'
-import atomFromReduxStore from '@theatre/studio/utils/redux/atomFromReduxStore'
-import configureStore from '@theatre/studio/utils/redux/configureStore'
-import type {VoidFn} from '@theatre/shared/utils/types'
-import type {Atom, Pointer} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-studio/store/types'
+import type {Deferred} from '@tomorrowevening/theatre-shared/utils/defer'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import atomFromReduxStore from '@tomorrowevening/theatre-studio/utils/redux/atomFromReduxStore'
+import configureStore from '@tomorrowevening/theatre-studio/utils/redux/configureStore'
+import type {VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {Atom, Pointer} from '@tomorrowevening/theatre-dataverse'
 import type {Draft} from 'immer'
 import {createDraft, finishDraft} from 'immer'
 import type {Store} from 'redux'
@@ -24,12 +24,12 @@ import {
   __experimental_clearPersistentStorage,
   persistStateOfStudio,
 } from './persistStateOfStudio'
-import type {OnDiskState} from '@theatre/core/projects/store/storeTypes'
+import type {OnDiskState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
 import {generateDiskStateRevision} from './generateDiskStateRevision'
 import cloneDeep from 'lodash-es/cloneDeep'
 
 import createTransactionPrivateApi from './createTransactionPrivateApi'
-import type {ProjectId} from '@theatre/shared/utils/ids'
+import type {ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export type Drafts = {
   historic: Draft<StudioHistoricState>
@@ -234,7 +234,7 @@ export default class StudioStore {
             const sheet = generatedOnDiskState.sheetsById[sheetId]
 
             // Ensure the sequence exists
-            if (!sheet.sequence) {
+            if (sheet && !sheet.sequence) {
               sheet.sequence = {
                 type: 'PositionalSequence',
                 length: 10,
@@ -246,10 +246,12 @@ export default class StudioStore {
             // Convert PointableSet to array
             const markers = Object.entries(markerSet.byId)
               .map(([id, marker]) => marker)
-              .filter((marker) => marker !== undefined)
+              .filter((marker): marker is NonNullable<typeof marker> => marker !== undefined)
               .sort((a, b) => a.position - b.position)
 
-            sheet.sequence.markers = markers
+            if (sheet?.sequence) {
+              sheet.sequence.markers = markers
+            }
           }
         }
       }

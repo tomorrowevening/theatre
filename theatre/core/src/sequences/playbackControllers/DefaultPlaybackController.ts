@@ -1,11 +1,11 @@
 import type {
   IPlaybackDirection,
   IPlaybackRange,
-} from '@theatre/core/sequences/Sequence'
-import {defer} from '@theatre/shared/utils/defer'
-import noop from '@theatre/shared/utils/noop'
-import type {Prism, Pointer, Ticker} from '@theatre/dataverse'
-import {Atom} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-core/sequences/Sequence'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import noop from '@tomorrowevening/theatre-shared/utils/noop'
+import type {Prism, Pointer, Ticker} from '@tomorrowevening/theatre-dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
 
 export interface IPlaybackState {
   position: number

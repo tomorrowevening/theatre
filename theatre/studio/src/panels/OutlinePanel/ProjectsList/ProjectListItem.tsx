@@ -1,13 +1,13 @@
-import type Project from '@theatre/core/projects/Project'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
 import React, {useCallback} from 'react'
-import BaseItem from '@theatre/studio/panels/OutlinePanel/BaseItem'
-import SheetsList from '@theatre/studio/panels/OutlinePanel/SheetsList/SheetsList'
-import getStudio from '@theatre/studio/getStudio'
-import {usePrism} from '@theatre/react'
-import {getOutlineSelection} from '@theatre/studio/selectors'
-import {val} from '@theatre/dataverse'
+import BaseItem from '@tomorrowevening/theatre-studio/panels/OutlinePanel/BaseItem'
+import SheetsList from '@tomorrowevening/theatre-studio/panels/OutlinePanel/SheetsList/SheetsList'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import {usePrism} from '@tomorrowevening/theatre-react'
+import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import styled from 'styled-components'
-import {useCollapseStateInOutlinePanel} from '@theatre/studio/panels/OutlinePanel/outlinePanelUtils'
+import {useCollapseStateInOutlinePanel} from '@tomorrowevening/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 
 const ConflictNotice = styled.div`
   color: #ff6363;

@@ -1,4 +1,4 @@
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import type {MutableRefObject} from 'react'
 import {useContext} from 'react'
 import {useEffect} from 'react'
@@ -7,7 +7,7 @@ import TooltipWrapper from './TooltipWrapper'
 import {createPortal} from 'react-dom'
 import {useTooltipOpenState} from './TooltipContext'
 import {PortalContext} from 'reakit'
-import noop from '@theatre/shared/utils/noop'
+import noop from '@tomorrowevening/theatre-shared/utils/noop'
 
 export default function useTooltip<T extends HTMLElement>(
   opts: {

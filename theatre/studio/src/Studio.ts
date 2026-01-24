@@ -1,8 +1,8 @@
-import Scrub from '@theatre/studio/Scrub'
-import type {StudioHistoricState} from '@theatre/studio/store/types/historic'
-import UI from '@theatre/studio/UI/UI'
-import type {Pointer, Ticker} from '@theatre/dataverse'
-import {Atom, PointerProxy, pointerToPrism} from '@theatre/dataverse'
+import Scrub from '@tomorrowevening/theatre-studio/Scrub'
+import type {StudioHistoricState} from '@tomorrowevening/theatre-studio/store/types/historic'
+import UI from '@tomorrowevening/theatre-studio/UI/UI'
+import type {Pointer, Ticker} from '@tomorrowevening/theatre-dataverse'
+import {Atom, PointerProxy, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
 import type {
   CommitOrDiscard,
   ITransactionPrivateApi,
@@ -11,49 +11,49 @@ import StudioStore from './StudioStore/StudioStore'
 import type {IExtension, IStudio} from './TheatreStudio'
 import TheatreStudio from './TheatreStudio'
 import {nanoid} from 'nanoid/non-secure'
-import type Project from '@theatre/core/projects/Project'
-import type {CoreBits} from '@theatre/core/CoreBundle'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
-import type {IProject, ISheet} from '@theatre/core'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import type {CoreBits} from '@tomorrowevening/theatre-core/CoreBundle'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
+import type {IProject, ISheet} from '@tomorrowevening/theatre-core'
 import PaneManager from './PaneManager'
-import type * as _coreExports from '@theatre/core/coreExports'
-import type {OnDiskState} from '@theatre/core/projects/store/storeTypes'
-import type {Deferred} from '@theatre/shared/utils/defer'
-import {defer} from '@theatre/shared/utils/defer'
-import type {ProjectId} from '@theatre/shared/utils/ids'
+import type * as _coreExports from '@tomorrowevening/theatre-core/coreExports'
+import type {OnDiskState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
+import type {Deferred} from '@tomorrowevening/theatre-shared/utils/defer'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import type {ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
 import checkForUpdates from './checkForUpdates'
 import shallowEqual from 'shallowequal'
 import {createStore} from './IDBStorage'
-import {getAllPossibleAssetIDs} from '@theatre/shared/utils/assets'
+import {getAllPossibleAssetIDs} from '@tomorrowevening/theatre-shared/utils/assets'
 import {notify} from './notify'
-import type {RafDriverPrivateAPI} from '@theatre/core/rafDrivers'
+import type {RafDriverPrivateAPI} from '@tomorrowevening/theatre-core/rafDrivers'
 
 const DEFAULT_PERSISTENCE_KEY = 'theatre-0.4'
 
 export type CoreExports = typeof _coreExports
 
-const STUDIO_NOT_INITIALIZED_MESSAGE = `You seem to have imported '@theatre/studio' but haven't initialized it. You can initialize the studio by:
+const STUDIO_NOT_INITIALIZED_MESSAGE = `You seem to have imported '@tomorrowevening/theatre-studio' but haven't initialized it. You can initialize the studio by:
 \`\`\`
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 studio.initialize()
 \`\`\`
 
-* If you didn't mean to import '@theatre/studio', this means that your bundler is not tree-shaking it. This is most likely a bundler misconfiguration.
+* If you didn't mean to import '@tomorrowevening/theatre-studio', this means that your bundler is not tree-shaking it. This is most likely a bundler misconfiguration.
 
-* If you meant to import '@theatre/studio' without showing its UI, you can do that by running:
+* If you meant to import '@tomorrowevening/theatre-studio' without showing its UI, you can do that by running:
 
 \`\`\`
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 studio.initialize()
 studio.ui.hide()
 \`\`\`
 `
 
-const STUDIO_INITIALIZED_LATE_MSG = `You seem to have imported '@theatre/studio' but called \`studio.initialize()\` after some delay.
+const STUDIO_INITIALIZED_LATE_MSG = `You seem to have imported '@tomorrowevening/theatre-studio' but called \`studio.initialize()\` after some delay.
 Theatre.js projects remain in pending mode (won't play their sequences) until the studio is initialized, so you should place the \`studio.initialize()\` line right after the import line:
 
 \`\`\`
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 // ... and other imports
 
 studio.initialize()
@@ -79,7 +79,7 @@ export class Studio {
   readonly paneManager: PaneManager
 
   /**
-   * An atom holding the exports of '\@theatre/core'. Will be undefined if '\@theatre/core' is never imported
+   * An atom holding the exports of '\@tomorrowevening/theatre-core'. Will be undefined if '\@tomorrowevening/theatre-core' is never imported
    */
   private _coreAtom = new Atom<{core?: CoreExports}>({})
 
@@ -97,7 +97,7 @@ export class Studio {
   private _didWarnAboutNotInitializing = false
 
   /**
-   * This will be set as soon as `@theatre/core` registers itself on `@theatre/studio`
+   * This will be set as soon as `@tomorrowevening/theatre-core` registers itself on `@tomorrowevening/theatre-studio`
    */
   private _coreBits: CoreBits | undefined
 
@@ -139,7 +139,7 @@ export class Studio {
   async initialize(opts?: Parameters<IStudio['initialize']>[0]) {
     if (!this._coreBits) {
       throw new Error(
-        `You seem to have imported \`@theatre/studio\` without importing \`@theatre/core\`. Make sure to include an import of \`@theatre/core\` before calling \`studio.initializer()\`.`,
+        `You seem to have imported \`@tomorrowevening/theatre-studio\` without importing \`@tomorrowevening/theatre-core\`. Make sure to include an import of \`@tomorrowevening/theatre-core\` before calling \`studio.initializer()\`.`,
       )
     }
 
@@ -180,7 +180,7 @@ export class Studio {
       if (!rafDriverPrivateApi) {
         // TODO - need to educate the user about this edge case
         throw new Error(
-          'parameter `rafDriver` in `studio.initialize({__experimental_rafDriver})` seems to come from a different version of `@theatre/core` than the version that is attached to `@theatre/studio`',
+          'parameter `rafDriver` in `studio.initialize({__experimental_rafDriver})` seems to come from a different version of `@tomorrowevening/theatre-core` than the version that is attached to `@tomorrowevening/theatre-studio`',
         )
       }
       this._rafDriver = rafDriverPrivateApi

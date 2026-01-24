@@ -1,6 +1,6 @@
-import type {ISheet, ISheetObject} from '@theatre/core'
-import {types} from '@theatre/core'
-import studio from '@theatre/studio'
+import type {ISheet, ISheetObject} from '@tomorrowevening/theatre-core'
+import {types} from '@tomorrowevening/theatre-core'
+import studio from '@tomorrowevening/theatre-studio'
 
 let sheet: ISheet | undefined = undefined
 let sheetObject: ISheetObject<typeof editorSheetObjectConfig> | undefined =

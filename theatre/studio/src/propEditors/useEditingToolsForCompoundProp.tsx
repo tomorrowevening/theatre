@@ -1,32 +1,32 @@
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import getStudio from '@theatre/studio/getStudio'
-import type {IContextMenuItem} from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import getDeep from '@theatre/shared/utils/getDeep'
-import {usePrism} from '@theatre/react'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import getDeep from '@tomorrowevening/theatre-shared/utils/getDeep'
+import {usePrism} from '@tomorrowevening/theatre-react'
 import type {
   $IntentionalAny,
   SerializablePrimitive,
-} from '@theatre/shared/utils/types'
-import {getPointerParts, prism, val} from '@theatre/dataverse'
-import type {Pointer} from '@theatre/dataverse'
+} from '@tomorrowevening/theatre-shared/utils/types'
+import {getPointerParts, prism, val} from '@tomorrowevening/theatre-dataverse'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import get from 'lodash-es/get'
 import React from 'react'
 import DefaultOrStaticValueIndicator from './DefaultValueIndicator'
-import type {PropTypeConfig_Compound} from '@theatre/core/propTypes'
+import type {PropTypeConfig_Compound} from '@tomorrowevening/theatre-core/propTypes'
 import {
   compoundHasSimpleDescendants,
   isPropConfigComposite,
   iteratePropType,
-} from '@theatre/shared/propTypes/utils'
-import type {SequenceTrackId} from '@theatre/shared/utils/ids'
-import {createStudioSheetItemKey} from '@theatre/shared/utils/ids'
-import type {IPropPathToTrackIdTree} from '@theatre/core/sheetObjects/SheetObjectTemplate'
-import pointerDeep from '@theatre/shared/utils/pointerDeep'
+} from '@tomorrowevening/theatre-shared/propTypes/utils'
+import type {SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {IPropPathToTrackIdTree} from '@tomorrowevening/theatre-core/sheetObjects/SheetObjectTemplate'
+import pointerDeep from '@tomorrowevening/theatre-shared/utils/pointerDeep'
 import type {NearbyKeyframesControls} from './NextPrevKeyframeCursors'
 import NextPrevKeyframeCursors from './NextPrevKeyframeCursors'
 import {getNearbyKeyframesOfTrack} from './getNearbyKeyframesOfTrack'
-import type {KeyframeWithTrack} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {emptyObject} from '@theatre/shared/utils'
+import type {KeyframeWithTrack} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {emptyObject} from '@tomorrowevening/theatre-shared/utils'
 
 interface CommonStuff {
   beingScrubbed: boolean

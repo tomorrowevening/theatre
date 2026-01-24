@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
 import type {CSSProperties} from 'react'
-import {types} from '@theatre/core'
-import type {IProject} from '@theatre/core'
+import {types} from '@tomorrowevening/theatre-core'
+import type {IProject} from '@tomorrowevening/theatre-core'
 
 // Box element
 export const BoxSize = 100

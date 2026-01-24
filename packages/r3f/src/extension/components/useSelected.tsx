@@ -3,9 +3,9 @@ import {useLayoutEffect, useRef, useState} from 'react'
 import {
   __private_allRegisteredObjects as allRegisteredObjects,
   __private_makeStoreKey as makeStoreKey,
-} from '@theatre/r3f'
-import studio from '@theatre/studio'
-import type {ISheetObject} from '@theatre/core'
+} from '@tomorrowevening/theatre-r3f'
+import studio from '@tomorrowevening/theatre-studio'
+import type {ISheetObject} from '@tomorrowevening/theatre-core'
 import type {$IntentionalAny} from '../../types'
 
 export function useSelected(): undefined | string {

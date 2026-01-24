@@ -1,12 +1,12 @@
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type {StudioSheetItemKey} from '@theatre/shared/utils/ids'
-import type {VoidFn} from '@theatre/shared/utils/types'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type {StudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import {transparentize} from 'polished'
 import React from 'react'
 import styled, {css} from 'styled-components'
-import {PresenceFlag} from '@theatre/studio/uiComponents/usePresence'
-import usePresence from '@theatre/studio/uiComponents/usePresence'
+import {PresenceFlag} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
+import usePresence from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 
 export type NearbyKeyframesControls = {
   prev?: Pick<Keyframe, 'position'> & {

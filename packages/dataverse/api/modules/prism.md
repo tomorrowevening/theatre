@@ -1,4 +1,4 @@
-[@theatre/dataverse](../README.md) / prism
+[@tomorrowevening/theatre-dataverse](../README.md) / prism
 
 # Namespace: prism
 
@@ -70,7 +70,7 @@ This is useful to make sure your code is running inside a `prism()` call.
 **`Example`**
 
 ```ts
-import {prism} from '@theatre/dataverse'
+import {prism} from '@tomorrowevening/theatre-dataverse'
 
 function onlyUsefulInAPrism() {
   prism.ensurePrism()

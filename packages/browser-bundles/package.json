@@ -1,5 +1,5 @@
 {
-  "name": "@theatre/browser-bundles",
+  "name": "@tomorrowevening/theatre-browser-bundles",
   "version": "0.7.1",
   "license": "SEE LICENSE IN LICENSE",
   "author": {
@@ -28,7 +28,7 @@
     "typescript": "5.1.6"
   },
   "peerDependencies": {
-    "@theatre/core": "*",
-    "@theatre/studio": "*"
+    "@tomorrowevening/theatre-core": "*",
+    "@tomorrowevening/theatre-studio": "*"
   }
 }

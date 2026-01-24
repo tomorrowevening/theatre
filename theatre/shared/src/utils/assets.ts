@@ -1,5 +1,5 @@
-import type Project from '@theatre/core/projects/Project'
-import {val} from '@theatre/dataverse'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import forEachPropDeep from './forEachDeep'
 import type {$IntentionalAny} from './types'
 

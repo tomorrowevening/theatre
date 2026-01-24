@@ -1,17 +1,17 @@
-import {privateAPI, setPrivateAPI} from '@theatre/core/privateAPIs'
-import Project from '@theatre/core/projects/Project'
-import type {ISheet} from '@theatre/core/sheets/TheatreSheet'
+import {privateAPI, setPrivateAPI} from '@tomorrowevening/theatre-core/privateAPIs'
+import Project from '@tomorrowevening/theatre-core/projects/Project'
+import type {ISheet} from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
 
-import type {ProjectAddress} from '@theatre/shared/utils/addresses'
-import type {Asset, File} from '@theatre/shared/utils/assets'
+import type {ProjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {Asset, File} from '@tomorrowevening/theatre-shared/utils/assets'
 import type {
   ProjectId,
   SheetId,
   SheetInstanceId,
-} from '@theatre/shared/utils/ids'
-import {validateInstanceId} from '@theatre/shared/utils/sanitizers'
-import {validateAndSanitiseSlashedPathOrThrow} from '@theatre/shared/utils/slashedPaths'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import {validateInstanceId} from '@tomorrowevening/theatre-shared/utils/sanitizers'
+import {validateAndSanitiseSlashedPathOrThrow} from '@tomorrowevening/theatre-shared/utils/slashedPaths'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 
 /**
  * A project's config object (currently the only point of configuration is the project's state)
@@ -47,10 +47,10 @@ export type IProjectConfig = {
 export interface IProject {
   readonly type: 'Theatre_Project_PublicAPI'
   /**
-   * If `@theatre/studio` is used, this promise would resolve when studio has loaded
+   * If `@tomorrowevening/theatre-studio` is used, this promise would resolve when studio has loaded
    * the state of the project into memory.
    *
-   * If `@theatre/studio` is not used, this promise is already resolved.
+   * If `@tomorrowevening/theatre-studio` is not used, this promise is already resolved.
    */
   readonly ready: Promise<void>
   /**

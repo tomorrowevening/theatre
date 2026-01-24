@@ -1,4 +1,4 @@
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 import {useEffect, useMemo, useRef} from 'react'
 
 let idCounter = 0

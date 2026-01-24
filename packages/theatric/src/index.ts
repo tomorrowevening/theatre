@@ -3,12 +3,12 @@ import type {
   IProjectConfig,
   ISheetObject,
   UnknownShorthandCompoundProps,
-} from '@theatre/core'
-import {val} from '@theatre/core'
-import {getProject} from '@theatre/core'
-import type {Pointer} from '@theatre/dataverse'
-import {isPointer} from '@theatre/dataverse'
-import studio from '@theatre/studio'
+} from '@tomorrowevening/theatre-core'
+import {val} from '@tomorrowevening/theatre-core'
+import {getProject} from '@tomorrowevening/theatre-core'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {isPointer} from '@tomorrowevening/theatre-dataverse'
+import studio from '@tomorrowevening/theatre-studio'
 import isEqualWith from 'lodash-es/isEqualWith'
 import isEqual from 'lodash-es/isEqual'
 import {useEffect, useMemo, useState, useRef} from 'react'
@@ -314,7 +314,7 @@ export function useControls<Config extends ControlsAndButtons>(
   return {...values, ...$setAndGet}
 }
 
-export {types} from '@theatre/core'
+export {types} from '@tomorrowevening/theatre-core'
 
 export const button = (onClick: Button['onClick']) => {
   return {

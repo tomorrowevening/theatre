@@ -1,32 +1,32 @@
 import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
 
-import getStudio from '@theatre/studio/getStudio'
-import type {CommitOrDiscard} from '@theatre/studio/StudioStore/StudioStore'
-import useContextMenu from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
-import type {UseDragOpts} from '@theatre/studio/uiComponents/useDrag'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import {val} from '@theatre/dataverse'
-import {useLockFrameStampPosition} from '@theatre/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
-import {useCssCursorLock} from '@theatre/studio/uiComponents/PointerEventsHandler'
-import DopeSnap from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import type {UseDragOpts} from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import {val} from '@tomorrowevening/theatre-dataverse'
+import {useLockFrameStampPosition} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+import {useCssCursorLock} from '@tomorrowevening/theatre-studio/uiComponents/PointerEventsHandler'
+import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 
 import type {ISingleKeyframeEditorProps} from './SingleKeyframeEditor'
-import {absoluteDims} from '@theatre/studio/utils/absoluteDims'
-import {useLogger} from '@theatre/studio/uiComponents/useLogger'
-import type {ILogger} from '@theatre/shared/logger'
-import {copyableKeyframesFromSelection} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/selections'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {absoluteDims} from '@tomorrowevening/theatre-studio/utils/absoluteDims'
+import {useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
+import type {ILogger} from '@tomorrowevening/theatre-shared/logger'
+import {copyableKeyframesFromSelection} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import {
   collectKeyframeSnapPositions,
   snapToNone,
   snapToSome,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 import {useKeyframeInlineEditorPopover} from './useSingleKeyframeInlineEditorPopover'
 import usePresence, {
   PresenceFlag,
-} from '@theatre/studio/uiComponents/usePresence'
+} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 
 export const DOT_SIZE_PX = 6
 const DOT_HOVER_SIZE_PX = DOT_SIZE_PX + 2

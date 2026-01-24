@@ -1,10 +1,10 @@
 import type {ElementType} from 'react'
 import React from 'react'
 import Item from './Item'
-import type {$FixMe} from '@theatre/shared/utils/types'
+import type {$FixMe} from '@tomorrowevening/theatre-shared/utils/types'
 import styled from 'styled-components'
 import {transparentize} from 'polished'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 
 const minWidth = 190
 

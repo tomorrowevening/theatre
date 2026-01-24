@@ -1,5 +1,5 @@
-import type CoreBundle from '@theatre/core/CoreBundle'
-import type {CoreBits} from '@theatre/core/CoreBundle'
+import type CoreBundle from '@tomorrowevening/theatre-core/CoreBundle'
+import type {CoreBits} from '@tomorrowevening/theatre-core/CoreBundle'
 import type {Studio} from './Studio'
 
 export default class StudioBundle {

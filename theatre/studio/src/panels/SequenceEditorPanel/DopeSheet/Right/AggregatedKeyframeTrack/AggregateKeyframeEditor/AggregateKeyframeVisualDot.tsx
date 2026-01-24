@@ -1,9 +1,9 @@
 import React from 'react'
-import {AggregateKeyframePositionIsSelected} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/AggregatedKeyframeTrack/AggregatedKeyframeTrack'
-import {PresenceFlag} from '@theatre/studio/uiComponents/usePresence'
+import {AggregateKeyframePositionIsSelected} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/AggregatedKeyframeTrack/AggregatedKeyframeTrack'
+import {PresenceFlag} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 import styled from 'styled-components'
-import {absoluteDims} from '@theatre/studio/utils/absoluteDims'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {absoluteDims} from '@tomorrowevening/theatre-studio/utils/absoluteDims'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 
 const DOT_SIZE_PX = 16
 const DOT_HOVER_SIZE_PX = DOT_SIZE_PX + 2

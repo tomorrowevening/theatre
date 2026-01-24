@@ -1,7 +1,7 @@
 import type {FC} from 'react'
 import React from 'react'
 import styled from 'styled-components'
-import {Outline} from '@theatre/studio/uiComponents/icons'
+import {Outline} from '@tomorrowevening/theatre-studio/uiComponents/icons'
 
 const Container = styled.div`
   padding: 16px;

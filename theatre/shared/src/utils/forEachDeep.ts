@@ -1,7 +1,7 @@
 import type {
   PropTypeConfig_AllSimples,
   PropTypeConfig_Compound,
-} from '@theatre/core/propTypes'
+} from '@tomorrowevening/theatre-core/propTypes'
 import type {PathToProp} from './addresses'
 import type {$IntentionalAny} from './types'
 

@@ -91,7 +91,7 @@
     // "overrideTsconfig": {
     //   "compilerOptions": {
     //     "paths": {
-    //       // "@theatre/shared/*": ["./theatre/shared/src/*"]
+    //       // "@tomorrowevening/theatre-shared/*": ["./theatre/shared/src/*"]
     //     }
     //   }
     // }

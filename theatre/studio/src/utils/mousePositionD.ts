@@ -1,4 +1,4 @@
-import {prism} from '@theatre/dataverse'
+import {prism} from '@tomorrowevening/theatre-dataverse'
 
 /**
  * A prism that holds the current mouse position.

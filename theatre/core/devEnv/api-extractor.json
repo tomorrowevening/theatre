@@ -19,7 +19,7 @@
   // "extends": "my-package/include/api-extractor-base.json"
 
   "mainEntryPointFilePath": "../../.temp/declarations/core/src/index.d.ts",
-  "bundledPackages": ["@theatre/core", "@theatre/shared"],
+  "bundledPackages": ["@tomorrowevening/theatre-core", "@tomorrowevening/theatre-shared"],
 
   /**
    * Determines the "<projectFolder>" token that can be used with other config file settings.  The project folder

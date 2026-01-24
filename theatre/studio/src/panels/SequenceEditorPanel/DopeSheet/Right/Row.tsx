@@ -1,4 +1,4 @@
-import type {SequenceEditorTree_Row} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorTree_Row} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import React from 'react'
 import styled from 'styled-components'
 

@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import type {PropTypeConfig_AllSimples} from '@theatre/core/propTypes'
-import type {ISimplePropEditorReactProps} from '@theatre/studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
-import {simplePropEditorByPropType} from '@theatre/studio/propEditors/simpleEditors/simplePropEditorByPropType'
+import type {PropTypeConfig_AllSimples} from '@tomorrowevening/theatre-core/propTypes'
+import type {ISimplePropEditorReactProps} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
+import {simplePropEditorByPropType} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/simplePropEditorByPropType'
 import type {
   EditingOptionsTree,
   PrimitivePropEditingOptions,
 } from './useSingleKeyframeInlineEditorPopover'
 import last from 'lodash-es/last'
 import {useTempTransactionEditingTools} from './useTempTransactionEditingTools'
-import {valueInProp} from '@theatre/shared/propTypes/utils'
+import {valueInProp} from '@tomorrowevening/theatre-shared/propTypes/utils'
 
 const SingleKeyframePropEditorContainer = styled.div`
   display: flex;

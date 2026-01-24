@@ -1,13 +1,13 @@
 import type {
   TrackData,
   Keyframe,
-} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import {createStudioSheetItemKey} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   KeyframeWithTrack,
   TrackWithId,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 
 const cache = new WeakMap<
   TrackData,

@@ -1,4 +1,4 @@
-import {Ticker} from '@theatre/dataverse'
+import {Ticker} from '@tomorrowevening/theatre-dataverse'
 import {setPrivateAPI} from './privateAPIs'
 
 export interface IRafDriver {
@@ -44,7 +44,7 @@ let lastDriverId = 0
  * Here is how you'd create a custom `rafDriver`:
  *
  * ```js
- * import { createRafDriver } from '@theatre/core'
+ * import { createRafDriver } from '@tomorrowevening/theatre-core'
  *
  * const rafDriver = createRafDriver({ name: 'a custom 5fps raf driver' })
  *
@@ -56,7 +56,7 @@ let lastDriverId = 0
  * Now, any time you set up an `onChange()` listener, pass your custom `rafDriver`:
  *
  * ```js
- * import { onChange } from '@theatre/core'
+ * import { onChange } from '@tomorrowevening/theatre-core'
  *
  * onChange(
  *   // let's say object is a Theatre object, the one returned from calling `sheet.object()`
@@ -87,7 +87,7 @@ let lastDriverId = 0
  * `rafDriver`s can optionally provide a `start/stop` callback. Theatre will call `start()` when it actually has computations scheduled, and will call `stop` if there is nothing to update after a few ticks:
  *
  * ```js
- * import { createRafDriver } from '@theatre/core'
+ * import { createRafDriver } from '@tomorrowevening/theatre-core'
  * import type { IRafDriver } from '@theare/core'
  *
  * function createBasicRafDriver(): IRafDriver {

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import studio from '@theatre/studio'
-import extension from '@theatre/r3f/dist/extension'
+import studio from '@tomorrowevening/theatre-studio'
+import extension from '@tomorrowevening/theatre-r3f/dist/extension'
 import App from './App/App'
 
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {

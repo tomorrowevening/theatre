@@ -8,7 +8,7 @@
 ## 0.4.4
 
 * New features
-  * Implemented [@theatre/browser-bundles](https://www.npmjs.com/package/@theatre/browser-bundles), a custom build of Theatre.js that can be used via a `<script>` tag and a CDN. This should enable Theatre.js to be used in CodePen or projects that don't use a bundler.
+  * Implemented [@tomorrowevening/theatre-browser-bundles](https://www.npmjs.com/package/@tomorrowevening/theatre-browser-bundles), a custom build of Theatre.js that can be used via a `<script>` tag and a CDN. This should enable Theatre.js to be used in CodePen or projects that don't use a bundler.
 
 ## 0.4.3
 

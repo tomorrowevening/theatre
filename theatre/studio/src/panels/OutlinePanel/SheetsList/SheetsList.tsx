@@ -1,8 +1,8 @@
-import {getRegisteredSheetIds} from '@theatre/studio/selectors'
-import {usePrism} from '@theatre/react'
+import {getRegisteredSheetIds} from '@tomorrowevening/theatre-studio/selectors'
+import {usePrism} from '@tomorrowevening/theatre-react'
 import React from 'react'
 import {SheetItem} from './SheetItem'
-import type Project from '@theatre/core/projects/Project'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
 
 const SheetsList: React.FC<{
   project: Project

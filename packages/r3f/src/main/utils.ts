@@ -1,5 +1,5 @@
 import {editorStore} from './store'
-import type {ISheetObject} from '@theatre/core'
+import type {ISheetObject} from '@tomorrowevening/theatre-core'
 
 export const refreshSnapshot = editorStore.getState().createSnapshot
 

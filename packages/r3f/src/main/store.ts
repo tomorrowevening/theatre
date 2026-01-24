@@ -2,7 +2,7 @@ import type {StateCreator} from 'zustand'
 import create from 'zustand/vanilla'
 import type {Object3D, Scene, WebGLRenderer} from 'three'
 import {Group} from 'three'
-import type {ISheetObject} from '@theatre/core'
+import type {ISheetObject} from '@tomorrowevening/theatre-core'
 import type {ObjectConfig} from './editableFactoryConfigUtils'
 
 export type TransformControlsMode = 'translate' | 'rotate' | 'scale'

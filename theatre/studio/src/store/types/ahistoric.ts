@@ -1,9 +1,9 @@
-import type {ProjectState} from '@theatre/core/projects/store/storeTypes'
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
-import type {ProjectId, SheetId} from '@theatre/shared/utils/ids'
-import type {IRange, StrictRecord} from '@theatre/shared/utils/types'
-import type {PointableSet} from '@theatre/shared/utils/PointableSet'
-import type {StudioSheetItemKey} from '@theatre/shared/utils/ids'
+import type {ProjectState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
+import type {ProjectId, SheetId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {IRange, StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
+import type {PointableSet} from '@tomorrowevening/theatre-shared/utils/PointableSet'
+import type {StudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export type UpdateCheckerResponse =
   | {hasUpdates: true; newVersion: string; releasePage: string}

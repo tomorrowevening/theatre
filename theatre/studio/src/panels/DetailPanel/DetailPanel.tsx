@@ -1,5 +1,5 @@
-import {getOutlineSelection} from '@theatre/studio/selectors'
-import {usePrism, useVal} from '@theatre/react'
+import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
 import React, {
   createContext,
   useContext,
@@ -8,21 +8,21 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import {isProject, isSheetObject} from '@theatre/shared/instanceTypes'
+import {isProject, isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
 import {
   panelZIndexes,
   TitleBar_Piece,
   TitleBar_Punctuation,
-} from '@theatre/studio/panels/BasePanel/common'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import ObjectDetails from './ObjectDetails'
 import ProjectDetails from './ProjectDetails'
-import getStudio from '@theatre/studio/getStudio'
-import useHotspot from '@theatre/studio/uiComponents/useHotspot'
-import {Atom, prism, val} from '@theatre/dataverse'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import useHotspot from '@tomorrowevening/theatre-studio/uiComponents/useHotspot'
+import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
 import EmptyState from './EmptyState'
-import useLockSet from '@theatre/studio/uiComponents/useLockSet'
-import {usePresenceListenersOnRootElement} from '@theatre/studio/uiComponents/usePresence'
+import useLockSet from '@tomorrowevening/theatre-studio/uiComponents/useLockSet'
+import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 
 const headerHeight = `32px`
 

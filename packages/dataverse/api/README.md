@@ -1,6 +1,6 @@
-@theatre/dataverse
+@tomorrowevening/theatre-dataverse
 
-# @theatre/dataverse
+# @tomorrowevening/theatre-dataverse
 
 The animation-optimized FRP library powering the internals of Theatre.js.
 

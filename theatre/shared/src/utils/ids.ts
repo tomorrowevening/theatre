@@ -1,9 +1,9 @@
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 import type {PathToProp} from './addresses'
 import stableValueHash from './stableJsonStringify'
 import {nanoid as generateNonSecure} from 'nanoid/non-secure'
 import type {Nominal} from './Nominal'
-import type Sheet from '@theatre/core/sheets/Sheet'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
 
 export type KeyframeId = Nominal<'KeyframeId'>
 

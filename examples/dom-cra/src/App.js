@@ -1,4 +1,4 @@
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 import {useLayoutEffect, useMemo, useState} from 'react'
 import useDrag from './useDrag'
 

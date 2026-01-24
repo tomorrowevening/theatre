@@ -1,15 +1,15 @@
 import {transparentize} from 'polished'
 import React from 'react'
 import styled from 'styled-components'
-import getStudio from '@theatre/studio/getStudio'
-import type {PathToProp} from '@theatre/shared/utils/addresses'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type {PropTypeConfig} from '@theatre/core/propTypes'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {PathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type {PropTypeConfig} from '@tomorrowevening/theatre-core/propTypes'
 import {nextPrevCursorsTheme} from './NextPrevKeyframeCursors'
 import {
   isPropConfigComposite,
   iteratePropType,
-} from '@theatre/shared/propTypes/utils'
+} from '@tomorrowevening/theatre-shared/propTypes/utils'
 
 const theme = {
   defaultState: {

@@ -1,9 +1,9 @@
-import actionCreator from '@theatre/studio/utils/redux/actionCreator'
+import actionCreator from '@tomorrowevening/theatre-studio/utils/redux/actionCreator'
 import type {
   $FixMe,
   $IntentionalAny,
   ReduxReducer,
-} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-shared/utils/types'
 import jiff from 'jiff'
 import patch from 'json-touch-patch'
 import last from 'lodash-es/last'

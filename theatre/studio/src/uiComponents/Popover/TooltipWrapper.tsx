@@ -1,12 +1,12 @@
 import React from 'react'
 import {cloneElement, useLayoutEffect, useState} from 'react'
 import useWindowSize from 'react-use/esm/useWindowSize'
-import useBoundingClientRect from '@theatre/studio/uiComponents/useBoundingClientRect'
+import useBoundingClientRect from '@tomorrowevening/theatre-studio/uiComponents/useBoundingClientRect'
 import ArrowContext from './ArrowContext'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import useOnClickOutside from '@theatre/studio/uiComponents/useOnClickOutside'
-import onPointerOutside from '@theatre/studio/uiComponents/onPointerOutside'
-import noop from '@theatre/shared/utils/noop'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import useOnClickOutside from '@tomorrowevening/theatre-studio/uiComponents/useOnClickOutside'
+import onPointerOutside from '@tomorrowevening/theatre-studio/uiComponents/onPointerOutside'
+import noop from '@tomorrowevening/theatre-shared/utils/noop'
 import {clamp} from 'lodash-es'
 
 const minimumDistanceOfArrowToEdgeOfPopover = 8

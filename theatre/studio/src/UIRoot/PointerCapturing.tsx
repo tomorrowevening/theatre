@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useMemo} from 'react'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
-import {useLogger} from '@theatre/studio/uiComponents/useLogger'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import {useLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
 
 /** See {@link PointerCapturing} */
 export type CapturedPointer = {

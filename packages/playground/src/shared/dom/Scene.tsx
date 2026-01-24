@@ -1,11 +1,11 @@
-import studio from '@theatre/studio'
+import studio from '@tomorrowevening/theatre-studio'
 import type {UseDragOpts} from './useDrag'
 import useDrag from './useDrag'
 import React, {useLayoutEffect, useMemo, useRef, useState} from 'react'
-import type {IProject, ISheet} from '@theatre/core'
-import {onChange, types} from '@theatre/core'
-import type {IScrub, IStudio} from '@theatre/studio'
-import type {ShorthandCompoundPropsToInitialValue} from '@theatre/core/propTypes/internals'
+import type {IProject, ISheet} from '@tomorrowevening/theatre-core'
+import {onChange, types} from '@tomorrowevening/theatre-core'
+import type {IScrub, IStudio} from '@tomorrowevening/theatre-studio'
+import type {ShorthandCompoundPropsToInitialValue} from '@tomorrowevening/theatre-core/propTypes/internals'
 
 const textInterpolate = (left: string, right: string, progression: number) => {
   if (!left || right.startsWith(left)) {

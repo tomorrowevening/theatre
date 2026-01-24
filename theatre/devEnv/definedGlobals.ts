@@ -7,7 +7,7 @@ export const definedGlobals = {
     require('../studio/package.json').version,
   ),
   // json-touch-patch (an unmaintained package) reads this value. We patch it to just 'Set', becauce
-  // this is only used in `@theatre/studio`, which only supports evergreen browsers
+  // this is only used in `@tomorrowevening/theatre-studio`, which only supports evergreen browsers
   'global.Set': 'Set',
   'process.env.BUILT_FOR_PLAYGROUND': JSON.stringify('false'),
 }

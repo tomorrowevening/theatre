@@ -1,4 +1,4 @@
-[@theatre/dataverse](../README.md) / Prism
+[@tomorrowevening/theatre-dataverse](../README.md) / Prism
 
 # Interface: Prism<V\>
 

@@ -13,12 +13,12 @@
     "build": "tsc --build ./tsconfig.json"
   },
   "devDependencies": {
-    "@theatre/core": "workspace:*",
-    "@theatre/core-0.5.0": "npm:@theatre/core@0.5.0",
-    "@theatre/dataverse-0.5.0": "npm:@theatre/dataverse@0.5.0",
-    "@theatre/r3f": "workspace:*",
-    "@theatre/studio": "workspace:*",
-    "@theatre/studio-0.5.0": "npm:@theatre/studio@0.5.0",
+    "@tomorrowevening/theatre-core-0.5.0": "npm:@tomorrowevening/theatre-core@0.5.0",
+    "@tomorrowevening/theatre-dataverse-0.5.0": "npm:@tomorrowevening/theatre-dataverse@0.5.0",
+    "@tomorrowevening/theatre-studio-0.5.0": "npm:@tomorrowevening/theatre-studio@0.5.0",
+    "@tomorrowevening/theatre-core": "workspace:*",
+    "@tomorrowevening/theatre-r3f": "workspace:*",
+    "@tomorrowevening/theatre-studio": "workspace:*",
     "@types/jest": "^29.2.3",
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.11.9",

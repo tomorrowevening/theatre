@@ -5697,8 +5697,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@examples/basic-dom@workspace:examples/basic-dom"
   dependencies:
-    "@theatre/core": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     "@types/react": ^17.0.19
     "@types/react-dom": ^17.0.9
     parcel-bundler: ^1.12.5
@@ -5715,8 +5715,8 @@ __metadata:
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
-    "@theatre/core": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     react: ^17.0.2
     react-dom: ^17.0.2
     react-scripts: 4.0.3
@@ -5732,9 +5732,9 @@ __metadata:
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
-    "@theatre/core": "workspace:*"
-    "@theatre/r3f": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-r3f": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     react-scripts: ^5.0.1
     three: ^0.130.1
     web-vitals: ^1.0.1
@@ -7815,23 +7815,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@theatre/browser-bundles@workspace:packages/browser-bundles":
+"@tomorrowevening/theatre-browser-bundles@workspace:packages/browser-bundles":
   version: 0.0.0-use.local
-  resolution: "@theatre/browser-bundles@workspace:packages/browser-bundles"
+  resolution: "@tomorrowevening/theatre-browser-bundles@workspace:packages/browser-bundles"
   dependencies:
     esbuild: ^0.12.15
     esbuild-register: ^2.5.0
     npm-run-all: ^4.1.5
     typescript: 5.1.6
   peerDependencies:
-    "@theatre/core": "*"
-    "@theatre/studio": "*"
+    "@tomorrowevening/theatre-core": "*"
+    "@tomorrowevening/theatre-studio": "*"
   languageName: unknown
   linkType: soft
 
-"@theatre/compat-tests@workspace:compat-tests":
+"@tomorrowevening/theatre-compat-tests@workspace:compat-tests":
   version: 0.0.0-use.local
-  resolution: "@theatre/compat-tests@workspace:compat-tests"
+  resolution: "@tomorrowevening/theatre-compat-tests@workspace:compat-tests"
   dependencies:
     "@cspotcode/zx": ^6.1.2
     "@verdaccio/types": ^10.8.0
@@ -7846,35 +7846,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@theatre/core-0.5.0@npm:@theatre/core@0.5.0":
+"@tomorrowevening/theatre-core-0.5.0@npm:@tomorrowevening/theatre-core@0.5.0":
   version: 0.5.0
-  resolution: "@theatre/core@npm:0.5.0"
+  resolution: "@tomorrowevening/theatre-core@npm:0.5.0"
   dependencies:
-    "@theatre/dataverse": 0.5.0
+    "@tomorrowevening/theatre-dataverse": 0.5.0
   checksum: a2ea19d31f2574b5222f4dca5dc5f75c5a63f7d9b2ef27b185698b6617193bac6aaf2780215e32aad92bf208791703040a3f3c0cf51017f640a36d44d2dfab70
   languageName: node
   linkType: hard
 
-"@theatre/core@workspace:*, @theatre/core@workspace:theatre/core":
-  version: 0.0.0-use.local
-  resolution: "@theatre/core@workspace:theatre/core"
-  dependencies:
-    "@theatre/dataverse": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@theatre/dataverse-0.5.0@npm:@theatre/dataverse@0.5.0, @theatre/dataverse@npm:0.5.0":
+"@tomorrowevening/theatre-dataverse-0.5.0@npm:@tomorrowevening/theatre-dataverse@0.5.0, @tomorrowevening/theatre-dataverse@npm:0.5.0":
   version: 0.5.0
-  resolution: "@theatre/dataverse@npm:0.5.0"
+  resolution: "@tomorrowevening/theatre-dataverse@npm:0.5.0"
   dependencies:
     lodash-es: ^4.17.21
   checksum: a7dcd31539ecaaabb054f298f06340cf5e1958cacb97d36ae9ac92c36d43366ac0cb0a2e48502e4fd870947489f764179d7f99f4d6ca1f19920f360393c75781
   languageName: node
   linkType: hard
 
-"@theatre/dataverse-experiments@workspace:packages/dataverse-experiments":
+"@tomorrowevening/theatre-dataverse-experiments@workspace:packages/dataverse-experiments":
   version: 0.0.0-use.local
-  resolution: "@theatre/dataverse-experiments@workspace:packages/dataverse-experiments"
+  resolution: "@tomorrowevening/theatre-dataverse-experiments@workspace:packages/dataverse-experiments"
   dependencies:
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
@@ -7885,9 +7877,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@theatre/dataverse@workspace:*, @theatre/dataverse@workspace:packages/dataverse":
+"@tomorrowevening/theatre-studio-0.5.0@npm:@tomorrowevening/theatre-studio@0.5.0":
+  version: 0.5.0
+  resolution: "@tomorrowevening/theatre-studio@npm:0.5.0"
+  dependencies:
+    "@tomorrowevening/theatre-dataverse": 0.5.0
+  peerDependencies:
+    "@tomorrowevening/theatre-core": "*"
+  checksum: a7c11054df8094b375cdfaba93952bf14cfe5a51e9e789a248c45012d7680a10392062fd359d9353be469b2a4402dad3942f7e6a3797a04bc8dc651815e3318e
+  languageName: node
+  linkType: hard
+
+"@tomorrowevening/theatre-core@workspace:*, @tomorrowevening/theatre-core@workspace:theatre/core":
   version: 0.0.0-use.local
-  resolution: "@theatre/dataverse@workspace:packages/dataverse"
+  resolution: "@tomorrowevening/theatre-core@workspace:theatre/core"
+  dependencies:
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@tomorrowevening/theatre-dataverse@workspace:*, @tomorrowevening/theatre-dataverse@workspace:packages/dataverse":
+  version: 0.0.0-use.local
+  resolution: "@tomorrowevening/theatre-dataverse@workspace:packages/dataverse"
   dependencies:
     "@microsoft/api-extractor": ^7.36.4
     "@types/jest": ^26.0.23
@@ -7903,14 +7914,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@theatre/r3f@workspace:*, @theatre/r3f@workspace:packages/r3f":
+"@tomorrowevening/theatre-r3f@workspace:*, @tomorrowevening/theatre-r3f@workspace:packages/r3f":
   version: 0.0.0-use.local
-  resolution: "@theatre/r3f@workspace:packages/r3f"
+  resolution: "@tomorrowevening/theatre-r3f@workspace:packages/r3f"
   dependencies:
     "@react-three/drei": ^9.80.1
     "@react-three/fiber": ^8.13.6
-    "@theatre/dataverse": "workspace:*"
-    "@theatre/react": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
+    "@tomorrowevening/theatre-react": "workspace:*"
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
     "@types/node": ^15.6.2
@@ -7937,20 +7948,20 @@ __metadata:
     zustand: ^3.5.1
   peerDependencies:
     "@react-three/fiber": ^8.13.6
-    "@theatre/core": "*"
-    "@theatre/studio": "*"
+    "@tomorrowevening/theatre-core": "*"
+    "@tomorrowevening/theatre-studio": "*"
     react: ">=17.0.2"
     react-dom: ">=17.0.2"
     three: ">=0.155.0"
   languageName: unknown
   linkType: soft
 
-"@theatre/react@workspace:*, @theatre/react@workspace:packages/react":
+"@tomorrowevening/theatre-react@workspace:*, @tomorrowevening/theatre-react@workspace:packages/react":
   version: 0.0.0-use.local
-  resolution: "@theatre/react@workspace:packages/react"
+  resolution: "@tomorrowevening/theatre-react@workspace:packages/react"
   dependencies:
     "@microsoft/api-extractor": ^7.18.11
-    "@theatre/dataverse": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
     "@types/node": ^15.6.2
@@ -7968,33 +7979,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@theatre/shared@workspace:theatre/shared":
+"@tomorrowevening/theatre-shared@workspace:theatre/shared":
   version: 0.0.0-use.local
-  resolution: "@theatre/shared@workspace:theatre/shared"
+  resolution: "@tomorrowevening/theatre-shared@workspace:theatre/shared"
   dependencies:
-    "@theatre/core": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@theatre/studio-0.5.0@npm:@theatre/studio@0.5.0":
-  version: 0.5.0
-  resolution: "@theatre/studio@npm:0.5.0"
-  dependencies:
-    "@theatre/dataverse": 0.5.0
-  peerDependencies:
-    "@theatre/core": "*"
-  checksum: a7c11054df8094b375cdfaba93952bf14cfe5a51e9e789a248c45012d7680a10392062fd359d9353be469b2a4402dad3942f7e6a3797a04bc8dc651815e3318e
-  languageName: node
-  linkType: hard
-
-"@theatre/studio@workspace:*, @theatre/studio@workspace:theatre/studio":
+"@tomorrowevening/theatre-studio@workspace:*, @tomorrowevening/theatre-studio@workspace:theatre/studio":
   version: 0.0.0-use.local
-  resolution: "@theatre/studio@workspace:theatre/studio"
+  resolution: "@tomorrowevening/theatre-studio@workspace:theatre/studio"
   dependencies:
-    "@theatre/dataverse": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
   peerDependencies:
-    "@theatre/core": "*"
+    "@tomorrowevening/theatre-core": "*"
   languageName: unknown
   linkType: soft
 
@@ -11612,12 +11612,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "benchmarks@workspace:packages/benchmarks"
   dependencies:
-    "@theatre/core": "workspace:*"
-    "@theatre/core-0.5.0": "npm:@theatre/core@0.5.0"
-    "@theatre/dataverse-0.5.0": "npm:@theatre/dataverse@0.5.0"
-    "@theatre/r3f": "workspace:*"
-    "@theatre/studio": "workspace:*"
-    "@theatre/studio-0.5.0": "npm:@theatre/studio@0.5.0"
+    "@tomorrowevening/theatre-core-0.5.0": "npm:@tomorrowevening/theatre-core@0.5.0"
+    "@tomorrowevening/theatre-dataverse-0.5.0": "npm:@tomorrowevening/theatre-dataverse@0.5.0"
+    "@tomorrowevening/theatre-studio-0.5.0": "npm:@tomorrowevening/theatre-studio@0.5.0"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-r3f": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     "@types/jest": ^29.2.3
     "@types/lodash-es": ^4.17.6
     "@types/node": ^18.11.9
@@ -25370,11 +25370,11 @@ fsevents@^1.2.7:
     "@playwright/test": ^1.36.2
     "@react-three/drei": ^9.80.1
     "@react-three/fiber": ^8.13.6
-    "@theatre/core": "workspace:*"
-    "@theatre/dataverse": "workspace:*"
-    "@theatre/r3f": "workspace:*"
-    "@theatre/react": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
+    "@tomorrowevening/theatre-r3f": "workspace:*"
+    "@tomorrowevening/theatre-react": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
     "@types/node": ^15.6.2
@@ -31560,9 +31560,9 @@ fsevents@^1.2.7:
     "@rollup/plugin-multi-entry": ^4.1.0
     "@rollup/plugin-replace": ^2.4.2
     "@rollup/plugin-typescript": ^8.2.5
-    "@theatre/core": "workspace:*"
-    "@theatre/dataverse": "workspace:*"
-    "@theatre/react": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
+    "@tomorrowevening/theatre-react": "workspace:*"
     "@types/fs-extra": ^9.0.11
     "@types/jest": ^26.0.23
     "@types/lodash": ^4.14.170
@@ -31629,10 +31629,10 @@ fsevents@^1.2.7:
   resolution: "theatric@workspace:packages/theatric"
   dependencies:
     "@microsoft/api-extractor": ^7.18.11
-    "@theatre/core": "workspace:*"
-    "@theatre/dataverse": "workspace:*"
-    "@theatre/react": "workspace:*"
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-core": "workspace:*"
+    "@tomorrowevening/theatre-dataverse": "workspace:*"
+    "@tomorrowevening/theatre-react": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
     "@types/jest": ^26.0.23
     "@types/node": ^15.6.2
     "@types/react": ^18.2.18

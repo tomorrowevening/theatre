@@ -4,8 +4,8 @@
     "start": "parcel serve ./index.html"
   },
   "dependencies": {
-    "@theatre/core": "workspace:*",
-    "@theatre/studio": "workspace:*",
+    "@tomorrowevening/theatre-core": "workspace:*",
+    "@tomorrowevening/theatre-studio": "workspace:*",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "parcel-bundler": "^1.12.5",

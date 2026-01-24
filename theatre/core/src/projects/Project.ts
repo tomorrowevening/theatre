@@ -1,29 +1,29 @@
-import type {OnDiskState} from '@theatre/core/projects/store/storeTypes'
-import type TheatreProject from '@theatre/core/projects/TheatreProject'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import SheetTemplate from '@theatre/core/sheets/SheetTemplate'
-import type {Studio} from '@theatre/studio/Studio'
-import type {ProjectAddress} from '@theatre/shared/utils/addresses'
-import type {Pointer} from '@theatre/dataverse'
-import {PointerProxy} from '@theatre/dataverse'
-import {Atom} from '@theatre/dataverse'
+import type {OnDiskState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
+import type TheatreProject from '@tomorrowevening/theatre-core/projects/TheatreProject'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import SheetTemplate from '@tomorrowevening/theatre-core/sheets/SheetTemplate'
+import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
+import type {ProjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {PointerProxy} from '@tomorrowevening/theatre-dataverse'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
 import initialiseProjectState from './initialiseProjectState'
 import projectsSingleton from './projectsSingleton'
 import type {ProjectState} from './store/storeTypes'
-import type {Deferred} from '@theatre/shared/utils/defer'
-import {defer} from '@theatre/shared/utils/defer'
-import globals from '@theatre/shared/globals'
+import type {Deferred} from '@tomorrowevening/theatre-shared/utils/defer'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import globals from '@tomorrowevening/theatre-shared/globals'
 import type {
   ProjectId,
   SheetId,
   SheetInstanceId,
-} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   ILogger,
   ITheatreLoggerConfig,
   ITheatreLoggingConfig,
-} from '@theatre/shared/logger'
-import {_coreLogger} from '@theatre/core/_coreLogger'
+} from '@tomorrowevening/theatre-shared/logger'
+import {_coreLogger} from '@tomorrowevening/theatre-core/_coreLogger'
 
 type ICoreAssetStorage = {
   /** Returns a URL for the provided asset ID */
@@ -147,7 +147,7 @@ export default class Project {
 
     if (config.state) {
       setTimeout(() => {
-        // The user has provided config.state but in case @theatre/studio is loaded,
+        // The user has provided config.state but in case @tomorrowevening/theatre-studio is loaded,
         // let's give it one tick to attach itself
         if (!this._studio) {
           this._studioReadyDeferred.resolve(undefined)
@@ -170,9 +170,9 @@ export default class Project {
           if (!this._studio) {
             throw new Error(
               `Argument config.state in Theatre.getProject("${id}", config) is empty. This is fine ` +
-                `while you are using @theatre/core along with @theatre/studio. But since @theatre/studio ` +
+                `while you are using @tomorrowevening/theatre-core along with @tomorrowevening/theatre-studio. But since @tomorrowevening/theatre-studio ` +
                 `is not loaded, the state of project "${id}" will be empty.\n\n` +
-                `To fix this, you need to add @theatre/studio into the bundle and export ` +
+                `To fix this, you need to add @tomorrowevening/theatre-studio into the bundle and export ` +
                 `the project's state. Learn how to do that at https://www.theatrejs.com/docs/latest/manual/projects#state\n`,
             )
           }

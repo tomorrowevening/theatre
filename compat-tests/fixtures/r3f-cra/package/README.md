@@ -1,1 +1,1 @@
-Testing `@theatre/core` and `@theatre/studio` with `npm`, `create-react-app`, and `react@18`
+Testing `@tomorrowevening/theatre-core` and `@tomorrowevening/theatre-studio` with `npm`, `create-react-app`, and `react@18`

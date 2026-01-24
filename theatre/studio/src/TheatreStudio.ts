@@ -1,27 +1,27 @@
-import type {IProject, IRafDriver, ISheet, ISheetObject} from '@theatre/core'
-import type {Prism, Pointer} from '@theatre/dataverse'
-import {prism} from '@theatre/dataverse'
-import SimpleCache from '@theatre/shared/utils/SimpleCache'
-import type {$IntentionalAny, VoidFn} from '@theatre/shared/utils/types'
-import type {IScrub} from '@theatre/studio/Scrub'
-import type {Studio} from '@theatre/studio/Studio'
+import type {IProject, IRafDriver, ISheet, ISheetObject} from '@tomorrowevening/theatre-core'
+import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import {prism} from '@tomorrowevening/theatre-dataverse'
+import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
+import type {$IntentionalAny, VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {IScrub} from '@tomorrowevening/theatre-studio/Scrub'
+import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
 import {
   isSheetObjectPublicAPI,
   isSheetPublicAPI,
-} from '@theatre/shared/instanceTypes'
+} from '@tomorrowevening/theatre-shared/instanceTypes'
 import {getOutlineSelection} from './selectors'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 import getStudio from './getStudio'
 import {debounce} from 'lodash-es'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type {PaneInstanceId, ProjectId} from '@theatre/shared/utils/ids'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type {PaneInstanceId, ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {
   __experimental_disblePlayPauseKeyboardShortcut,
   __experimental_enablePlayPauseKeyboardShortcut,
 } from './UIRoot/useKeyboardShortcuts'
-import type TheatreSheetObject from '@theatre/core/sheetObjects/TheatreSheetObject'
-import type TheatreSheet from '@theatre/core/sheets/TheatreSheet'
-import type {__UNSTABLE_Project_OnDiskState} from '@theatre/core'
+import type TheatreSheetObject from '@tomorrowevening/theatre-core/sheetObjects/TheatreSheetObject'
+import type TheatreSheet from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
+import type {__UNSTABLE_Project_OnDiskState} from '@tomorrowevening/theatre-core'
 
 export interface ITransactionAPI {
   /**
@@ -226,7 +226,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Basic usage:
  * ```ts
- * import studio from '@theatre/studio'
+ * import studio from '@tomorrowevening/theatre-studio'
  *
  * studio.initialize()
  * ```
@@ -234,7 +234,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Usage with **tree-shaking**:
  * ```ts
- * import studio from '@theatre/studio'
+ * import studio from '@tomorrowevening/theatre-studio'
  *
  * if (process.env.NODE_ENV !== 'production') {
  *   studio.initialize()
@@ -607,9 +607,9 @@ export default class TheatreStudio implements IStudio {
   getStudioProject() {
     const core = getStudio().core
     if (!core) {
-      throw new Error(`You're calling studio.getStudioProject() before \`@theatre/core\` is loaded. To fix this:
-1. Check if \`@theatre/core\` is import/required in your bundle.
-2. Check the stack trace of this error and make sure the funciton that calls getStudioProject() is run after \`@theatre/core\` is loaded.`)
+      throw new Error(`You're calling studio.getStudioProject() before \`@tomorrowevening/theatre-core\` is loaded. To fix this:
+1. Check if \`@tomorrowevening/theatre-core\` is import/required in your bundle.
+2. Check the stack trace of this error and make sure the funciton that calls getStudioProject() is run after \`@tomorrowevening/theatre-core\` is loaded.`)
     }
     return getStudio().getStudioProject(core)
   }

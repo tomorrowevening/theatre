@@ -3,8 +3,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@theatre/core/*": ["../../.temp/declarations/core/src/*"],
-      "@theatre/shared/*": ["../../.temp/declarations/shared/src/*"]
+      "@tomorrowevening/theatre-core/*": ["../../.temp/declarations/core/src/*"],
+      "@tomorrowevening/theatre-shared/*": ["../../.temp/declarations/shared/src/*"]
     }
   }
 }

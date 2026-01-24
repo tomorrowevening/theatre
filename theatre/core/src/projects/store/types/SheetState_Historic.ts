@@ -1,15 +1,15 @@
-import type {PathToProp_Encoded} from '@theatre/shared/utils/addresses'
+import type {PathToProp_Encoded} from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {
   KeyframeId,
   ObjectAddressKey,
   SequenceMarkerId,
   SequenceTrackId,
-} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   SerializableMap,
   SerializableValue,
   StrictRecord,
-} from '@theatre/shared/utils/types'
+} from '@tomorrowevening/theatre-shared/utils/types'
 
 export interface SheetState_Historic {
   /**

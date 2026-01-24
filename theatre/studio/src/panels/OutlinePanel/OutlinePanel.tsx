@@ -1,12 +1,12 @@
 import React, {useEffect, useLayoutEffect} from 'react'
 import styled from 'styled-components'
-import {panelZIndexes} from '@theatre/studio/panels/BasePanel/common'
+import {panelZIndexes} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import ProjectsList from './ProjectsList/ProjectsList'
-import {useVal} from '@theatre/react'
-import getStudio from '@theatre/studio/getStudio'
-import useHotspot from '@theatre/studio/uiComponents/useHotspot'
-import {Atom, prism, val} from '@theatre/dataverse'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {useVal} from '@tomorrowevening/theatre-react'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import useHotspot from '@tomorrowevening/theatre-studio/uiComponents/useHotspot'
+import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 
 const headerHeight = `44px`
 

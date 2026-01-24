@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Ticker} from '@theatre/dataverse'
+import {Ticker} from '@tomorrowevening/theatre-dataverse'
 import {EMPTY_TICKS_BEFORE_GOING_DORMANT} from './Ticker'
 
 describe(`Ticker`, () => {

@@ -1,14 +1,14 @@
-import type {IProject, ISheet, ISheetObject} from '@theatre/core'
-import type Project from '@theatre/core/projects/Project'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type SheetObjectTemplate from '@theatre/core/sheetObjects/SheetObjectTemplate'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type SheetTemplate from '@theatre/core/sheets/SheetTemplate'
+import type {IProject, ISheet, ISheetObject} from '@tomorrowevening/theatre-core'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type SheetObjectTemplate from '@tomorrowevening/theatre-core/sheetObjects/SheetObjectTemplate'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type SheetTemplate from '@tomorrowevening/theatre-core/sheets/SheetTemplate'
 import type {$IntentionalAny} from './utils/types'
-import type Sequence from '@theatre/core/sequences/Sequence'
+import type Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
 
 /**
- * Since \@theatre/core and \@theatre/studio are separate bundles,
+ * Since \@tomorrowevening/theatre-core and \@tomorrowevening/theatre-studio are separate bundles,
  * they cannot use `x instanceof Y` to detect object types.
  *
  * The functions in this module are supposed to be a replacement for that.

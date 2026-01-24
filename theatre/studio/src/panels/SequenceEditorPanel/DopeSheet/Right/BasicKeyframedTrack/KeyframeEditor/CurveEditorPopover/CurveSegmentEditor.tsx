@@ -1,13 +1,13 @@
 import React from 'react'
-import useDrag from '@theatre/studio/uiComponents/useDrag'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import clamp from 'lodash-es/clamp'
 import styled from 'styled-components'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import type {CubicBezierHandles} from './shared'
 import {useFreezableMemo} from './useFreezableMemo'
 import {COLOR_BASE} from './colors'
-import type {KeyframeConnectionWithAddress} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/selections'
+import type {KeyframeConnectionWithAddress} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 
 // Defines the dimensions of the SVG viewbox space
 const VIEWBOX_PADDING = 0.12

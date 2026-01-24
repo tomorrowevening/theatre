@@ -4,10 +4,10 @@ import type {Interaction} from './Interactive'
 import {Interactive} from './Interactive'
 import {Pointer} from './Pointer'
 
-import {hsvaToHslaString} from '@theatre/studio/uiComponents/colorPicker/utils/convert'
-import {clamp} from '@theatre/studio/uiComponents/colorPicker/utils/clamp'
-import {round} from '@theatre/studio/uiComponents/colorPicker/utils/round'
-import type {HsvaColor} from '@theatre/studio/uiComponents/colorPicker/types'
+import {hsvaToHslaString} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/convert'
+import {clamp} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/clamp'
+import {round} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/round'
+import type {HsvaColor} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/types'
 import styled from 'styled-components'
 
 const Container = styled.div`

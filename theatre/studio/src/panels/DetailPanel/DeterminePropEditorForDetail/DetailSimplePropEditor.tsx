@@ -1,15 +1,15 @@
 import type {
   IBasePropType,
   PropTypeConfig_AllSimples,
-} from '@theatre/core/propTypes'
+} from '@tomorrowevening/theatre-core/propTypes'
 import React, {useMemo} from 'react'
-import {useEditingToolsForSimplePropInDetailsPanel} from '@theatre/studio/propEditors/useEditingToolsForSimpleProp'
-import {SingleRowPropEditor} from '@theatre/studio/panels/DetailPanel/DeterminePropEditorForDetail/SingleRowPropEditor'
-import type {Pointer} from '@theatre/dataverse'
-import {getPointerParts} from '@theatre/dataverse'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
-import type {ISimplePropEditorReactProps} from '@theatre/studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
-import {whatPropIsHighlighted} from '@theatre/studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
+import {useEditingToolsForSimplePropInDetailsPanel} from '@tomorrowevening/theatre-studio/propEditors/useEditingToolsForSimpleProp'
+import {SingleRowPropEditor} from '@tomorrowevening/theatre-studio/panels/DetailPanel/DeterminePropEditorForDetail/SingleRowPropEditor'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {getPointerParts} from '@tomorrowevening/theatre-dataverse'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
+import type {ISimplePropEditorReactProps} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
+import {whatPropIsHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
 
 export type IDetailSimplePropEditorProps<
   TPropTypeConfig extends IBasePropType<string, any>,

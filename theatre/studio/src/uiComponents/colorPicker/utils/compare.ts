@@ -1,5 +1,5 @@
 import {hexToRgba} from './convert'
-import type {ObjectColor} from '@theatre/studio/uiComponents/colorPicker/types'
+import type {ObjectColor} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/types'
 
 export const equalColorObjects = (
   first: ObjectColor,

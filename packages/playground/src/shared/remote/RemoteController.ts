@@ -1,5 +1,5 @@
-import type {IProject, ISheet} from '@theatre/core'
-import studio from '@theatre/studio'
+import type {IProject, ISheet} from '@tomorrowevening/theatre-core'
+import studio from '@tomorrowevening/theatre-studio'
 import {remote} from './Remote'
 import type {BroadcastData, BroadcastDataEvent} from './Remote'
 

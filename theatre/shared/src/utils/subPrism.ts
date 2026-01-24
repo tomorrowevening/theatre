@@ -1,4 +1,4 @@
-import {prism} from '@theatre/dataverse'
+import {prism} from '@tomorrowevening/theatre-dataverse'
 import type {$IntentionalAny} from './types'
 
 /**

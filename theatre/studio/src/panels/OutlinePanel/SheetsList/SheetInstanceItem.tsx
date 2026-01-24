@@ -1,12 +1,12 @@
-import getStudio from '@theatre/studio/getStudio'
-import {getOutlineSelection} from '@theatre/studio/selectors'
-import {usePrism} from '@theatre/react'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {usePrism} from '@tomorrowevening/theatre-react'
 import React, {useCallback} from 'react'
 import styled from 'styled-components'
-import ObjectsList from '@theatre/studio/panels/OutlinePanel/ObjectsList/ObjectsList'
-import BaseItem from '@theatre/studio/panels/OutlinePanel/BaseItem'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import {useCollapseStateInOutlinePanel} from '@theatre/studio/panels/OutlinePanel/outlinePanelUtils'
+import ObjectsList from '@tomorrowevening/theatre-studio/panels/OutlinePanel/ObjectsList/ObjectsList'
+import BaseItem from '@tomorrowevening/theatre-studio/panels/OutlinePanel/BaseItem'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import {useCollapseStateInOutlinePanel} from '@tomorrowevening/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 
 const Head = styled.div`
   display: flex;

@@ -1,14 +1,14 @@
-import {useVal} from '@theatre/react'
-import getStudio from '@theatre/studio/getStudio'
+import {useVal} from '@tomorrowevening/theatre-react'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import React from 'react'
 import styled from 'styled-components'
-import {generateDiskStateRevision} from '@theatre/studio/StudioStore/generateDiskStateRevision'
-import type {ProjectEphemeralState} from '@theatre/core/projects/store/storeTypes'
-import useTooltip from '@theatre/studio/uiComponents/Popover/useTooltip'
-import BasicTooltip from '@theatre/studio/uiComponents/Popover/BasicTooltip'
-import type {$FixMe} from '@theatre/shared/utils/types'
-import DetailPanelButton from '@theatre/studio/uiComponents/DetailPanelButton'
-import type {ProjectId} from '@theatre/shared/utils/ids'
+import {generateDiskStateRevision} from '@tomorrowevening/theatre-studio/StudioStore/generateDiskStateRevision'
+import type {ProjectEphemeralState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
+import useTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/useTooltip'
+import BasicTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicTooltip'
+import type {$FixMe} from '@tomorrowevening/theatre-shared/utils/types'
+import DetailPanelButton from '@tomorrowevening/theatre-studio/uiComponents/DetailPanelButton'
+import type {ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
 
 const Container = styled.div`
   padding: 8px 10px;

@@ -1,21 +1,21 @@
-import type {Prism} from '@theatre/dataverse'
-import {prism, val} from '@theatre/dataverse'
+import type {Prism} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import type {
   KeyframeId,
   ObjectAddressKey,
   ProjectId,
   SequenceTrackId,
   SheetId,
-} from '@theatre/shared/utils/ids'
-import getStudio from '@theatre/studio/getStudio'
-import type {DopeSheetSelection} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import type {Keyframe} from '@theatre/core/projects/store/types/SheetState_Historic'
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {DopeSheetSelection} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
 import {
   commonRootOfPathsToProps,
   decodePathToProp,
-} from '@theatre/shared/utils/addresses'
-import type {StrictRecord} from '@theatre/shared/utils/types'
-import type {KeyframeWithPathToPropFromCommonRoot} from '@theatre/studio/store/types'
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
+import type {KeyframeWithPathToPropFromCommonRoot} from '@tomorrowevening/theatre-studio/store/types'
 
 /**
  * Keyframe connections are considered to be selected if the first

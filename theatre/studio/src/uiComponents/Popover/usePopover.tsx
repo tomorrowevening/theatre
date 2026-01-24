@@ -1,11 +1,11 @@
-import {usePointerCapturing} from '@theatre/studio/UIRoot/PointerCapturing'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import {usePointerCapturing} from '@tomorrowevening/theatre-studio/UIRoot/PointerCapturing'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import React, {useCallback, useContext, useEffect, useRef} from 'react'
 import {createPortal} from 'react-dom'
 import {PortalContext} from 'reakit'
 import type {AbsolutePlacementBoxConstraints} from './TooltipWrapper'
 import TooltipWrapper from './TooltipWrapper'
-import {contextMenuShownContext} from '@theatre/studio/panels/DetailPanel/DetailPanel'
+import {contextMenuShownContext} from '@tomorrowevening/theatre-studio/panels/DetailPanel/DetailPanel'
 
 export type OpenFn = (
   e: React.MouseEvent | MouseEvent | {clientX: number; clientY: number},

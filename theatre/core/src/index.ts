@@ -10,8 +10,8 @@ export type {ISequence} from './sequences/TheatreSequence'
 export type {ISheetObject} from './sheetObjects/TheatreSheetObject'
 export type {ISheet} from './sheets/TheatreSheet'
 export type {UnknownShorthandCompoundProps} from './propTypes'
-import * as globalVariableNames from '@theatre/shared/globalVariableNames'
-import type StudioBundle from '@theatre/studio/StudioBundle'
+import * as globalVariableNames from '@tomorrowevening/theatre-shared/globalVariableNames'
+import type StudioBundle from '@tomorrowevening/theatre-studio/StudioBundle'
 import CoreBundle from './CoreBundle'
 import type {OnDiskState} from './projects/store/storeTypes'
 
@@ -32,7 +32,7 @@ registerCoreBundle()
  * @remarks
  * the studio and core need to communicate with each other somehow, and currently we do that
  * by registering each of them as a global variable. This function does the work of registering
- * the core bundle (everything exported from `@theatre/core`) to window.__TheatreJS_CoreBundle.
+ * the core bundle (everything exported from `@tomorrowevening/theatre-core`) to window.__TheatreJS_CoreBundle.
  */
 function registerCoreBundle() {
   // This only works in a browser environment
@@ -52,8 +52,8 @@ function registerCoreBundle() {
     ) {
       /*
       Another core bundle is registered. This usually means the bundler is not configured correctly and
-      is bundling `@theatre/core` multiple times, but, there are legitimate scenarios where a user may want
-      to include multiple instances of `@theatre/core` on the same page.
+      is bundling `@tomorrowevening/theatre-core` multiple times, but, there are legitimate scenarios where a user may want
+      to include multiple instances of `@tomorrowevening/theatre-core` on the same page.
 
       For example, an article might embed two separate interactive graphics that
       are made by different teams (and even different tech stacks -- one in JS, the other in clojurescript).
@@ -88,14 +88,14 @@ function registerCoreBundle() {
       
       */
       throw new Error(
-        `It seems that the module '@theatre/core' is loaded more than once. This could have two possible causes:\n` +
+        `It seems that the module '@tomorrowevening/theatre-core' is loaded more than once. This could have two possible causes:\n` +
           `1. You might have two separate versions of Theatre.js in node_modules.\n` +
           `2. Or this might be a bundling misconfiguration, in case you're using a bundler like Webpack/ESBuild/Rollup.\n\n` +
-          `Note that it **is okay** to import '@theatre/core' multiple times. But those imports should point to the same module.`,
+          `Note that it **is okay** to import '@tomorrowevening/theatre-core' multiple times. But those imports should point to the same module.`,
       )
     } else {
       throw new Error(
-        `The variable window.${globalVariableNames.coreBundle} seems to be already set by a module other than @theatre/core.`,
+        `The variable window.${globalVariableNames.coreBundle} seems to be already set by a module other than @tomorrowevening/theatre-core.`,
       )
     }
   }

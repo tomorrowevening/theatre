@@ -1,11 +1,11 @@
-import {useVal} from '@theatre/react'
-import type {Pointer} from '@theatre/dataverse'
+import {useVal} from '@tomorrowevening/theatre-react'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
-import type {SequenceEditorPanelLayout} from '@theatre/studio/panels/SequenceEditorPanel/layout/layout'
-import StampsGrid from '@theatre/studio/panels/SequenceEditorPanel/FrameGrid/StampsGrid'
-import {includeLockFrameStampAttrs} from '@theatre/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import StampsGrid from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameGrid/StampsGrid'
+import {includeLockFrameStampAttrs} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import FocusRangeZone from './FocusRangeZone/FocusRangeZone'
 
 export const topStripHeight = 18

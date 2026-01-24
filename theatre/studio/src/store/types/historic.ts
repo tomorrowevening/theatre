@@ -1,17 +1,17 @@
-import type {ProjectState_Historic} from '@theatre/core/projects/store/storeTypes'
-import type {graphEditorColors} from '@theatre/studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import type {ProjectState_Historic} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
+import type {graphEditorColors} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import type {
   PathToProp_Encoded,
   ProjectAddress,
   SheetAddress,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@theatre/shared/utils/addresses'
-import type {StrictRecord} from '@theatre/shared/utils/types'
-import type {PointableSet} from '@theatre/shared/utils/PointableSet'
-import type Project from '@theatre/core/projects/Project'
-import type Sheet from '@theatre/core/sheets/Sheet'
-import type SheetObject from '@theatre/core/sheetObjects/SheetObject'
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+import type {StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
+import type {PointableSet} from '@tomorrowevening/theatre-shared/utils/PointableSet'
+import type Project from '@tomorrowevening/theatre-core/projects/Project'
+import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
+import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 import type {
   ObjectAddressKey,
   PaneInstanceId,
@@ -20,7 +20,7 @@ import type {
   SheetId,
   SheetInstanceId,
   UIPanelId,
-} from '@theatre/shared/utils/ids'
+} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export type PanelPosition = {
   edges: {

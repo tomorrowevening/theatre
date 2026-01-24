@@ -1,11 +1,11 @@
-import {getProject} from '@theatre/core'
+import {getProject} from '@tomorrowevening/theatre-core'
 import * as THREE from 'three'
 import React, {useState, useEffect, useRef} from 'react'
 import {useFrame, Canvas} from '@react-three/fiber'
 import {Shadow, softShadows} from '@react-three/drei'
-import studio from '@theatre/studio'
-import {editable as e, SheetProvider} from '@theatre/r3f'
-import extension from '@theatre/r3f/dist/extension'
+import studio from '@tomorrowevening/theatre-studio'
+import {editable as e, SheetProvider} from '@tomorrowevening/theatre-r3f'
+import extension from '@tomorrowevening/theatre-r3f/dist/extension'
 
 if (process.env.NODE_ENV === 'development') {
   studio.extend(extension)

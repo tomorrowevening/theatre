@@ -3,8 +3,8 @@ import type {MutableRefObject} from 'react'
 import {useEffect} from 'react'
 import React, {useMemo, useRef} from 'react'
 import {mergeRefs} from 'react-merge-refs'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
-import useOnClickOutside from '@theatre/studio/uiComponents/useOnClickOutside'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
+import useOnClickOutside from '@tomorrowevening/theatre-studio/uiComponents/useOnClickOutside'
 
 const Input = styled.input.attrs({type: 'text'})`
   background: transparent;

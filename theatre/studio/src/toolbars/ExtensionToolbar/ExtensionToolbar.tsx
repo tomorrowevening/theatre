@@ -1,8 +1,8 @@
-import {Atom} from '@theatre/dataverse'
-import {useVal} from '@theatre/react'
-import type {IExtension} from '@theatre/studio'
-import getStudio from '@theatre/studio/getStudio'
-import type {ToolsetConfig} from '@theatre/studio/TheatreStudio'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
+import {useVal} from '@tomorrowevening/theatre-react'
+import type {IExtension} from '@tomorrowevening/theatre-studio'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {ToolsetConfig} from '@tomorrowevening/theatre-studio/TheatreStudio'
 import React, {useLayoutEffect, useMemo} from 'react'
 
 import styled from 'styled-components'

@@ -1,4 +1,4 @@
-import type {Asset, File} from '@theatre/shared/utils/assets'
+import type {Asset, File} from '@tomorrowevening/theatre-shared/utils/assets'
 
 export interface IEditingTools<T> {
   temporarilySetValue(v: T): void

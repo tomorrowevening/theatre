@@ -10,14 +10,14 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "@theatre/core": "workspace:*",
-    "@theatre/r3f": "workspace:*",
+    "@tomorrowevening/theatre-core": "workspace:*",
+    "@tomorrowevening/theatre-r3f": "workspace:*",
     "react-scripts": "^5.0.1",
     "three": "^0.130.1",
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
-    "@theatre/studio": "workspace:*"
+    "@tomorrowevening/theatre-studio": "workspace:*"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,9 +1,9 @@
-import type {VoidFn} from '@theatre/shared/utils/types'
+import type {VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
 import React from 'react'
 import styled, {css} from 'styled-components'
-import noop from '@theatre/shared/utils/noop'
-import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
-import {ChevronDown, Package} from '@theatre/studio/uiComponents/icons'
+import noop from '@tomorrowevening/theatre-shared/utils/noop'
+import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
+import {ChevronDown, Package} from '@tomorrowevening/theatre-studio/uiComponents/icons'
 
 export const Container = styled.li`
   margin: 0;

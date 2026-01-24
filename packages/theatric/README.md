@@ -238,7 +238,7 @@ function Introduction() {
 }
 ```
 
-This is simply a re-export via `export {types} from '@theatre/core'`. To learn more about types, check out the
+This is simply a re-export via `export {types} from '@tomorrowevening/theatre-core'`. To learn more about types, check out the
 [types documentation](https://www.theatrejs.com/docs/latest/manual/prop-types).
 
 ## Using assets

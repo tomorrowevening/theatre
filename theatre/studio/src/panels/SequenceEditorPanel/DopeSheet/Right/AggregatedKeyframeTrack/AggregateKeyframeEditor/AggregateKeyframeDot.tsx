@@ -1,32 +1,32 @@
 import React from 'react'
-import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import usePresence, {
   PresenceFlag,
-} from '@theatre/studio/uiComponents/usePresence'
-import useContextMenu from '@theatre/studio/uiComponents/simpleContextMenu/useContextMenu'
+} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IAggregateKeyframeEditorProps} from './AggregateKeyframeEditor'
 import type {IAggregateKeyframeEditorUtils} from './useAggregateKeyframeEditorUtils'
 import {AggregateKeyframeVisualDot, HitZone} from './AggregateKeyframeVisualDot'
-import getStudio from '@theatre/studio/getStudio'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {
   copyableKeyframesFromSelection,
   keyframesWithPaths,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/selections'
-import type {KeyframeWithPathToPropFromCommonRoot} from '@theatre/studio/store/types/ahistoric'
-import {commonRootOfPathsToProps} from '@theatre/shared/utils/addresses'
-import DopeSnap from '@theatre/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
+import type {KeyframeWithPathToPropFromCommonRoot} from '@tomorrowevening/theatre-studio/store/types/ahistoric'
+import {commonRootOfPathsToProps} from '@tomorrowevening/theatre-shared/utils/addresses'
+import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import type {
   PrimitivePropEditingOptions,
   PropWithChildrenEditingOptionsTree,
   SheetObjectEditingOptionsTree,
-} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
-import {useKeyframeInlineEditorPopover} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
+import {useKeyframeInlineEditorPopover} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
 import type {
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_SheetObject,
-} from '@theatre/studio/panels/SequenceEditorPanel/layout/tree'
-import type {KeyframeWithTrack} from '@theatre/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {KeyframeWithTrack} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 
 type IAggregateKeyframeDotProps = {
   editorProps: IAggregateKeyframeEditorProps

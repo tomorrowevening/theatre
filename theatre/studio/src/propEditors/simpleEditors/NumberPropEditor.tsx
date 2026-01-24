@@ -1,5 +1,5 @@
-import type {PropTypeConfig_Number} from '@theatre/core/propTypes'
-import BasicNumberInput from '@theatre/studio/uiComponents/form/BasicNumberInput'
+import type {PropTypeConfig_Number} from '@tomorrowevening/theatre-core/propTypes'
+import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import React, {useCallback} from 'react'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
 

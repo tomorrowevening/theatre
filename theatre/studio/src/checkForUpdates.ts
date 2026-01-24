@@ -1,6 +1,6 @@
-import {pointerToPrism, val} from '@theatre/dataverse'
-import {defer} from '@theatre/shared/utils/defer'
-import type {$IntentionalAny} from '@theatre/shared/utils/types'
+import {pointerToPrism, val} from '@tomorrowevening/theatre-dataverse'
+import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
+import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 import getStudio from './getStudio'
 import type {UpdateCheckerResponse} from './store/types'
 
