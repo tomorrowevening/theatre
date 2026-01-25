@@ -33,7 +33,7 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
 
   // Sets Project Ready
   useEffect(() => {
-    project.ready.then(() => {
+    void project.ready.then(() => {
       setProjectReady(true)
     })
   }, [])

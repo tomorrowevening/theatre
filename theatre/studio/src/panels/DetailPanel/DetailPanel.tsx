@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import {isProject, isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
+import {isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
 import {
   panelZIndexes,
   TitleBar_Piece,
@@ -19,7 +19,6 @@ import ObjectDetails from './ObjectDetails'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import useHotspot from '@tomorrowevening/theatre-studio/uiComponents/useHotspot'
 import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
-import EmptyState from './EmptyState'
 import useLockSet from '@tomorrowevening/theatre-studio/uiComponents/useLockSet'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 
@@ -162,8 +161,7 @@ const DetailPanel: React.FC<{}> = (props) => {
         onMouseLeave={() => {
           isDetailPanelHoveredB.set(false)
         }}
-      >
-      </Container>
+      ></Container>
     )
   }, [showDetailsPanel])
 }
