@@ -13,7 +13,7 @@ import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 
 export const LeftRowContainer = styled.li<{depth: number}>`
-  --depth: ${(props) => props.depth};
+  --depth: ${(props) => props.depth - 1};
   margin: 0;
   padding: 0;
   list-style: none;
