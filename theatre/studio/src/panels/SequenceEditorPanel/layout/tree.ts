@@ -12,10 +12,12 @@ import type {
   StudioSheetItemKey,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
-import type {$FixMe, $IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
-import {prism, val, pointerToPrism} from '@tomorrowevening/theatre-dataverse'
+import type {
+  $FixMe,
+  $IntentionalAny,
+} from '@tomorrowevening/theatre-shared/utils/types'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import logger from '@tomorrowevening/theatre-shared/logger'
-import {titleBarHeight} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@tomorrowevening/theatre-core/propTypes/internals'
 
@@ -114,9 +116,10 @@ export const calculateSequenceEditorTree = (
     studio.atomP.ahistoric.projects.stateByProjectId[sheet.address.projectId]
       .stateBySheetId[sheet.address.sheetId].sequence.collapsableItems
 
-  const isCollapsed = val(
-    collapsableItemSetP.byId[createStudioSheetItemKey.forSheet()].isCollapsed
-  ) ?? false
+  const isCollapsed =
+    val(
+      collapsableItemSetP.byId[createStudioSheetItemKey.forSheet()].isCollapsed,
+    ) ?? false
 
   const tree: SequenceEditorTree = {
     type: 'sheet',
@@ -162,11 +165,12 @@ export const calculateSequenceEditorTree = (
     // Always show the object if it has any properties, not just if it has sequenced tracks
     if (Object.keys(objectConfig.props).length === 0) return
 
-    const isCollapsed = val(
-      collapsableItemSetP.byId[
-        createStudioSheetItemKey.forSheetObject(sheetObject)
-      ].isCollapsed
-    ) ?? false
+    const isCollapsed =
+      val(
+        collapsableItemSetP.byId[
+          createStudioSheetItemKey.forSheetObject(sheetObject)
+        ].isCollapsed,
+      ) ?? false
 
     const row: SequenceEditorTree_SheetObject = {
       type: 'sheetObject',
@@ -285,11 +289,12 @@ export const calculateSequenceEditorTree = (
     level: number,
     shouldRender: boolean,
   ) {
-    const isCollapsed = val(
-      collapsableItemSetP.byId[
-        createStudioSheetItemKey.forSheetObjectProp(sheetObject, pathToProp)
-      ].isCollapsed
-    ) ?? false
+    const isCollapsed =
+      val(
+        collapsableItemSetP.byId[
+          createStudioSheetItemKey.forSheetObjectProp(sheetObject, pathToProp)
+        ].isCollapsed,
+      ) ?? false
 
     const row: SequenceEditorTree_PropWithChildren = {
       type: 'propWithChildren',

@@ -94,7 +94,7 @@ const ValueEditorContainer = styled.div`
   align-items: center;
   min-width: 0;
   flex: 1;
-  
+
   /* Override some default input styles to fit in the row */
   input {
     font-size: 11px;

@@ -3,7 +3,7 @@ import {usePrism} from '@tomorrowevening/theatre-react'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
-import React, {useMemo, useState} from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import DopeSheet from './DopeSheet/DopeSheet'
@@ -11,7 +11,9 @@ import GraphEditor from './GraphEditor/GraphEditor'
 import type {PanelDims, SequenceEditorPanelLayout} from './layout/layout'
 import {sequenceEditorPanelLayout} from './layout/layout'
 import RightOverlay from './RightOverlay/RightOverlay'
-import BasePanel, {usePanel} from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
+import BasePanel, {
+  usePanel,
+} from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
 import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
@@ -22,7 +24,10 @@ import PanelWrapper from '@tomorrowevening/theatre-studio/panels/BasePanel/Panel
 import FrameStampPositionProvider from './FrameStampPositionProvider'
 import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
 import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
-import {isSheet, isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
+import {
+  isSheet,
+  isSheetObject,
+} from '@tomorrowevening/theatre-shared/instanceTypes'
 import {uniq} from 'lodash-es'
 import GraphEditorToggle from './GraphEditorToggle'
 import {
@@ -77,7 +82,7 @@ const Header_Container = styled(PanelDragZone)`
   left: 0;
   top: 0;
   z-index: 1;
-  
+
   ${TitleBar} {
     height: 30px;
   }
@@ -212,7 +217,7 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
   return usePrism(() => {
     const sheet = val(layoutP.sheet)
     const sequence = sheet.getSequence()
-    
+
     return (
       <Header_Container
         style={{
@@ -221,14 +226,16 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
       >
         <TitleBar>
           <TitleBar_Piece>{sheet.address.sheetId}</TitleBar_Piece>
-          
+
           <TimeInputsContainer>
             <PositionInput layoutP={layoutP} />
             <TitleBar_Punctuation>/</TitleBar_Punctuation>
             <DurationInput layoutP={layoutP} />
             <TitleBar_Punctuation>@</TitleBar_Punctuation>
             <FpsInput layoutP={layoutP} />
-            <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>fps</TitleBar_Piece>
+            <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>
+              fps
+            </TitleBar_Piece>
           </TimeInputsContainer>
         </TitleBar>
       </Header_Container>
@@ -253,12 +260,12 @@ const TimeInput = styled(BasicNumberInput)`
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #adadadb3;
   border-radius: 2px;
-  
+
   &:hover {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.15);
   }
-  
+
   &:focus {
     background: rgba(0, 0, 0, 0.4);
     border-color: rgba(255, 255, 255, 0.2);
@@ -266,101 +273,105 @@ const TimeInput = styled(BasicNumberInput)`
   }
 `
 
-const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
-  return usePrism(() => {
-    const sheet = val(layoutP.sheet)
-    const sequence = sheet.getSequence()
-    const value = Number(val(sequence.pointer.position).toFixed(3))
+const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> =
+  ({layoutP}) => {
+    return usePrism(() => {
+      const sheet = val(layoutP.sheet)
+      const sequence = sheet.getSequence()
+      const value = Number(val(sequence.pointer.position).toFixed(3))
 
-    let tempPosition: number | undefined
-    const originalPosition = sequence.position
+      let tempPosition: number | undefined
+      const originalPosition = sequence.position
 
-    const fns = {
-      temporarilySetValue(newPosition: number): void {
-        if (tempPosition !== undefined) {
-          tempPosition = undefined
-        }
-        tempPosition = clamp(newPosition, 0, sequence.length)
-        sequence.position = tempPosition
-      },
-      discardTemporaryValue(): void {
-        if (tempPosition !== undefined) {
-          tempPosition = undefined
-          sequence.position = originalPosition
-        }
-      },
-      permanentlySetValue(newPosition: number): void {
-        if (tempPosition !== undefined) {
-          tempPosition = undefined
-        }
-        sequence.position = clamp(newPosition, 0, sequence.length)
-      },
-    }
+      const fns = {
+        temporarilySetValue(newPosition: number): void {
+          if (tempPosition !== undefined) {
+            tempPosition = undefined
+          }
+          tempPosition = clamp(newPosition, 0, sequence.length)
+          sequence.position = tempPosition
+        },
+        discardTemporaryValue(): void {
+          if (tempPosition !== undefined) {
+            tempPosition = undefined
+            sequence.position = originalPosition
+          }
+        },
+        permanentlySetValue(newPosition: number): void {
+          if (tempPosition !== undefined) {
+            tempPosition = undefined
+          }
+          sequence.position = clamp(newPosition, 0, sequence.length)
+        },
+      }
 
-    return (
-      <TimeInput
-        value={value}
-        {...fns}
-        isValid={(v) => isFinite(v) && v >= 0}
-        nudge={({deltaX}) => deltaX * 0.01}
-      />
-    )
-  }, [layoutP])
-}
+      return (
+        <TimeInput
+          value={value}
+          {...fns}
+          isValid={(v) => isFinite(v) && v >= 0}
+          nudge={({deltaX}) => deltaX * 0.01}
+        />
+      )
+    }, [layoutP])
+  }
 
-const DurationInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
-  return usePrism(() => {
-    const sheet = val(layoutP.sheet)
-    const sequence = sheet.getSequence()
-    const sequenceLength = sequence.length
+const DurationInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> =
+  ({layoutP}) => {
+    return usePrism(() => {
+      const sheet = val(layoutP.sheet)
+      const sequence = sheet.getSequence()
+      const sequenceLength = sequence.length
 
-    let tempTransaction: CommitOrDiscard | undefined
+      let tempTransaction: CommitOrDiscard | undefined
 
-    const fns = {
-      temporarilySetValue(newLength: number): void {
-        if (tempTransaction) {
-          tempTransaction.discard()
-          tempTransaction = undefined
-        }
-        tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
-          stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
-            ...sheet.address,
-            length: newLength,
+      const fns = {
+        temporarilySetValue(newLength: number): void {
+          if (tempTransaction) {
+            tempTransaction.discard()
+            tempTransaction = undefined
+          }
+          tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
+            stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
+              ...sheet.address,
+              length: newLength,
+            })
           })
-        })
-      },
-      discardTemporaryValue(): void {
-        if (tempTransaction) {
-          tempTransaction.discard()
-          tempTransaction = undefined
-        }
-      },
-      permanentlySetValue(newLength: number): void {
-        if (tempTransaction) {
-          tempTransaction.discard()
-          tempTransaction = undefined
-        }
-        getStudio()!.transaction(({stateEditors}) => {
-          stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
-            ...sheet.address,
-            length: newLength,
+        },
+        discardTemporaryValue(): void {
+          if (tempTransaction) {
+            tempTransaction.discard()
+            tempTransaction = undefined
+          }
+        },
+        permanentlySetValue(newLength: number): void {
+          if (tempTransaction) {
+            tempTransaction.discard()
+            tempTransaction = undefined
+          }
+          getStudio()!.transaction(({stateEditors}) => {
+            stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
+              ...sheet.address,
+              length: newLength,
+            })
           })
-        })
-      },
-    }
+        },
+      }
 
-    return (
-      <TimeInput
-        value={sequenceLength}
-        {...fns}
-        isValid={(v) => isFinite(v) && v > 0}
-        nudge={({deltaX}) => deltaX * 0.1}
-      />
-    )
-  }, [layoutP])
-}
+      return (
+        <TimeInput
+          value={sequenceLength}
+          {...fns}
+          isValid={(v) => isFinite(v) && v > 0}
+          nudge={({deltaX}) => deltaX * 0.1}
+        />
+      )
+    }, [layoutP])
+  }
 
-const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
+const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
+  layoutP,
+}) => {
   return usePrism(() => {
     const sheet = val(layoutP.sheet)
     const sequence = sheet.getSequence()
@@ -375,10 +386,12 @@ const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layo
           tempTransaction = undefined
         }
         tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
-          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit({
-            ...sheet.address,
-            subUnitsPerUnit: newFps,
-          })
+          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit(
+            {
+              ...sheet.address,
+              subUnitsPerUnit: newFps,
+            },
+          )
         })
       },
       discardTemporaryValue(): void {
@@ -393,10 +406,12 @@ const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layo
           tempTransaction = undefined
         }
         getStudio()!.transaction(({stateEditors}) => {
-          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit({
-            ...sheet.address,
-            subUnitsPerUnit: newFps,
-          })
+          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit(
+            {
+              ...sheet.address,
+              subUnitsPerUnit: newFps,
+            },
+          )
         })
       },
     }

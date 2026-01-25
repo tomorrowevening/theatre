@@ -20,7 +20,9 @@ const PrimitivePropRow: React.VFC<{
 
     // If there's no trackId, this property is not animated, so don't render anything
     if (!trackId) {
-      return <RightRow leaf={leaf} isCollapsed={false} node={<div />}></RightRow>
+      return (
+        <RightRow leaf={leaf} isCollapsed={false} node={<div />}></RightRow>
+      )
     }
 
     const trackData = val(
