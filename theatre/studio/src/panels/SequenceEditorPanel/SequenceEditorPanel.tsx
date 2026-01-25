@@ -231,7 +231,9 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
             <PositionInput layoutP={layoutP} />
             <TitleBar_Punctuation>/</TitleBar_Punctuation>
             <DurationInput layoutP={layoutP} />
-            <TitleBar_Punctuation>@</TitleBar_Punctuation>
+            <TitleBar_Punctuation>-</TitleBar_Punctuation>
+            <FrameInput layoutP={layoutP} />
+            <TitleBar_Punctuation>:</TitleBar_Punctuation>
             <FpsInput layoutP={layoutP} />
             <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>
               fps
@@ -271,6 +273,14 @@ const TimeInput = styled(BasicNumberInput)`
     border-color: rgba(255, 255, 255, 0.2);
     color: white;
   }
+`
+
+const FrameTimeInput = styled(TimeInput)`
+  width: 40px;
+`
+
+const FpsTimeInput = styled(TimeInput)`
+  width: 30px;
 `
 
 const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> =
@@ -417,10 +427,58 @@ const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
     }
 
     return (
-      <TimeInput
+      <FpsTimeInput
         value={fps}
         {...fns}
         isValid={(v) => isFinite(v) && v >= 1 && v <= 2 ** 12}
+        nudge={({deltaX}) => deltaX * 1}
+      />
+    )
+  }, [layoutP])
+}
+
+const FrameInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
+  layoutP,
+}) => {
+  return usePrism(() => {
+    const sheet = val(layoutP.sheet)
+    const sequence = sheet.getSequence()
+    const fps = sequence.subUnitsPerUnit
+    const position = val(sequence.pointer.position)
+    const frames = Math.round(position * fps)
+
+    let tempFrames: number | undefined
+    const originalPosition = sequence.position
+
+    const fns = {
+      temporarilySetValue(newFrames: number): void {
+        if (tempFrames !== undefined) {
+          tempFrames = undefined
+        }
+        tempFrames = newFrames
+        const newPosition = clamp(newFrames / fps, 0, sequence.length)
+        sequence.position = newPosition
+      },
+      discardTemporaryValue(): void {
+        if (tempFrames !== undefined) {
+          tempFrames = undefined
+          sequence.position = originalPosition
+        }
+      },
+      permanentlySetValue(newFrames: number): void {
+        if (tempFrames !== undefined) {
+          tempFrames = undefined
+        }
+        const newPosition = clamp(newFrames / fps, 0, sequence.length)
+        sequence.position = newPosition
+      },
+    }
+
+    return (
+      <FrameTimeInput
+        value={frames}
+        {...fns}
+        isValid={(v) => isFinite(v) && v >= 0}
         nudge={({deltaX}) => deltaX * 1}
       />
     )

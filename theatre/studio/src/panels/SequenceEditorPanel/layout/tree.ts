@@ -108,7 +108,9 @@ export const calculateSequenceEditorTree = (
   studio: Studio,
 ): SequenceEditorTree => {
   prism.ensurePrism()
-  const rootShouldRender = true
+  // The sheet row is redundant in the sequence editor; keep it in the view model
+  // for positioning but don't render it.
+  const rootShouldRender = false
   let topSoFar = 30 + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
   let nSoFar = 0
 
@@ -116,10 +118,8 @@ export const calculateSequenceEditorTree = (
     studio.atomP.ahistoric.projects.stateByProjectId[sheet.address.projectId]
       .stateBySheetId[sheet.address.sheetId].sequence.collapsableItems
 
-  const isCollapsed =
-    val(
-      collapsableItemSetP.byId[createStudioSheetItemKey.forSheet()].isCollapsed,
-    ) ?? false
+  // Since we no longer render the root sheet row, ignore its collapsed state.
+  const isCollapsed = false
 
   const tree: SequenceEditorTree = {
     type: 'sheet',
@@ -141,12 +141,7 @@ export const calculateSequenceEditorTree = (
 
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
     if (sheetObject) {
-      addObject(
-        sheetObject,
-        tree.children,
-        tree.depth + 1,
-        rootShouldRender && !isCollapsed,
-      )
+      addObject(sheetObject, tree.children, tree.depth + 1, true)
     }
   }
   tree.heightIncludingChildren = topSoFar - tree.top

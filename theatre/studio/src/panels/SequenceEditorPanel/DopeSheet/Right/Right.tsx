@@ -6,7 +6,7 @@ import React from 'react'
 import styled from 'styled-components'
 import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
-import SheetRow from './SheetRow'
+import RightSheetObjectRow from './SheetObjectRow'
 
 export const contentWidth = 1000000
 
@@ -37,7 +37,16 @@ const Right: React.FC<{
         <HorizontallyScrollableArea layoutP={layoutP} height={height}>
           <DopeSheetSelectionView layoutP={layoutP} height={height}>
             <ListContainer style={{top: tree.top + 'px'}}>
-              <SheetRow leaf={tree} layoutP={layoutP} />
+              {tree.children.map((sheetObjectLeaf) => (
+                <RightSheetObjectRow
+                  layoutP={layoutP}
+                  key={
+                    'sheetObject-' +
+                    sheetObjectLeaf.sheetObject.address.objectKey
+                  }
+                  leaf={sheetObjectLeaf}
+                />
+              ))}
             </ListContainer>
           </DopeSheetSelectionView>
         </HorizontallyScrollableArea>

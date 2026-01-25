@@ -4,7 +4,8 @@ import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
-import SheetRow from './SheetRow'
+import LeftSheetObjectRow from './SheetObjectRow'
+import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
 
 const Container = styled.div`
   position: absolute;
@@ -28,7 +29,15 @@ const Left: React.VFC<{
     return (
       <Container style={{width: width + 'px', top: tree.top + 'px'}}>
         <ListContainer>
-          <SheetRow leaf={tree} />
+          {tree.children.map((sheetObjectLeaf) => (
+            <LeftSheetObjectRow
+              key={
+                'sheetObject-' +
+                uniqueKeyForAnyObject(sheetObjectLeaf.sheetObject)
+              }
+              leaf={sheetObjectLeaf}
+            />
+          ))}
         </ListContainer>
       </Container>
     )
