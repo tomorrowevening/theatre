@@ -86,7 +86,7 @@ export type SequenceEditorTree_PrimitiveProp =
   SequenceEditorTree_Row<'primitiveProp'> & {
     sheetObject: SheetObject
     pathToProp: PathToProp
-    trackId: SequenceTrackId
+    trackId?: SequenceTrackId
     propConf: PropTypeConfig_AllSimples
   }
 
@@ -107,16 +107,16 @@ export const calculateSequenceEditorTree = (
 ): SequenceEditorTree => {
   prism.ensurePrism()
   const rootShouldRender = true
-  let topSoFar = titleBarHeight + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
+  let topSoFar = 30 + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
   let nSoFar = 0
 
   const collapsableItemSetP =
     studio.atomP.ahistoric.projects.stateByProjectId[sheet.address.projectId]
       .stateBySheetId[sheet.address.sheetId].sequence.collapsableItems
 
-  const isCollapsedP =
+  const isCollapsed = val(
     collapsableItemSetP.byId[createStudioSheetItemKey.forSheet()].isCollapsed
-  const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+  ) ?? false
 
   const tree: SequenceEditorTree = {
     type: 'sheet',
@@ -125,7 +125,7 @@ export const calculateSequenceEditorTree = (
     children: [],
     sheetItemKey: createStudioSheetItemKey.forSheet(),
     shouldRender: rootShouldRender,
-    top: titleBarHeight,
+    top: 30,
     depth: 0,
     n: nSoFar,
     nodeHeight: rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0,
@@ -159,13 +159,14 @@ export const calculateSequenceEditorTree = (
     )
     const objectConfig = val(sheetObject.template.configPointer)
 
-    if (Object.keys(trackSetups).length === 0) return
+    // Always show the object if it has any properties, not just if it has sequenced tracks
+    if (Object.keys(objectConfig.props).length === 0) return
 
-    const isCollapsedP =
+    const isCollapsed = val(
       collapsableItemSetP.byId[
         createStudioSheetItemKey.forSheetObject(sheetObject)
       ].isCollapsed
-    const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+    ) ?? false
 
     const row: SequenceEditorTree_SheetObject = {
       type: 'sheetObject',
@@ -191,6 +192,7 @@ export const calculateSequenceEditorTree = (
 
     addProps(
       sheetObject,
+      objectConfig.props,
       trackSetups,
       [],
       objectConfig,
@@ -204,6 +206,7 @@ export const calculateSequenceEditorTree = (
 
   function addProps(
     sheetObject: SheetObject,
+    propsConfig: PropTypeConfig_Compound<$IntentionalAny>['props'],
     trackSetups: IPropPathToTrackIdTree,
     pathSoFar: PathToProp,
     parentPropConfig: PropTypeConfig_Compound<$IntentionalAny>,
@@ -213,11 +216,11 @@ export const calculateSequenceEditorTree = (
     level: number,
     shouldRender: boolean,
   ) {
-    for (const [propKey, setupOrSetups] of Object.entries(trackSetups)) {
-      const propConfig = parentPropConfig.props[propKey]
+    for (const [propKey, propConfig] of Object.entries(propsConfig)) {
+      const trackOrMapping = trackSetups[propKey]
       addProp(
         sheetObject,
-        setupOrSetups!,
+        trackOrMapping,
         [...pathSoFar, propKey],
         propConfig,
         arrayOfChildren,
@@ -229,7 +232,7 @@ export const calculateSequenceEditorTree = (
 
   function addProp(
     sheetObject: SheetObject,
-    trackIdOrMapping: SequenceTrackId | IPropPathToTrackIdTree,
+    trackIdOrMapping: SequenceTrackId | IPropPathToTrackIdTree | undefined,
     pathToProp: PathToProp,
     conf: PropTypeConfig,
     arrayOfChildren: Array<
@@ -240,7 +243,7 @@ export const calculateSequenceEditorTree = (
   ) {
     if (conf.type === 'compound') {
       const trackMapping =
-        trackIdOrMapping as $IntentionalAny as IPropPathToTrackIdTree
+        (trackIdOrMapping as $IntentionalAny as IPropPathToTrackIdTree) || {}
       addProp_compound(
         sheetObject,
         trackMapping,
@@ -254,7 +257,9 @@ export const calculateSequenceEditorTree = (
     } else if (conf.type === 'enum') {
       logger.warn('Prop type enum is not yet supported in the sequence editor')
     } else {
-      const trackId = trackIdOrMapping as $IntentionalAny as SequenceTrackId
+      const trackId = trackIdOrMapping as $IntentionalAny as
+        | SequenceTrackId
+        | undefined
 
       addProp_primitive(
         sheetObject,
@@ -280,11 +285,11 @@ export const calculateSequenceEditorTree = (
     level: number,
     shouldRender: boolean,
   ) {
-    const isCollapsedP =
+    const isCollapsed = val(
       collapsableItemSetP.byId[
         createStudioSheetItemKey.forSheetObjectProp(sheetObject, pathToProp)
       ].isCollapsed
-    const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+    ) ?? false
 
     const row: SequenceEditorTree_PropWithChildren = {
       type: 'propWithChildren',
@@ -314,6 +319,7 @@ export const calculateSequenceEditorTree = (
 
     addProps(
       sheetObject,
+      conf.props,
       trackMapping,
       pathToProp,
       conf,
@@ -328,7 +334,7 @@ export const calculateSequenceEditorTree = (
 
   function addProp_primitive(
     sheetObject: SheetObject,
-    trackId: SequenceTrackId,
+    trackId: SequenceTrackId | undefined,
     pathToProp: PathToProp,
     propConf: PropTypeConfig_AllSimples,
     arrayOfChildren: Array<

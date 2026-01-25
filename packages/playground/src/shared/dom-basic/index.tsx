@@ -2,45 +2,22 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import studio from '@tomorrowevening/theatre-studio'
 import type {IExtension, ToolsetConfig} from '@tomorrowevening/theatre-studio'
-import {getProject, types} from '@tomorrowevening/theatre-core'
-import type {ISheetObject} from '@tomorrowevening/theatre-core'
+import {getProject} from '@tomorrowevening/theatre-core'
 import {Scene} from './Scene'
 /**
  * This is a basic example of using Theatre.js for manipulating the DOM.
  */
 
-const dataConfig = {
-  exampleProp: types.stringLiteral('yes', {
-    no: 'no',
-    yes: 'yes',
-  }),
-}
 const extensionConfig: IExtension = {
   id: 'hello-world-extension',
   toolbars: {
     global(set, studio) {
-      const obj: ISheetObject<typeof dataConfig> = studio
-        .getStudioProject()
-        .sheet('example extension UI')
-        .object('editor', dataConfig)
-      return obj.onValuesChange(({exampleProp}) =>
-        set([
-          {
-            type: 'Icon',
-            title: 'Example Icon',
-            svgSource: '👁',
-            onClick: () => studio.createPane('example'),
-          },
-        ]),
-      )
-    },
-    exampleToolbar(set, studio) {
       const toolsetConfig: ToolsetConfig = [
         {
           type: 'Icon',
           title: 'Example Icon',
           svgSource: '🍕',
-          onClick: () => console.log('icon clicked!'),
+          onClick: () => studio.createPane('example'),
         },
       ]
       set(toolsetConfig)

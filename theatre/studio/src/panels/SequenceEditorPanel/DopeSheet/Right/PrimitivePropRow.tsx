@@ -18,6 +18,11 @@ const PrimitivePropRow: React.VFC<{
     const {sheetObject} = leaf
     const {trackId} = leaf
 
+    // If there's no trackId, this property is not animated, so don't render anything
+    if (!trackId) {
+      return <RightRow leaf={leaf} isCollapsed={false} node={<div />}></RightRow>
+    }
+
     const trackData = val(
       getStudio()!.atomP.historic.coreByProject[sheetObject.address.projectId]
         .sheetsById[sheetObject.address.sheetId].sequence.tracksByObject[

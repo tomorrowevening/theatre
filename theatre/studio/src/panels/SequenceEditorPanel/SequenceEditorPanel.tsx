@@ -3,7 +3,7 @@ import {usePrism} from '@tomorrowevening/theatre-react'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import styled from 'styled-components'
 
 import DopeSheet from './DopeSheet/DopeSheet'
@@ -13,6 +13,10 @@ import {sequenceEditorPanelLayout} from './layout/layout'
 import RightOverlay from './RightOverlay/RightOverlay'
 import BasePanel, {usePanel} from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
 import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
+import clamp from 'lodash-es/clamp'
+import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
 import PanelDragZone from '@tomorrowevening/theatre-studio/panels/BasePanel/PanelDragZone'
 import PanelWrapper from '@tomorrowevening/theatre-studio/panels/BasePanel/PanelWrapper'
 import FrameStampPositionProvider from './FrameStampPositionProvider'
@@ -73,6 +77,10 @@ const Header_Container = styled(PanelDragZone)`
   left: 0;
   top: 0;
   z-index: 1;
+  
+  ${TitleBar} {
+    height: 30px;
+  }
 `
 
 const defaultPosition: PanelPosition = {
@@ -203,6 +211,8 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
 }) => {
   return usePrism(() => {
     const sheet = val(layoutP.sheet)
+    const sequence = sheet.getSequence()
+    
     return (
       <Header_Container
         style={{
@@ -210,15 +220,194 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
         }}
       >
         <TitleBar>
-          <TitleBar_Piece>{sheet.address.sheetId} </TitleBar_Piece>
-
-          <TitleBar_Punctuation>{':'}&nbsp;</TitleBar_Punctuation>
-          <TitleBar_Piece>{sheet.address.sheetInstanceId} </TitleBar_Piece>
-
-          <TitleBar_Punctuation>&nbsp;{'>'}&nbsp;</TitleBar_Punctuation>
-          <TitleBar_Piece>Sequence</TitleBar_Piece>
+          <TitleBar_Piece>{sheet.address.sheetId}</TitleBar_Piece>
+          
+          <TimeInputsContainer>
+            <PositionInput layoutP={layoutP} />
+            <TitleBar_Punctuation>/</TitleBar_Punctuation>
+            <DurationInput layoutP={layoutP} />
+            <TitleBar_Punctuation>@</TitleBar_Punctuation>
+            <FpsInput layoutP={layoutP} />
+            <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>fps</TitleBar_Piece>
+          </TimeInputsContainer>
         </TitleBar>
       </Header_Container>
+    )
+  }, [layoutP])
+}
+
+const TimeInputsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 8px;
+`
+
+const TimeInput = styled(BasicNumberInput)`
+  width: 50px;
+  height: 20px;
+  font-size: 12px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #adadadb3;
+  border-radius: 2px;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  &:focus {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+`
+
+const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
+  return usePrism(() => {
+    const sheet = val(layoutP.sheet)
+    const sequence = sheet.getSequence()
+    const value = Number(val(sequence.pointer.position).toFixed(3))
+
+    let tempPosition: number | undefined
+    const originalPosition = sequence.position
+
+    const fns = {
+      temporarilySetValue(newPosition: number): void {
+        if (tempPosition !== undefined) {
+          tempPosition = undefined
+        }
+        tempPosition = clamp(newPosition, 0, sequence.length)
+        sequence.position = tempPosition
+      },
+      discardTemporaryValue(): void {
+        if (tempPosition !== undefined) {
+          tempPosition = undefined
+          sequence.position = originalPosition
+        }
+      },
+      permanentlySetValue(newPosition: number): void {
+        if (tempPosition !== undefined) {
+          tempPosition = undefined
+        }
+        sequence.position = clamp(newPosition, 0, sequence.length)
+      },
+    }
+
+    return (
+      <TimeInput
+        value={value}
+        {...fns}
+        isValid={(v) => isFinite(v) && v >= 0}
+        nudge={({deltaX}) => deltaX * 0.01}
+      />
+    )
+  }, [layoutP])
+}
+
+const DurationInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
+  return usePrism(() => {
+    const sheet = val(layoutP.sheet)
+    const sequence = sheet.getSequence()
+    const sequenceLength = sequence.length
+
+    let tempTransaction: CommitOrDiscard | undefined
+
+    const fns = {
+      temporarilySetValue(newLength: number): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+        tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
+          stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
+            ...sheet.address,
+            length: newLength,
+          })
+        })
+      },
+      discardTemporaryValue(): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+      },
+      permanentlySetValue(newLength: number): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+        getStudio()!.transaction(({stateEditors}) => {
+          stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
+            ...sheet.address,
+            length: newLength,
+          })
+        })
+      },
+    }
+
+    return (
+      <TimeInput
+        value={sequenceLength}
+        {...fns}
+        isValid={(v) => isFinite(v) && v > 0}
+        nudge={({deltaX}) => deltaX * 0.1}
+      />
+    )
+  }, [layoutP])
+}
+
+const FpsInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({layoutP}) => {
+  return usePrism(() => {
+    const sheet = val(layoutP.sheet)
+    const sequence = sheet.getSequence()
+    const fps = sequence.subUnitsPerUnit
+
+    let tempTransaction: CommitOrDiscard | undefined
+
+    const fns = {
+      temporarilySetValue(newFps: number): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+        tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
+          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit({
+            ...sheet.address,
+            subUnitsPerUnit: newFps,
+          })
+        })
+      },
+      discardTemporaryValue(): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+      },
+      permanentlySetValue(newFps: number): void {
+        if (tempTransaction) {
+          tempTransaction.discard()
+          tempTransaction = undefined
+        }
+        getStudio()!.transaction(({stateEditors}) => {
+          stateEditors.coreByProject.historic.sheetsById.sequence.setSubUnitsPerUnit({
+            ...sheet.address,
+            subUnitsPerUnit: newFps,
+          })
+        })
+      },
+    }
+
+    return (
+      <TimeInput
+        value={fps}
+        {...fns}
+        isValid={(v) => isFinite(v) && v >= 1 && v <= 2 ** 12}
+        nudge={({deltaX}) => deltaX * 1}
+      />
     )
   }, [layoutP])
 }

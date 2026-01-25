@@ -14,6 +14,9 @@ import {graphEditorColors} from '@tomorrowevening/theatre-studio/panels/Sequence
 import {BaseHeader, LeftRowContainer as BaseContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
+import {simplePropEditorByPropType} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/simplePropEditorByPropType'
+import type {ISimplePropEditorReactProps} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
+import type {PropTypeConfig_AllSimples} from '@tomorrowevening/theatre-core/propTypes'
 
 const theme = {
   label: {
@@ -29,6 +32,7 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
 }>`
   display: flex;
   color: ${theme.label.color};
+  padding-left: calc(10px + var(--depth) * 10px);
   padding-right: 12px;
   align-items: center;
   justify-content: flex-end;
@@ -83,6 +87,22 @@ const PrimitivePropRowHead_Label = styled.span`
   }
 `
 
+const ValueEditorContainer = styled.div`
+  margin-right: auto;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  
+  /* Override some default input styles to fit in the row */
+  input {
+    font-size: 11px;
+    height: 18px;
+    padding: 2px 4px;
+  }
+`
+
 const PrimitivePropRow: React.FC<{
   leaf: SequenceEditorTree_PrimitiveProp
 }> = ({leaf}) => {
@@ -92,7 +112,7 @@ const PrimitivePropRow: React.FC<{
   ) as Pointer<$IntentionalAny>
 
   const obj = leaf.sheetObject
-  const {controlIndicators} = useEditingToolsForSimplePropInDetailsPanel(
+  const editingTools = useEditingToolsForSimplePropInDetailsPanel(
     pointerToProp,
     obj,
     leaf.propConf,
@@ -121,25 +141,33 @@ const PrimitivePropRow: React.FC<{
           {...c, pathToProp: leaf.pathToProp},
         )
       } else {
-        stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.addPropToGraphEditor(
-          {...c, pathToProp: leaf.pathToProp},
-        )
-        stateEditors.studio.historic.panels.sequenceEditor.graphEditor.setIsOpen(
-          {
-            isOpen: true,
-          },
-        )
+        // Only allow adding to graph editor if the property is sequenced
+        if (leaf.trackId) {
+          stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.addPropToGraphEditor(
+            {...c, pathToProp: leaf.pathToProp},
+          )
+          stateEditors.studio.historic.panels.sequenceEditor.graphEditor.setIsOpen(
+            {
+              isOpen: true,
+            },
+          )
+        }
       }
     })
   }, [leaf])
 
   const label =
     leaf.propConf.label ?? leaf.pathToProp[leaf.pathToProp.length - 1]
-  const isSelectable = true
+  const isSelectable = !!leaf.trackId
 
   const headRef = useRef<HTMLDivElement | null>(null)
 
   usePropHighlightMouseEnter(headRef.current, leaf)
+
+  // Get the appropriate prop editor component
+  const PropEditorComponent = simplePropEditorByPropType[
+    leaf.propConf.type
+  ] as React.VFC<ISimplePropEditorReactProps<PropTypeConfig_AllSimples>>
 
   return (
     <PrimitivePropRowContainer depth={leaf.depth}>
@@ -152,7 +180,14 @@ const PrimitivePropRow: React.FC<{
         isSelected={isSelected === true}
       >
         <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
-        {controlIndicators}
+        <ValueEditorContainer>
+          <PropEditorComponent
+            editingTools={editingTools}
+            propConfig={leaf.propConf}
+            value={editingTools.value}
+          />
+        </ValueEditorContainer>
+        {editingTools.controlIndicators}
         <PrimitivePropRowIconContainer
           onClick={toggleSelect}
           isSelected={isSelected === true}

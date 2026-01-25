@@ -47,9 +47,9 @@ const Container = styled.div<{isVisible: boolean}>`
 
 const Rod = styled.div`
   position: absolute;
-  top: 8px;
+  top: 30px;
   width: 0;
-  height: calc(100% - 8px);
+  height: calc(100% - 30px);
   border-left: 1px solid #27e0fd;
   z-index: 10;
   pointer-events: none;
@@ -71,7 +71,7 @@ const Thumb = styled.div`
   background-color: var(--thumbColor);
   position: absolute;
   width: 5px;
-  height: 13px;
+  height: 34px;
   top: -4px;
   left: -2px;
   z-index: 11;
@@ -127,7 +127,7 @@ const Squinch = styled.div`
   position: absolute;
   left: 1px;
   right: 1px;
-  top: 13px;
+  top: 35px;
   border-top: 3px solid var(--thumbColor);
   border-right: 1px solid transparent;
   border-left: 1px solid transparent;

@@ -8,7 +8,7 @@ import {includeLockFrameStampAttrs} from '@tomorrowevening/theatre-studio/panels
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import FocusRangeZone from './FocusRangeZone/FocusRangeZone'
 
-export const topStripHeight = 18
+export const topStripHeight = 30
 
 export const topStripTheme = {
   backgroundColor: `#1f2120eb`,
@@ -24,6 +24,7 @@ const Container = styled.div`
   box-sizing: border-box;
   background: ${topStripTheme.backgroundColor};
   border-bottom: 1px solid ${topStripTheme.borderColor};
+  z-index: -10;
   ${pointerEventsAutoInNormalMode};
 `
 

@@ -13,7 +13,7 @@ import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css
 import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
 
 const Container = styled.div`
-  --threadHeight: 6px;
+  --threadHeight: 20px;
   --bg-inactive: #32353b;
   --bg-active: #5b5c5d;
   position: absolute;
@@ -35,7 +35,7 @@ const TimeThread = styled.div`
 
 const RangeBar = styled.div`
   position: absolute;
-  height: 5px;
+  height: 20px;
   background: var(--bg-inactive);
   cursor: ew-resize;
   z-index: 2;
@@ -54,7 +54,7 @@ const RangeBar = styled.div`
 
 const RangeHandle = styled.div`
   position: absolute;
-  height: 5px;
+  height: 20px;
   width: 7px;
   left: 0;
   z-index: 2;
@@ -284,7 +284,7 @@ const HorizontalScrollbar: React.FC<{
 
   return (
     <Container
-      style={{bottom: bottom + 8 + 'px'}}
+      style={{bottom: bottom + 23 + 'px'}}
       {...includeLockFrameStampAttrs('hide')}
     >
       <TimeThread>

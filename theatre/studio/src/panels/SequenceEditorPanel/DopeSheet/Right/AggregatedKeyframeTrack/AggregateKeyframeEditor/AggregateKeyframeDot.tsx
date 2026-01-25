@@ -79,6 +79,9 @@ function primitivePropBuild(
   viewModelLeaf: SequenceEditorTree_PrimitiveProp,
   keyframes: KeyframeWithTrack[],
 ): PrimitivePropEditingOptions | null {
+  // If there's no trackId, this property is not animated
+  if (!viewModelLeaf.trackId) return null
+  
   const keyframe = keyframes.find((kf) => kf.track.id === viewModelLeaf.trackId)
   if (!keyframe) return null
   return {

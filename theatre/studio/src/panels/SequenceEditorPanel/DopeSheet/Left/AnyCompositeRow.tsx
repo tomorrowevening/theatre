@@ -27,7 +27,7 @@ const LeftRowHeader = styled(BaseHeader)<{
   isSelectable: boolean
   isSelected: boolean
 }>`
-  padding-left: calc(8px + var(--depth) * 20px);
+  padding-left: calc(var(--depth) * 10px);
 
   display: flex;
   align-items: stretch;
@@ -50,6 +50,19 @@ const LeftRowHead_Label = styled.span`
   ${LeftRowHeader}:hover & {
     color: #ccc;
   }
+`
+
+const LeftRowHead_Value = styled.span`
+  color: #6a9955;
+  font-size: 12px;
+  margin-right: auto;
+  margin-left: 8px;
+  opacity: 0.8;
+  font-weight: normal;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 const LeftRowHead_Icon = styled.span<{isCollapsed: boolean}>`
@@ -87,6 +100,7 @@ const AnyCompositeRow: React.FC<{
   isSelected?: boolean
   isSelectable?: boolean
   isCollapsed: boolean
+  valueDisplay?: React.ReactNode
   children?: React.ReactNode
 }> = ({
   leaf,
@@ -97,6 +111,7 @@ const AnyCompositeRow: React.FC<{
   toggleSelect,
   toggleCollapsed,
   isCollapsed,
+  valueDisplay,
 }) => {
   const hasChildren = Array.isArray(children) && children.length > 0
 
@@ -120,6 +135,7 @@ const AnyCompositeRow: React.FC<{
           <HiOutlineChevronRight />
         </LeftRowHead_Icon>
         <LeftRowHead_Label>{label}</LeftRowHead_Label>
+        {valueDisplay && <LeftRowHead_Value>{valueDisplay}</LeftRowHead_Value>}
       </LeftRowHeader>
       {hasChildren && <LeftRowChildren>{children}</LeftRowChildren>}
     </LeftRowContainer>

@@ -166,10 +166,10 @@ export type SequenceEditorPanelLayout = {
 // type ClippedSpaceProgression = number
 
 /**
- * This means the left side of the panel is 20% of its width, and the
- * right side is 80%
+ * This means the left side of the panel is 30% of its width, and the
+ * right side is 70%
  */
-const panelSplitRatio = 0.2
+const panelSplitRatio = 0.3
 
 const initialClippedSpaceRange: IRange = {start: 0, end: 10}
 
