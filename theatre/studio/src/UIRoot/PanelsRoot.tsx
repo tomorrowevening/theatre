@@ -1,5 +1,4 @@
 import OutlinePanel from '@tomorrowevening/theatre-studio/panels/OutlinePanel/OutlinePanel'
-import DetailPanel from '@tomorrowevening/theatre-studio/panels/DetailPanel/DetailPanel'
 import React from 'react'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {useVal} from '@tomorrowevening/theatre-react'
@@ -21,7 +20,6 @@ const PanelsRoot: React.VFC = () => {
     <>
       {paneEls}
       <OutlinePanel />
-      <DetailPanel />
       <SequenceEditorPanel />
     </>
   )

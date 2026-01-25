@@ -19,7 +19,6 @@ import {
   TheatreLoggerLevel,
 } from '@tomorrowevening/theatre-shared/logger'
 import {ProvideLogger} from '@tomorrowevening/theatre-studio/uiComponents/useLogger'
-import {Notifier} from '@tomorrowevening/theatre-studio/notify'
 
 const MakeRootHostContainStatic =
   typeof window !== 'undefined'
@@ -102,7 +101,6 @@ export default function UIRoot(props: {
                     <PortalLayer ref={portalLayerRef} />
                     <GlobalToolbar />
                     <PanelsRoot />
-                    <Notifier />
                   </Container>
                 </>
               </ProvideStyles>
