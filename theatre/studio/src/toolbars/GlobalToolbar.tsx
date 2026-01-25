@@ -9,21 +9,31 @@ import BasicTooltip from '@tomorrowevening/theatre-studio/uiComponents/Popover/B
 import {val} from '@tomorrowevening/theatre-dataverse'
 import ExtensionToolbar from './ExtensionToolbar/ExtensionToolbar'
 import PinButton from './PinButton'
-import {
-  Details,
-  Ellipsis,
-  Outline,
-  Bell,
-} from '@tomorrowevening/theatre-studio/uiComponents/icons'
+import {Outline} from '@tomorrowevening/theatre-studio/uiComponents/icons'
 import DoubleChevronLeft from '@tomorrowevening/theatre-studio/uiComponents/icons/DoubleChevronLeft'
 import DoubleChevronRight from '@tomorrowevening/theatre-studio/uiComponents/icons/DoubleChevronRight'
-import ToolbarIconButton from '@tomorrowevening/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
 import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
 import MoreMenu from './MoreMenu/MoreMenu'
 import {
   useNotifications,
   useEmptyNotificationsTooltip,
 } from '@tomorrowevening/theatre-studio/notify'
+
+function saveFile(content: string, fileName: string) {
+  const file = new File([content], fileName)
+  const objUrl = URL.createObjectURL(file)
+  const a = Object.assign(document.createElement('a'), {
+    href: objUrl,
+    target: '_blank',
+    rel: 'noopener',
+  })
+  a.setAttribute('download', fileName)
+  a.click()
+
+  setTimeout(() => {
+    URL.revokeObjectURL(objUrl)
+  }, 40000)
+}
 
 const Container = styled.div`
   height: 36px;
@@ -105,7 +115,6 @@ const GlobalToolbar: React.FC = () => {
   )
 
   const outlinePinned = useVal(getStudio().atomP.ahistoric.pinOutline) ?? true
-  const detailsPinned = useVal(getStudio().atomP.ahistoric.pinDetails) ?? true
   const hasUpdates =
     useVal(getStudio().atomP.ahistoric.updateChecker.result.hasUpdates) === true
 
@@ -181,50 +190,29 @@ const GlobalToolbar: React.FC = () => {
             {conflicts.length}
           </NumberOfConflictsIndicator>
         ) : null}
-        <ExtensionToolbar showLeftDivider toolbarId="global" />
-      </SubContainer>
-      <SubContainer>
-        {notificationsTooltip}
         <PinButton
-          ref={notificationsTriggerRef as $IntentionalAny}
           onClick={() => {
-            getStudio().transaction(({stateEditors, drafts}) => {
-              stateEditors.studio.ahistoric.setPinNotifications(
-                !(drafts.ahistoric.pinNotifications ?? false),
-              )
+            const projects = val(getStudio().projectsP)
+            Object.values(projects).forEach((project) => {
+              if (project) {
+                const projectId = project.address.projectId
+                const slugifiedProjectId = projectId.replace(/[^\w\d'_\-]+/g, ' ').trim()
+                const fileName = `${slugifiedProjectId}.theatre-project-state.json`
+                const str = JSON.stringify(
+                  getStudio().createContentOfSaveFile(projectId),
+                  null,
+                  2,
+                )
+                saveFile(str, fileName)
+              }
             })
           }}
-          icon={<Bell />}
-          pinHintIcon={<Bell />}
-          unpinHintIcon={<Bell />}
-          pinned={useVal(getStudio().atomP.ahistoric.pinNotifications) ?? false}
-        >
-          {hasNotifications && <HasUpdatesBadge type="warning" />}
-        </PinButton>
-        {moreMenu.node}
-        <ToolbarIconButton
-          ref={moreMenuTriggerRef}
-          onClick={(e) => {
-            moreMenu.toggle(e, moreMenuTriggerRef.current!)
-          }}
-        >
-          <Ellipsis />
-          {showUpdatesBadge && <HasUpdatesBadge type="info" />}
-        </ToolbarIconButton>
-        <PinButton
-          ref={triggerButtonRef as $IntentionalAny}
-          onClick={() => {
-            getStudio().transaction(({stateEditors, drafts}) => {
-              stateEditors.studio.ahistoric.setPinDetails(
-                !(drafts.ahistoric.pinDetails ?? true),
-              )
-            })
-          }}
-          icon={<Details />}
-          pinHintIcon={<DoubleChevronLeft />}
-          unpinHintIcon={<DoubleChevronRight />}
-          pinned={detailsPinned}
+          icon='💾'
+          pinHintIcon='💾'
+          unpinHintIcon='💾'
+          pinned={false}
         />
+        <ExtensionToolbar showLeftDivider toolbarId="global" />
       </SubContainer>
     </Container>
   )

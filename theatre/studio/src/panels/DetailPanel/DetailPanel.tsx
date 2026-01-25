@@ -16,7 +16,6 @@ import {
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import ObjectDetails from './ObjectDetails'
-import ProjectDetails from './ProjectDetails'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import useHotspot from '@tomorrowevening/theatre-studio/uiComponents/useHotspot'
 import {Atom, prism, val} from '@tomorrowevening/theatre-dataverse'
@@ -153,21 +152,6 @@ const DetailPanel: React.FC<{}> = (props) => {
         </Container>
       )
     }
-    const project = selection.find(isProject)
-    if (project) {
-      return (
-        <Container pin={showDetailsPanel}>
-          <Header>
-            <Title title={`${project.address.projectId}`}>
-              <TitleBar_Piece>{project.address.projectId} </TitleBar_Piece>
-            </Title>
-          </Header>
-          <Body>
-            <ProjectDetails projects={[project]} />
-          </Body>
-        </Container>
-      )
-    }
 
     return (
       <Container
@@ -179,7 +163,6 @@ const DetailPanel: React.FC<{}> = (props) => {
           isDetailPanelHoveredB.set(false)
         }}
       >
-        <EmptyState />
       </Container>
     )
   }, [showDetailsPanel])
