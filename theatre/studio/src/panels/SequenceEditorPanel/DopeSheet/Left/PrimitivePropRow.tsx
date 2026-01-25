@@ -98,7 +98,7 @@ const ValueEditorContainer = styled.div`
   /* Override some default input styles to fit in the row */
   input {
     font-size: 11px;
-    height: 18px;
+    height: 24px;
     padding: 2px 4px;
   }
 `

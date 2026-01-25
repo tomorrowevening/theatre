@@ -27,6 +27,7 @@ const Container = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;
+  padding-bottom: 25px;
   background: ${transparentize(0.03, '#1a1c1e')};
 `
 

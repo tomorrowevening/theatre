@@ -14,8 +14,8 @@ const Container = styled.button`
   border: 1px solid #191919;
   border-radius: 2px;
   display: flex;
-  bottom: 14px;
-  right: 8px;
+  bottom: 25px;
+  right: 15px;
   z-index: 1;
   position: absolute;
 
