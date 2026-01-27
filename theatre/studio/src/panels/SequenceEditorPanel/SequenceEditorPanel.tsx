@@ -280,7 +280,7 @@ const FrameTimeInput = styled(TimeInput)`
 `
 
 const FpsTimeInput = styled(TimeInput)`
-  width: 30px;
+  width: 40px;
 `
 
 const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> =
