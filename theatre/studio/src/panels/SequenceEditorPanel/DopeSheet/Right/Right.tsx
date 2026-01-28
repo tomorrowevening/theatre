@@ -17,6 +17,7 @@ const ListContainer = styled.ul`
   position: absolute;
   left: 0;
   width: ${contentWidth}px;
+  z-index: 10;
 `
 
 const Right: React.FC<{

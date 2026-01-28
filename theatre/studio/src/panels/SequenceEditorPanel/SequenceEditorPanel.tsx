@@ -38,6 +38,7 @@ import {
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
+import {SVGViewer} from './SVGViewer'
 
 const Container = styled(PanelWrapper)`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -56,6 +57,7 @@ const LeftBackground = styled.div`
 
 export const zIndexes = (() => {
   const s = {
+    svgViewer: 0,
     rightBackground: 0,
     scrollableArea: 0,
     rightOverlay: 0,
@@ -116,6 +118,7 @@ const Content: React.VFC<{}> = () => {
   const [containerNode, setContainerNode] = useState<null | HTMLDivElement>(
     null,
   )
+
   usePresenceListenersOnRootElement(containerNode)
   return usePrism(() => {
     const panelSize = prism.memo(
@@ -199,6 +202,12 @@ const Content: React.VFC<{}> = () => {
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
+          <SVGViewer
+            key={key + '-svgViewer'}
+            layoutP={layoutP}
+            renderMode="both"
+            color="#4575e3"
+          />
           <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />
           {graphEditorOpen && (
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
