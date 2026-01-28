@@ -190,28 +190,6 @@ const GlobalToolbar: React.FC = () => {
             {conflicts.length}
           </NumberOfConflictsIndicator>
         ) : null}
-        <PinButton
-          onClick={() => {
-            const projects = val(getStudio().projectsP)
-            Object.values(projects).forEach((project) => {
-              if (project) {
-                const projectId = project.address.projectId
-                const slugifiedProjectId = projectId.replace(/[^\w\d'_\-]+/g, ' ').trim()
-                const fileName = `${slugifiedProjectId}.theatre-project-state.json`
-                const str = JSON.stringify(
-                  getStudio().createContentOfSaveFile(projectId),
-                  null,
-                  2,
-                )
-                saveFile(str, fileName)
-              }
-            })
-          }}
-          icon='💾'
-          pinHintIcon='💾'
-          unpinHintIcon='💾'
-          pinned={false}
-        />
         <ExtensionToolbar showLeftDivider toolbarId="global" />
       </SubContainer>
     </Container>

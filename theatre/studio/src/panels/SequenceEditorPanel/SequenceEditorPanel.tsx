@@ -1,9 +1,11 @@
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {generateSequenceMarkerId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
-import React, {useState} from 'react'
+import React, {useState, useCallback, useRef} from 'react'
 import styled from 'styled-components'
 
 import DopeSheet from './DopeSheet/DopeSheet'
@@ -15,7 +17,6 @@ import BasePanel, {
   usePanel,
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
 import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
-import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import clamp from 'lodash-es/clamp'
 import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
@@ -39,6 +40,27 @@ import {
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 import SVGViewer from './SVGViewer'
+import type {SVGViewerRef} from './SVGViewer'
+import StartMenu from './StartMenu'
+
+/**
+ * Initiates a file download for the provided data with the provided file name
+ */
+function saveFile(content: string | Blob, fileName: string) {
+  const file = new File([content], fileName)
+  const objUrl = URL.createObjectURL(file)
+  const a = Object.assign(document.createElement('a'), {
+    href: objUrl,
+    target: '_blank',
+    rel: 'noopener',
+  })
+  a.setAttribute('download', fileName)
+  a.click()
+
+  setTimeout(() => {
+    URL.revokeObjectURL(objUrl)
+  }, 40000)
+}
 
 const Container = styled(PanelWrapper)`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -83,7 +105,7 @@ const Header_Container = styled(PanelDragZone)`
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 
   ${TitleBar} {
     height: 30px;
@@ -118,6 +140,128 @@ const Content: React.VFC<{}> = () => {
   const [containerNode, setContainerNode] = useState<null | HTMLDivElement>(
     null,
   )
+
+  // SVGViewer ref for controlling it from the Start Menu
+  const svgViewerRef = useRef<SVGViewerRef>(null)
+
+  const handleSVGViewerClear = useCallback(() => {
+    svgViewerRef.current?.clearData()
+  }, [])
+
+  const handleSVGViewerLoad = useCallback(async () => {
+    try {
+      await svgViewerRef.current?.loadFromClipboard()
+    } catch (error) {
+      console.error('Failed to load from clipboard:', error)
+    }
+  }, [])
+
+  const handleFileSave = useCallback(() => {
+    console.log('💾 Start Menu: Saving project files')
+    try {
+      const projects = val(getStudio().projectsP)
+      Object.values(projects).forEach((project) => {
+        if (project) {
+          const projectId = project.address.projectId
+          const slugifiedProjectId = projectId
+            .replace(/[^\w\d'_\-]+/g, ' ')
+            .trim()
+          const fileName = `${slugifiedProjectId}.json`
+          const str = JSON.stringify(
+            getStudio().createContentOfSaveFile(projectId),
+            null,
+            2,
+          )
+          saveFile(str, fileName)
+          console.log(`✅ Saved project: ${fileName}`)
+        }
+      })
+    } catch (error) {
+      console.error('❌ Failed to save project files:', error)
+    }
+  }, [])
+
+  const handleMarkersAdd = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+        const sheetSequence = sheet.getSequence()
+
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceMarkers(
+            {
+              sheetAddress: sheet.address,
+              markers: [
+                {
+                  id: generateSequenceMarkerId(),
+                  position: sheetSequence.position,
+                  label: `Marker ${
+                    Math.floor(sheetSequence.position * 100) / 100
+                  }s`,
+                },
+              ],
+              snappingFunction: sheetSequence.closestGridPosition,
+            },
+          )
+        })
+      } else {
+        console.warn('⚠️ No sheet selected for adding marker')
+      }
+    } catch (error) {
+      console.error('❌ Failed to add marker:', error)
+    }
+  }, [])
+
+  const handleMarkersClear = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+
+        // Get all existing marker IDs first
+        const markerSetP =
+          getStudio().atomP.historic.projects.stateByProjectId[
+            sheet.address.projectId
+          ].stateBySheetId[sheet.address.sheetId].sequenceEditor.markerSet
+        const markerAllIds = val(markerSetP.allIds)
+
+        if (markerAllIds && Object.keys(markerAllIds).length > 0) {
+          // Remove each marker individually using the correct transaction pattern
+          Object.keys(markerAllIds).forEach((markerId) => {
+            getStudio().transaction(({stateEditors}) => {
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.removeMarker(
+                {
+                  sheetAddress: sheet.address,
+                  markerId: markerId as any,
+                },
+              )
+            })
+          })
+        } else {
+          console.log('ℹ️ No markers to clear')
+        }
+      } else {
+        console.warn('⚠️ No sheet selected for clearing markers')
+      }
+    } catch (error) {
+      console.error('❌ Failed to clear markers:', error)
+    }
+  }, [])
 
   usePresenceListenersOnRootElement(containerNode)
   return usePrism(() => {
@@ -200,9 +344,18 @@ const Content: React.VFC<{}> = () => {
         }}
       >
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
+        <StartMenu
+          layoutP={layoutP}
+          onSVGViewerClear={handleSVGViewerClear}
+          onSVGViewerLoad={handleSVGViewerLoad}
+          onFileSave={handleFileSave}
+          onMarkersAdd={handleMarkersAdd}
+          onMarkersClear={handleMarkersClear}
+        />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
           <SVGViewer
+            ref={svgViewerRef}
             key={key + '-svgViewer'}
             layoutP={layoutP}
             renderMode="both"
