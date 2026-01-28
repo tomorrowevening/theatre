@@ -38,7 +38,7 @@ import {
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
-import {SVGViewer} from './SVGViewer'
+import SVGViewer from './SVGViewer'
 
 const Container = styled(PanelWrapper)`
   z-index: ${panelZIndexes.sequenceEditorPanel};
