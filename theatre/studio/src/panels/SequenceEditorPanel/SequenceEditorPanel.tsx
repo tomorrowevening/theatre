@@ -156,6 +156,14 @@ const Content: React.VFC<{}> = () => {
     }
   }, [])
 
+  const handleSVGViewerShow = useCallback(() => {
+    svgViewerRef.current?.show()
+  }, [])
+
+  const handleSVGViewerHide = useCallback(() => {
+    svgViewerRef.current?.hide()
+  }, [])
+
   const handleFileSave = useCallback(() => {
     console.log('💾 Start Menu: Saving project files')
     try {
@@ -348,6 +356,8 @@ const Content: React.VFC<{}> = () => {
           layoutP={layoutP}
           onSVGViewerClear={handleSVGViewerClear}
           onSVGViewerLoad={handleSVGViewerLoad}
+          onSVGViewerShow={handleSVGViewerShow}
+          onSVGViewerHide={handleSVGViewerHide}
           onFileSave={handleFileSave}
           onMarkersAdd={handleMarkersAdd}
           onMarkersClear={handleMarkersClear}
@@ -358,6 +368,7 @@ const Content: React.VFC<{}> = () => {
             ref={svgViewerRef}
             key={key + '-svgViewer'}
             layoutP={layoutP}
+            sheetAddress={sheet.address}
             renderMode="both"
             color="#4575e3"
           />

@@ -1,4 +1,9 @@
-import React, {useState, useImperativeHandle, forwardRef} from 'react'
+import React, {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+} from 'react'
 import styled from 'styled-components'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
@@ -14,6 +19,7 @@ export type SVGDataPoint = {
 
 export type SVGViewerProps = {
   layoutP: Pointer<SequenceEditorPanelLayout>
+  sheetAddress?: {projectId: string; sheetId: string}
   renderMode?: 'circles' | 'lines' | 'both'
   color?: string
   strokeWidth?: number
@@ -25,15 +31,18 @@ export type SVGViewerRef = {
   clearData: () => void
   loadData: (data: SVGDataPoint[]) => void
   loadFromClipboard: () => Promise<void>
+  show: () => void
+  hide: () => void
 }
 
-const Container = styled.div`
+const Container = styled.div<{isVisible: boolean}>`
   position: absolute;
   right: 0;
   bottom: 0;
   padding-bottom: 10px;
   pointer-events: none;
   z-index: 1;
+  display: ${(props) => (props.isVisible ? 'block' : 'none')};
 `
 
 const SVGContainer = styled.svg`
@@ -48,6 +57,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
   (
     {
       layoutP,
+      sheetAddress,
       renderMode = 'both',
       color = '#4a9eff',
       strokeWidth = 2,
@@ -56,7 +66,63 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
     },
     ref,
   ) => {
-    const [data, setData] = useState<SVGDataPoint[]>([])
+    // Helper functions for localStorage
+    const getStorageKey = (address?: {projectId: string; sheetId: string}) => {
+      if (!address) return 'svgViewer_default'
+      return `svgViewer_${address.projectId}_${address.sheetId}`
+    }
+
+    const loadDataFromStorage = (address?: {
+      projectId: string
+      sheetId: string
+    }): SVGDataPoint[] => {
+      try {
+        const key = getStorageKey(address)
+        const stored = localStorage.getItem(key)
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (Array.isArray(parsed)) {
+            return parsed
+          }
+        }
+      } catch (error) {
+        console.warn(
+          '⚠️ SVGViewer: Failed to load data from localStorage:',
+          error,
+        )
+      }
+      return []
+    }
+
+    const saveDataToStorage = (
+      data: SVGDataPoint[],
+      address?: {projectId: string; sheetId: string},
+    ) => {
+      try {
+        const key = getStorageKey(address)
+        localStorage.setItem(key, JSON.stringify(data))
+        console.log(
+          `💾 SVGViewer: Saved ${data.length} data points to localStorage for ${key}`,
+        )
+      } catch (error) {
+        console.warn(
+          '⚠️ SVGViewer: Failed to save data to localStorage:',
+          error,
+        )
+      }
+    }
+
+    // Initialize data from localStorage for the current sheet
+    const [data, setData] = useState<SVGDataPoint[]>(() =>
+      loadDataFromStorage(sheetAddress),
+    )
+    const [isVisible, setIsVisible] = useState(true)
+
+    // Reload data when sheet address changes
+    useEffect(() => {
+      const newData = loadDataFromStorage(sheetAddress)
+      setData(newData)
+    }, [sheetAddress?.projectId, sheetAddress?.sheetId])
 
     // Helper function to parse SVG data from clipboard
     const parseSVGData = (text: string): SVGDataPoint[] => {
@@ -119,7 +185,9 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       () => ({
         clearData: () => {
           console.log('🗑️ SVGViewer: Clearing data')
-          setData([])
+          const newData: SVGDataPoint[] = []
+          setData(newData)
+          saveDataToStorage(newData, sheetAddress)
         },
         loadData: (newData: SVGDataPoint[]) => {
           console.log(
@@ -128,6 +196,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
             'points',
           )
           setData(newData)
+          saveDataToStorage(newData, sheetAddress)
         },
         loadFromClipboard: async () => {
           try {
@@ -140,6 +209,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
                 'data points',
               )
               setData(parsedData)
+              saveDataToStorage(parsedData, sheetAddress)
             } else {
               console.warn('⚠️ SVGViewer: No valid data found in clipboard')
             }
@@ -148,8 +218,16 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
             throw error
           }
         },
+        show: () => {
+          console.log('👁️ SVGViewer: Showing component')
+          setIsVisible(true)
+        },
+        hide: () => {
+          console.log('🙈 SVGViewer: Hiding component')
+          setIsVisible(false)
+        },
       }),
-      [],
+      [sheetAddress],
     )
 
     return usePrism(() => {
@@ -186,6 +264,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
 
       return (
         <Container
+          isVisible={isVisible}
           style={{
             width: width + 'px',
             height: height + 'px',
@@ -246,6 +325,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       strokeWidth,
       circleRadius,
       customHeight,
+      isVisible,
     ])
   },
 )

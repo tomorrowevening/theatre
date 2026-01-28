@@ -15,6 +15,8 @@ type StartMenuProps = {
   layoutP: Pointer<SequenceEditorPanelLayout>
   onSVGViewerClear?: () => void
   onSVGViewerLoad?: () => void
+  onSVGViewerShow?: () => void
+  onSVGViewerHide?: () => void
   onFileSave?: () => void
   onMarkersAdd?: () => void
   onMarkersClear?: () => void
@@ -129,6 +131,8 @@ const StartMenu: React.FC<StartMenuProps> = ({
   layoutP,
   onSVGViewerClear,
   onSVGViewerLoad,
+  onSVGViewerShow,
+  onSVGViewerHide,
   onFileSave,
   onMarkersAdd,
   onMarkersClear,
@@ -179,6 +183,14 @@ const StartMenu: React.FC<StartMenuProps> = ({
     {
       label: 'SVG Viewer',
       submenu: [
+        {
+          label: 'Show',
+          action: onSVGViewerShow,
+        },
+        {
+          label: 'Hide',
+          action: onSVGViewerHide,
+        },
         {
           label: 'Load',
           action: onSVGViewerLoad,
