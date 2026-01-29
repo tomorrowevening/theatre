@@ -20,6 +20,9 @@ type StartMenuProps = {
   onFileSave?: () => void
   onMarkersAdd?: () => void
   onMarkersClear?: () => void
+  onSheetCreate?: () => void
+  onSheetDuplicate?: () => void
+  onSheetObjectCreate?: () => void
 }
 
 const MenuContainer = styled.div`
@@ -136,6 +139,9 @@ const StartMenu: React.FC<StartMenuProps> = ({
   onFileSave,
   onMarkersAdd,
   onMarkersClear,
+  onSheetCreate,
+  onSheetDuplicate,
+  onSheetObjectCreate,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -164,6 +170,23 @@ const StartMenu: React.FC<StartMenuProps> = ({
         {
           label: 'Save',
           action: onFileSave,
+        },
+      ],
+    },
+    {
+      label: 'Sheets',
+      submenu: [
+        {
+          label: 'Create Sheet',
+          action: onSheetCreate,
+        },
+        {
+          label: 'Duplicate Sheet',
+          action: onSheetDuplicate,
+        },
+        {
+          label: 'Create Sheet Object',
+          action: onSheetObjectCreate,
         },
       ],
     },
