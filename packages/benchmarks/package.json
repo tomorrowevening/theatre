@@ -13,9 +13,6 @@
     "build": "tsc --build ./tsconfig.json"
   },
   "devDependencies": {
-    "@tomorrowevening/theatre-core-0.5.0": "npm:@tomorrowevening/theatre-core@0.5.0",
-    "@tomorrowevening/theatre-dataverse-0.5.0": "npm:@tomorrowevening/theatre-dataverse@0.5.0",
-    "@tomorrowevening/theatre-studio-0.5.0": "npm:@tomorrowevening/theatre-studio@0.5.0",
     "@tomorrowevening/theatre-core": "workspace:*",
     "@tomorrowevening/theatre-r3f": "workspace:*",
     "@tomorrowevening/theatre-studio": "workspace:*",
