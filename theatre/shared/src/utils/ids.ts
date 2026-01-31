@@ -21,6 +21,7 @@ export type SheetInstanceId = Nominal<'SheetInstanceId'>
 export type PaneInstanceId = Nominal<'PaneInstanceId'>
 export type SequenceTrackId = Nominal<'SequenceTrackId'>
 export type SequenceMarkerId = Nominal<'SequenceMarkerId'>
+export type SequenceEventId = Nominal<'SequenceEventId'>
 export type ObjectAddressKey = Nominal<'ObjectAddressKey'>
 
 /**
@@ -62,6 +63,10 @@ export function asSequenceTrackId(s: string): SequenceTrackId {
 
 export function generateSequenceMarkerId(): SequenceMarkerId {
   return generateNonSecure(10) as SequenceMarkerId
+}
+
+export function generateSequenceEventId(): SequenceEventId {
+  return generateNonSecure(10) as SequenceEventId
 }
 
 /**

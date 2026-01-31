@@ -1,4 +1,7 @@
-import {privateAPI, setPrivateAPI} from '@tomorrowevening/theatre-core/privateAPIs'
+import {
+  privateAPI,
+  setPrivateAPI,
+} from '@tomorrowevening/theatre-core/privateAPIs'
 import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
 import type Sequence from './Sequence'
 import type {IPlaybackDirection, IPlaybackRange} from './Sequence'
@@ -207,6 +210,46 @@ export interface ISequence {
    * ```
    */
   goToAndStop(markerName: string): void
+
+  /**
+   * Adds an event listener for a specific event name.
+   *
+   * @param eventName - The name of the event to listen for
+   * @param listener - The function to call when the event is triggered
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * function onEvent(evt) {
+   *   console.log('Event triggered:', evt.name, 'at position:', evt.position, 'with value:', evt.value)
+   * }
+   *
+   * sheet.sequence.listen('eventA', onEvent)
+   * sheet.sequence.listen('eventB', onEvent)
+   * ```
+   */
+  listen(
+    eventName: string,
+    listener: (event: {name: string; position: number; value?: any}) => void,
+  ): void
+
+  /**
+   * Removes an event listener for a specific event name.
+   *
+   * @param eventName - The name of the event to stop listening for
+   * @param listener - The function to remove from the listeners
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * sheet.sequence.unlisten('eventA', onEvent)
+   * sheet.sequence.unlisten('eventB', onEvent)
+   * ```
+   */
+  unlisten(
+    eventName: string,
+    listener: (event: {name: string; position: number; value?: any}) => void,
+  ): void
 
   /**
    * Attaches an audio source to the sequence. Playing the sequence automatically
@@ -434,6 +477,20 @@ export default class TheatreSequence implements ISequence {
 
   goToAndStop(markerName: string): void {
     return privateAPI(this).goToAndStop(markerName)
+  }
+
+  listen(
+    eventName: string,
+    listener: (event: {name: string; position: number; value?: any}) => void,
+  ): void {
+    return privateAPI(this).listen(eventName, listener)
+  }
+
+  unlisten(
+    eventName: string,
+    listener: (event: {name: string; position: number; value?: any}) => void,
+  ): void {
+    return privateAPI(this).unlisten(eventName, listener)
   }
 }
 

@@ -19,6 +19,7 @@ import type {
   StudioSheetItemKey,
   KeyframeId,
   SequenceMarkerId,
+  SequenceEventId,
   SequenceTrackId,
   UIPanelId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
@@ -49,6 +50,7 @@ import type {
   StudioAhistoricState,
   StudioEphemeralState,
   StudioHistoricStateSequenceEditorMarker,
+  StudioHistoricStateSequenceEditorEvent,
 } from './types'
 import {clamp, uniq} from 'lodash-es'
 import {
@@ -327,6 +329,35 @@ namespace stateEditors {
                     ),
                   ]),
                 )
+
+                // Also update the core project state for immediate availability
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    p.sheetAddress,
+                  )
+                if (!coreSheetState.sequence) {
+                  coreSheetState.sequence = {
+                    type: 'PositionalSequence',
+                    length: 10,
+                    subUnitsPerUnit: 30,
+                    tracksByObject: {},
+                  }
+                }
+
+                // Convert studio markers to core markers format
+                const allMarkers = [
+                  ...Object.values(markersThatArentBeingReplaced.byId).filter(
+                    (marker): marker is NonNullable<typeof marker> =>
+                      marker !== undefined,
+                  ),
+                  ...sanitizedMarkers,
+                ].sort((a, b) => a.position - b.position)
+
+                coreSheetState.sequence.markers = allMarkers.map((marker) => ({
+                  id: marker.id,
+                  label: marker.label,
+                  position: marker.position,
+                }))
               }
 
               export function removeMarker(options: {
@@ -338,6 +369,18 @@ namespace stateEditors {
                   currentMarkerSet,
                   pointableSetUtil.remove(currentMarkerSet, options.markerId),
                 )
+
+                // Also update the core project state
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    options.sheetAddress,
+                  )
+                if (coreSheetState.sequence?.markers) {
+                  coreSheetState.sequence.markers =
+                    coreSheetState.sequence.markers.filter(
+                      (marker) => marker.id !== options.markerId,
+                    )
+                }
               }
 
               export function updateMarker(options: {
@@ -347,7 +390,183 @@ namespace stateEditors {
               }) {
                 const currentMarkerSet = _ensureMarkers(options.sheetAddress)
                 const marker = currentMarkerSet.byId[options.markerId]
-                if (marker !== undefined) marker.label = options.label
+                if (marker !== undefined) {
+                  marker.label = options.label
+
+                  // Also update the core project state
+                  const coreSheetState =
+                    stateEditors.coreByProject.historic.sheetsById._ensure(
+                      options.sheetAddress,
+                    )
+                  if (coreSheetState.sequence?.markers) {
+                    const coreMarker = coreSheetState.sequence.markers.find(
+                      (m) => m.id === options.markerId,
+                    )
+                    if (coreMarker) {
+                      coreMarker.label = options.label
+                    }
+                  }
+                }
+              }
+
+              function _ensureEvents(sheetAddress: SheetAddress) {
+                const sequenceEditor =
+                  stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId._ensure(
+                    sheetAddress,
+                  ).sequenceEditor
+
+                if (!sequenceEditor.eventSet) {
+                  sequenceEditor.eventSet = pointableSetUtil.create()
+                }
+
+                return sequenceEditor.eventSet
+              }
+
+              export function replaceEvents(p: {
+                sheetAddress: SheetAddress
+                events: Array<StudioHistoricStateSequenceEditorEvent>
+                snappingFunction: (p: number) => number
+              }) {
+                const currentEventSet = _ensureEvents(p.sheetAddress)
+
+                const sanitizedEvents = p.events
+                  .filter((event) => {
+                    if (!isFinite(event.position)) {
+                      console.warn(
+                        'Event filtered out: invalid position',
+                        event,
+                      )
+                      return false
+                    }
+                    if (!event.name || typeof event.name !== 'string') {
+                      console.warn('Event filtered out: invalid name', event)
+                      return false
+                    }
+
+                    return true // event looks valid
+                  })
+                  .map((event) => ({
+                    ...event,
+                    position: p.snappingFunction(event.position),
+                  }))
+
+                const newEventsById = keyBy(sanitizedEvents, 'id')
+
+                /** Usually starts as the "unselected" events */
+                let eventsThatArentBeingReplaced = pointableSetUtil.filter(
+                  currentEventSet,
+                  (event) => event && !newEventsById[event.id],
+                )
+
+                const eventsThatArentBeingReplacedByPosition = keyBy(
+                  Object.values(eventsThatArentBeingReplaced.byId),
+                  'position',
+                )
+
+                // If the new transformed events overlap with any existing events,
+                // we remove the overlapped events
+                sanitizedEvents.forEach(({position}) => {
+                  const existingEventAtThisPosition =
+                    eventsThatArentBeingReplacedByPosition[position]
+                  if (existingEventAtThisPosition) {
+                    eventsThatArentBeingReplaced = pointableSetUtil.remove(
+                      eventsThatArentBeingReplaced,
+                      existingEventAtThisPosition.id,
+                    )
+                  }
+                })
+
+                Object.assign(
+                  currentEventSet,
+                  pointableSetUtil.merge([
+                    eventsThatArentBeingReplaced,
+                    pointableSetUtil.create(
+                      sanitizedEvents.map((event) => [event.id, event]),
+                    ),
+                  ]),
+                )
+
+                // Also update the core project state for immediate availability
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    p.sheetAddress,
+                  )
+                if (!coreSheetState.sequence) {
+                  coreSheetState.sequence = {
+                    type: 'PositionalSequence',
+                    length: 10,
+                    subUnitsPerUnit: 30,
+                    tracksByObject: {},
+                  }
+                }
+
+                // Convert studio events to core events format
+                const allEvents = [
+                  ...Object.values(eventsThatArentBeingReplaced.byId).filter(
+                    (event): event is NonNullable<typeof event> =>
+                      event !== undefined,
+                  ),
+                  ...sanitizedEvents,
+                ].sort((a, b) => a.position - b.position)
+
+                coreSheetState.sequence.events = allEvents.map((event) => ({
+                  id: event.id,
+                  name: event.name,
+                  position: event.position,
+                  value: event.value,
+                }))
+              }
+
+              export function removeEvent(options: {
+                sheetAddress: SheetAddress
+                eventId: SequenceEventId
+              }) {
+                const currentEventSet = _ensureEvents(options.sheetAddress)
+                Object.assign(
+                  currentEventSet,
+                  pointableSetUtil.remove(currentEventSet, options.eventId),
+                )
+
+                // Also update the core project state
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    options.sheetAddress,
+                  )
+                if (coreSheetState.sequence?.events) {
+                  coreSheetState.sequence.events =
+                    coreSheetState.sequence.events.filter(
+                      (event) => event.id !== options.eventId,
+                    )
+                }
+              }
+
+              export function updateEvent(options: {
+                sheetAddress: SheetAddress
+                eventId: SequenceEventId
+                name: string
+                value?: any
+              }) {
+                const currentEventSet = _ensureEvents(options.sheetAddress)
+                const event = currentEventSet.byId[options.eventId]
+                if (event !== undefined) {
+                  event.name = options.name
+                  event.value = options.value
+
+                  // Also update the core project state
+                  const coreSheetState =
+                    stateEditors.coreByProject.historic.sheetsById._ensure(
+                      options.sheetAddress,
+                    )
+                  if (coreSheetState.sequence?.events) {
+                    const coreEvent = coreSheetState.sequence.events.find(
+                      (e) => e.id === options.eventId,
+                    )
+                    if (coreEvent) {
+                      coreEvent.name = options.name
+                      coreEvent.value = options.value
+                    }
+                  }
+                }
               }
             }
           }

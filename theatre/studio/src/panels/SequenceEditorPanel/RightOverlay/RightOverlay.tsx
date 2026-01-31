@@ -12,6 +12,7 @@ import Playhead from './Playhead'
 import TopStrip from './TopStrip'
 import FocusRangeCurtains from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/FocusRangeCurtains'
 import Markers from './Markers/Markers'
+import Events from './Events/Events'
 
 const Container = styled.div`
   position: absolute;
@@ -36,6 +37,7 @@ const RightOverlay: React.FC<{
         <FrameStamp layoutP={layoutP} />
         <TopStrip layoutP={layoutP} />
         <Markers layoutP={layoutP} />
+        <Events layoutP={layoutP} />
         <LengthIndicator layoutP={layoutP} />
         <FocusRangeCurtains layoutP={layoutP} />
       </Container>

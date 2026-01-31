@@ -20,6 +20,10 @@ type StartMenuProps = {
   onFileSave?: () => void
   onMarkersAdd?: () => void
   onMarkersClear?: () => void
+  onMarkersLog?: () => void
+  onEventsAdd?: () => void
+  onEventsClear?: () => void
+  onEventsLog?: () => void
   onSheetCreate?: () => void
   onSheetDuplicate?: () => void
   onSheetObjectCreate?: () => void
@@ -139,6 +143,10 @@ const StartMenu: React.FC<StartMenuProps> = ({
   onFileSave,
   onMarkersAdd,
   onMarkersClear,
+  onMarkersLog,
+  onEventsAdd,
+  onEventsClear,
+  onEventsLog,
   onSheetCreate,
   onSheetDuplicate,
   onSheetObjectCreate,
@@ -198,8 +206,29 @@ const StartMenu: React.FC<StartMenuProps> = ({
           action: onMarkersAdd,
         },
         {
+          label: 'Log',
+          action: onMarkersLog,
+        },
+        {
           label: 'Clear',
           action: onMarkersClear,
+        },
+      ],
+    },
+    {
+      label: 'Events',
+      submenu: [
+        {
+          label: 'Add',
+          action: onEventsAdd,
+        },
+        {
+          label: 'Log',
+          action: onEventsLog,
+        },
+        {
+          label: 'Clear',
+          action: onEventsClear,
         },
       ],
     },

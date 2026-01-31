@@ -1,6 +1,9 @@
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
-import {generateSequenceMarkerId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {
+  generateSequenceMarkerId,
+  generateSequenceEventId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
@@ -411,6 +414,43 @@ const Content: React.VFC<{}> = () => {
     }
   }, [])
 
+  const handleEventsAdd = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+        const sheetSequence = sheet.getSequence()
+
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceEvents(
+            {
+              sheetAddress: sheet.address,
+              events: [
+                {
+                  id: generateSequenceEventId(),
+                  name: 'event',
+                  position: sheetSequence.position,
+                },
+              ],
+              snappingFunction: sheetSequence.closestGridPosition,
+            },
+          )
+        })
+      } else {
+        console.warn('⚠️ No sheet selected for adding event')
+      }
+    } catch (error) {
+      console.error('❌ Failed to add event:', error)
+    }
+  }, [])
+
   const handleMarkersClear = useCallback(() => {
     try {
       const selectedSheets = uniq(
@@ -451,6 +491,132 @@ const Content: React.VFC<{}> = () => {
       }
     } catch (error) {
       console.error('❌ Failed to clear markers:', error)
+    }
+  }, [])
+
+  const handleMarkersLog = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+        const sheetState = val(
+          getStudio().atomP.historic.projects.stateByProjectId[
+            sheet.address.projectId
+          ].stateBySheetId[sheet.address.sheetId],
+        )
+
+        // Get markers from core state
+        const coreMarkers =
+          val(
+            getStudio().atomP.historic.coreByProject[sheet.address.projectId]
+              .sheetsById[sheet.address.sheetId].sequence.markers,
+          ) || []
+
+        console.group('📍 Markers for sheet:', sheet.address.sheetId)
+        console.log('Total markers:', coreMarkers.length)
+        coreMarkers.forEach((marker, index) => {
+          console.log(
+            `${index + 1}. "${marker.label || 'Unnamed'}" at ${
+              marker.position
+            }s (ID: ${marker.id})`,
+          )
+        })
+        console.groupEnd()
+      } else {
+        console.warn('⚠️ No sheet selected for logging markers')
+      }
+    } catch (error) {
+      console.error('❌ Failed to log markers:', error)
+    }
+  }, [])
+
+  const handleEventsClear = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+
+        // Get all existing event IDs first
+        const eventSetP =
+          getStudio().atomP.historic.projects.stateByProjectId[
+            sheet.address.projectId
+          ].stateBySheetId[sheet.address.sheetId].sequenceEditor.eventSet
+        const eventAllIds = val(eventSetP?.allIds)
+
+        if (eventAllIds && Object.keys(eventAllIds).length > 0) {
+          // Remove each event individually using the correct transaction pattern
+          Object.keys(eventAllIds).forEach((eventId) => {
+            getStudio().transaction(({stateEditors}) => {
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.removeEvent(
+                {
+                  sheetAddress: sheet.address,
+                  eventId: eventId as any,
+                },
+              )
+            })
+          })
+        } else {
+          console.log('ℹ️ No events to clear')
+        }
+      } else {
+        console.warn('⚠️ No sheet selected for clearing events')
+      }
+    } catch (error) {
+      console.error('❌ Failed to clear events:', error)
+    }
+  }, [])
+
+  const handleEventsLog = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+
+        // Get events from core state
+        const coreEvents =
+          val(
+            getStudio().atomP.historic.coreByProject[sheet.address.projectId]
+              .sheetsById[sheet.address.sheetId].sequence.events,
+          ) || []
+
+        console.group('🎯 Events for sheet:', sheet.address.sheetId)
+        console.log('Total events:', coreEvents.length)
+        coreEvents.forEach((event, index) => {
+          console.log(
+            `${index + 1}. "${event.name}" at ${event.position}s${
+              event.value !== undefined
+                ? ` (value: ${JSON.stringify(event.value)})`
+                : ''
+            } (ID: ${event.id})`,
+          )
+        })
+        console.groupEnd()
+      } else {
+        console.warn('⚠️ No sheet selected for logging events')
+      }
+    } catch (error) {
+      console.error('❌ Failed to log events:', error)
     }
   }, [])
 
@@ -549,6 +715,10 @@ const Content: React.VFC<{}> = () => {
           onFileSave={handleFileSave}
           onMarkersAdd={handleMarkersAdd}
           onMarkersClear={handleMarkersClear}
+          onMarkersLog={handleMarkersLog}
+          onEventsAdd={handleEventsAdd}
+          onEventsClear={handleEventsClear}
+          onEventsLog={handleEventsLog}
           onSheetCreate={handleSheetCreate}
           onSheetDuplicate={handleSheetDuplicate}
           onSheetObjectCreate={handleSheetObjectCreate}
