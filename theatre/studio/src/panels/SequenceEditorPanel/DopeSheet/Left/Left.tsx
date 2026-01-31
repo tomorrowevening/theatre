@@ -1,4 +1,4 @@
-import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanellayoutlayout'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
@@ -6,8 +6,8 @@ import React from 'react'
 import styled from 'styled-components'
 import LeftSheetObjectRow from './SheetObjectRow'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
-import {useSearch} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanelSearchContext'
-import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanellayout\treeSearch'
+import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SearchContext'
+import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/treeSearch'
 
 const Container = styled.div`
   position: absolute;

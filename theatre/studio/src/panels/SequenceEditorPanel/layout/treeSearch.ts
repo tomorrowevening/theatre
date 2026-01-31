@@ -4,7 +4,7 @@ import type {
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_PrimitiveProp,
 } from './tree'
-import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanelDopeSheetsetCollapsedSheetObjectOrCompoundProp'
+import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 
 /**
  * Expands all sheet objects and compound properties that contain matches for the search term.
