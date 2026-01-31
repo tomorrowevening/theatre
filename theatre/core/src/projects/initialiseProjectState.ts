@@ -119,6 +119,25 @@ export default async function initialiseProjectState(
             )
           }
         }
+
+        // Load events from disk state into studio state
+        if (sheetState?.sequence?.events) {
+          const events = sheetState.sequence.events
+
+          // Use the replaceEvents state editor to load events
+          if (
+            stateEditors?.studio?.historic?.projects?.stateByProjectId
+              ?.stateBySheetId?.sequenceEditor?.replaceEvents
+          ) {
+            stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceEvents(
+              {
+                sheetAddress: {projectId, sheetId},
+                events: events,
+                snappingFunction: (p: number) => p,
+              },
+            )
+          }
+        }
       }
     })
   }

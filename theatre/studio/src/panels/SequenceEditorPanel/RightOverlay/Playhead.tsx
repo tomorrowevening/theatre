@@ -25,7 +25,10 @@ import {
 } from '@tomorrowevening/theatre-studio/uiComponents/PointerEventsHandler'
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
-import {generateSequenceMarkerId} from '@tomorrowevening/theatre-shared/utils/ids'
+import {
+  generateSequenceMarkerId,
+  generateSequenceEventId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import DopeSnap from './DopeSnap'
 import {
   snapToAll,
@@ -331,6 +334,32 @@ function usePlayheadContextMenu(
                   markers: [
                     {
                       id: generateSequenceMarkerId(),
+                      position: sheetSequence.position,
+                      label: `Marker ${
+                        Math.floor(sheetSequence.position * 100) / 100
+                      }s`,
+                    },
+                  ],
+                  snappingFunction: sheetSequence.closestGridPosition,
+                },
+              )
+            })
+          },
+        },
+        {
+          label: 'Place event',
+          callback: () => {
+            getStudio().transaction(({stateEditors}) => {
+              // only retrieve val on callback to reduce unnecessary work on every use
+              const sheet = val(options.layoutP.sheet)
+              const sheetSequence = sheet.getSequence()
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceEvents(
+                {
+                  sheetAddress: sheet.address,
+                  events: [
+                    {
+                      id: generateSequenceEventId(),
+                      name: 'event',
                       position: sheetSequence.position,
                     },
                   ],

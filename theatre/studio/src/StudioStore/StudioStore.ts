@@ -246,11 +246,52 @@ export default class StudioStore {
             // Convert PointableSet to array
             const markers = Object.entries(markerSet.byId)
               .map(([id, marker]) => marker)
-              .filter((marker): marker is NonNullable<typeof marker> => marker !== undefined)
+              .filter(
+                (marker): marker is NonNullable<typeof marker> =>
+                  marker !== undefined,
+              )
               .sort((a, b) => a.position - b.position)
 
             if (sheet?.sequence) {
               sheet.sequence.markers = markers
+            }
+          }
+        }
+
+        // Copy events from studio state to the exported state
+        if (sheetState?.sequenceEditor?.eventSet) {
+          const eventSet = sheetState.sequenceEditor.eventSet
+          if (eventSet.allIds && Object.keys(eventSet.allIds).length > 0) {
+            // Ensure the sheet exists in the generated state
+            if (!generatedOnDiskState.sheetsById[sheetId]) {
+              generatedOnDiskState.sheetsById[sheetId] = {
+                staticOverrides: {byObject: {}},
+              }
+            }
+
+            const sheet = generatedOnDiskState.sheetsById[sheetId]
+
+            // Ensure the sequence exists
+            if (sheet && !sheet.sequence) {
+              sheet.sequence = {
+                type: 'PositionalSequence',
+                length: 10,
+                subUnitsPerUnit: 30,
+                tracksByObject: {},
+              }
+            }
+
+            // Convert PointableSet to array
+            const events = Object.entries(eventSet.byId)
+              .map(([id, event]) => event)
+              .filter(
+                (event): event is NonNullable<typeof event> =>
+                  event !== undefined,
+              )
+              .sort((a, b) => a.position - b.position)
+
+            if (sheet?.sequence) {
+              sheet.sequence.events = events
             }
           }
         }

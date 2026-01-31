@@ -36,6 +36,12 @@ export type IPlaybackDirection =
   | 'alternate'
   | 'alternateReverse'
 
+export type SequenceEventListener = (event: {
+  name: string
+  position: number
+  value?: any
+}) => void
+
 const possibleDirections = [
   'normal',
   'reverse',
@@ -55,6 +61,11 @@ export default class Sequence implements PointerToPrismProvider {
   private _positionD: Prism<number>
   private _positionFormatterD: Prism<ISequencePositionFormatter>
   _playableRangeD: undefined | Prism<{start: number; end: number}>
+
+  // Event system
+  private _eventListeners: Map<string, Set<SequenceEventListener>> = new Map()
+  private _lastProcessedPosition: number = -1
+  private _processedEvents: Set<string> = new Set() // Track processed events to avoid duplicates
 
   readonly pointer: ISequence['pointer'] = pointer({root: this, path: []})
   readonly $$isPointerToPrismProvider = true
@@ -92,6 +103,139 @@ export default class Sequence implements PointerToPrismProvider {
       const subUnitsPerUnit = val(this._subUnitsPerUnitD)
       return new TimeBasedPositionFormatter(subUnitsPerUnit)
     })
+
+    // Monitor position changes for event processing
+    this._positionD.onStale(() => {
+      const currentPosition = this._positionD.getValue()
+      this._processEventsForPositionChange(
+        this._lastProcessedPosition,
+        currentPosition,
+      )
+      this._lastProcessedPosition = currentPosition
+    })
+  }
+
+  // Event system methods
+  listen(eventName: string, listener: SequenceEventListener): void {
+    if (!this._eventListeners.has(eventName)) {
+      this._eventListeners.set(eventName, new Set())
+    }
+    this._eventListeners.get(eventName)!.add(listener)
+  }
+
+  unlisten(eventName: string, listener: SequenceEventListener): void {
+    const listeners = this._eventListeners.get(eventName)
+    if (listeners) {
+      listeners.delete(listener)
+      if (listeners.size === 0) {
+        this._eventListeners.delete(eventName)
+      }
+    }
+  }
+
+  private _processEventsForPositionChange(
+    fromPosition: number,
+    toPosition: number,
+  ): void {
+    const events = this._getEvents()
+
+    if (!events || events.length === 0) return
+
+    // Detect if this is a loop (sequence went from near end back to near beginning)
+    const sequenceLength = this.length
+    const isLoop =
+      fromPosition > toPosition &&
+      fromPosition > sequenceLength * 0.8 &&
+      toPosition < sequenceLength * 0.2
+
+    if (isLoop) {
+      // Clear processed events on loop to allow fresh processing
+      this._processedEvents.clear()
+      return
+    }
+
+    // Process events between from and to positions
+    const minPos = Math.min(fromPosition, toPosition)
+    const maxPos = Math.max(fromPosition, toPosition)
+
+    // Clear processed events when moving to a new position range
+    if (Math.abs(toPosition - fromPosition) > 0.1) {
+      this._processedEvents.clear()
+    }
+
+    for (const event of events) {
+      // Check if event is within the range we need to process
+      if (event.position > minPos && event.position <= maxPos) {
+        const eventKey = `${event.id}-${event.position}`
+
+        // Skip if we've already processed this event at this position
+        if (this._processedEvents.has(eventKey)) {
+          continue
+        }
+
+        // Handle special events that shouldn't be cached (so they can retrigger)
+        const isSpecialEvent = event.name === 'goTo'
+
+        if (!isSpecialEvent) {
+          this._processedEvents.add(eventKey)
+        }
+
+        this._triggerEvent(event)
+
+        // Handle special events
+        if (event.name === 'stop') {
+          // Use requestAnimationFrame to defer the pause completely outside current execution
+          requestAnimationFrame(() => {
+            this.pause()
+          })
+          return // Exit early to prevent further processing
+        } else if (event.name === 'goTo' && event.value !== undefined) {
+          // Use requestAnimationFrame to defer the position change
+          requestAnimationFrame(() => {
+            // Clear processed events to allow retriggering after position change
+            this._processedEvents.clear()
+
+            if (typeof event.value === 'string') {
+              // Try to find marker with this name
+              const markerPosition = this.getMarkerPosition(event.value)
+              if (markerPosition !== undefined) {
+                this._gotoPositionWithoutPausing(markerPosition)
+              }
+            } else if (typeof event.value === 'number') {
+              this._gotoPositionWithoutPausing(event.value)
+            }
+          })
+          return // Exit early to prevent further processing
+        }
+      }
+    }
+  }
+
+  private _triggerEvent(event: {
+    name: string
+    position: number
+    value?: any
+  }): void {
+    const listeners = this._eventListeners.get(event.name)
+    if (listeners) {
+      listeners.forEach((listener) => {
+        try {
+          listener(event)
+        } catch (error) {
+          // Log error to console for now
+          console.error('Error in sequence event listener:', error)
+        }
+      })
+    }
+  }
+
+  private _getEvents() {
+    const sheetState =
+      this._project.pointers.historic.sheetsById[this._sheet.address.sheetId]
+    const sequenceState = val(sheetState.sequence)
+
+    const events = sequenceState?.events || []
+    return events
   }
 
   pointerToPrism<V>(pointer: Pointer<V>): Prism<V> {
@@ -203,6 +347,32 @@ export default class Sequence implements PointerToPrismProvider {
   set position(requestedPosition: number) {
     let position = requestedPosition
     this.pause()
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof position !== 'number') {
+        console.error(
+          `value t in sequence.position = t must be a number. ${typeof position} given`,
+        )
+        position = 0
+      }
+      if (position < 0) {
+        console.error(
+          `sequence.position must be a positive number. ${position} given`,
+        )
+        position = 0
+      }
+    }
+    if (position > this.length) {
+      position = this.length
+    }
+    const dur = this.length
+    this._playbackControllerBox
+      .get()
+      .gotoPosition(position > dur ? dur : position)
+  }
+
+  // Private method to change position without pausing (for goTo events)
+  private _gotoPositionWithoutPausing(requestedPosition: number) {
+    let position = requestedPosition
     if (process.env.NODE_ENV !== 'production') {
       if (typeof position !== 'number') {
         console.error(
@@ -417,7 +587,21 @@ To fix this, either set \`conf.range[1]\` to be less the duration of the sequenc
 
     if (!markers) return undefined
 
-    const marker = markers.find((m) => m.label === markerName)
+    // First try exact label match
+    let marker = markers.find((m) => m.label === markerName)
+
+    // If not found, try case-insensitive match
+    if (!marker) {
+      marker = markers.find(
+        (m) => m.label?.toLowerCase() === markerName.toLowerCase(),
+      )
+    }
+
+    // If still not found, try partial match
+    if (!marker) {
+      marker = markers.find((m) => m.label?.includes(markerName))
+    }
+
     return marker?.position
   }
 

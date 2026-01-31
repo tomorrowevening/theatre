@@ -17,6 +17,7 @@ import type {
   PaneInstanceId,
   ProjectId,
   SequenceMarkerId,
+  SequenceEventId,
   SheetId,
   SheetInstanceId,
   UIPanelId,
@@ -89,6 +90,24 @@ export type StudioHistoricStateSequenceEditorMarker = {
 }
 
 /**
+ * Event allows you to trigger actions at specific positions in your sequence.
+ *
+ * See root {@link StudioHistoricState}
+ */
+export type StudioHistoricStateSequenceEditorEvent = {
+  id: SequenceEventId
+  name: string
+  /**
+   * The position this event takes in the sequence.
+   */
+  position: number
+  /**
+   * Optional value associated with the event
+   */
+  value?: any
+}
+
+/**
  * See parent {@link StudioHistoricStateProject}.
  * See root {@link StudioHistoricState}
  */
@@ -98,6 +117,10 @@ export type StudioHistoricStateProjectSheet = {
     markerSet?: PointableSet<
       SequenceMarkerId,
       StudioHistoricStateSequenceEditorMarker
+    >
+    eventSet?: PointableSet<
+      SequenceEventId,
+      StudioHistoricStateSequenceEditorEvent
     >
     selectedPropsByObject: StrictRecord<
       ObjectAddressKey,

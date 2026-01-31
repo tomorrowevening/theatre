@@ -3,6 +3,7 @@ import type {
   KeyframeId,
   ObjectAddressKey,
   SequenceMarkerId,
+  SequenceEventId,
   SequenceTrackId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
@@ -49,6 +50,11 @@ export type HistoricPositionalSequence = {
    * Markers allow you to mark notable positions in your sequence.
    */
   markers?: SequenceMarker[]
+
+  /**
+   * Events allow you to trigger actions at specific positions in your sequence.
+   */
+  events?: SequenceEvent[]
 
   tracksByObject: StrictRecord<
     ObjectAddressKey,
@@ -120,4 +126,20 @@ export type SequenceMarker = {
    * The position this marker takes in the sequence.
    */
   position: number
+}
+
+/**
+ * Represents an event in the sequence timeline
+ */
+export type SequenceEvent = {
+  id: SequenceEventId
+  name: string
+  /**
+   * The position this event takes in the sequence.
+   */
+  position: number
+  /**
+   * Optional value associated with the event
+   */
+  value?: any
 }
