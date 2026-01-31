@@ -621,6 +621,7 @@ const Content: React.VFC<{}> = () => {
   }, [])
 
   usePresenceListenersOnRootElement(containerNode)
+
   return usePrism(() => {
     const panelSize = prism.memo(
       'panelSize',
@@ -655,6 +656,45 @@ const Content: React.VFC<{}> = () => {
 
     // Store current sheet in ref for handlers to access
     currentSheetRef.current = sheet
+
+    // Auto-adjust sequence editor time range to match sheet duration
+    // This runs inside usePrism so it's reactive to sheet changes
+    const sheetSequence = sheet.getSequence()
+    const sequenceDuration = sheetSequence.length
+
+    // Check if we need to adjust the range
+    const currentRange = val(
+      getStudio().atomP.ahistoric.projects.stateByProjectId[
+        sheet.address.projectId
+      ].stateBySheetId[sheet.address.sheetId].sequence.clippedSpaceRange,
+    ) || {start: 0, end: 10}
+
+    // Only auto-adjust if:
+    // 1. Duration is valid and not default
+    // 2. Current range doesn't match sequence duration
+    // 3. Current range appears to be the default (start: 0, end: 10) - indicating no user interaction
+    const isDefaultRange = currentRange.start === 0 && currentRange.end === 10
+    // Add 5% padding to the end so users can see the full duration including end markers
+    const paddedDuration = sequenceDuration * 1.05
+    const needsAdjustment =
+      sequenceDuration > 0 &&
+      sequenceDuration !== 10 &&
+      currentRange.end !== paddedDuration &&
+      isDefaultRange
+
+    if (needsAdjustment) {
+      // Use setTimeout to avoid calling transaction inside usePrism
+      setTimeout(() => {
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.ahistoric.projects.stateByProjectId.stateBySheetId.sequence.clippedSpaceRange.set(
+            {
+              ...sheet.address,
+              range: {start: 0, end: paddedDuration},
+            },
+          )
+        })
+      }, 0)
+    }
 
     const panelSizeP = valToAtom('panelSizeP', panelSize).pointer
 
