@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import styled from 'styled-components'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
-import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorPanelLayout} from './layout/layout'
 import {usePrism} from '@tomorrowevening/theatre-react'
 
 type MenuItem = {

@@ -237,6 +237,9 @@ namespace utils {
     },
     primitiveProp(logger, layout, leaf, bounds, selectionByObjectKey) {
       const {sheetObject, trackId} = leaf
+
+      if (!trackId) return
+
       const trackData = val(
         getStudio().atomP.historic.coreByProject[sheetObject.address.projectId]
           .sheetsById[sheetObject.address.sheetId].sequence.tracksByObject[

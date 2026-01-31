@@ -1,4 +1,4 @@
-import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanellayoutlayout'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
@@ -7,8 +7,8 @@ import styled from 'styled-components'
 import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
 import RightSheetObjectRow from './SheetObjectRow'
-import {useSearch} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\SearchContext'
-import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\layout\treeSearch'
+import {useSearch} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanelSearchContext'
+import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanellayout\treeSearch'
 
 export const contentWidth = 1000000
 

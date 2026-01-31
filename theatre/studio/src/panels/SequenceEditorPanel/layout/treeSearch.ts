@@ -4,7 +4,7 @@ import type {
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_PrimitiveProp,
 } from './tree'
-import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\DopeSheet\setCollapsedSheetObjectOrCompoundProp'
+import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studiopanelsSequenceEditorPanelDopeSheetsetCollapsedSheetObjectOrCompoundProp'
 
 /**
  * Expands all sheet objects and compound properties that contain matches for the search term.
@@ -64,7 +64,7 @@ function storePropsCollapsedState(
   props: Array<
     SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp
   >,
-  sheetAddress: {projectId: string; sheetId: string},
+  sheetAddress: any,
 ): void {
   props.forEach((prop) => {
     if (prop.type === 'propWithChildren') {
@@ -108,7 +108,7 @@ function restorePropsCollapsedState(
   props: Array<
     SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp
   >,
-  sheetAddress: {projectId: string; sheetId: string},
+  sheetAddress: any,
 ): void {
   props.forEach((prop) => {
     if (prop.type === 'propWithChildren') {
@@ -147,12 +147,13 @@ function expandMatchingProps(
     SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp
   >,
   searchTerm: string,
-  sheetAddress: {projectId: string; sheetId: string},
+  sheetAddress: any,
 ): void {
   props.forEach((prop) => {
     if (prop.type === 'propWithChildren') {
       const propName =
-        prop.pathToProp[prop.pathToProp.length - 1]?.toLowerCase() || ''
+        prop.pathToProp[prop.pathToProp.length - 1]?.toString().toLowerCase() ||
+        ''
       const propMatches = propName.includes(searchTerm)
       const hasMatchingChildren = prop.children.some((child) =>
         propHasMatches(child, searchTerm),
@@ -177,7 +178,7 @@ function propHasMatches(
   searchTerm: string,
 ): boolean {
   const propName =
-    prop.pathToProp[prop.pathToProp.length - 1]?.toLowerCase() || ''
+    prop.pathToProp[prop.pathToProp.length - 1]?.toString().toLowerCase() || ''
   const propMatches = propName.includes(searchTerm)
 
   if (propMatches) {
@@ -292,7 +293,7 @@ function filterProp(
   | SequenceEditorTree_PrimitiveProp
   | null {
   const propName =
-    prop.pathToProp[prop.pathToProp.length - 1]?.toLowerCase() || ''
+    prop.pathToProp[prop.pathToProp.length - 1]?.toString().toLowerCase() || ''
   const propMatches = propName.includes(searchTerm)
 
   if (prop.type === 'primitiveProp') {

@@ -125,7 +125,7 @@ const SingleKeyframeDot: React.VFC<ISingleKeyframeDotProps> = (props) => {
       pathToProp: props.leaf.pathToProp,
       propConfig: props.leaf.propConf,
       sheetObject: props.leaf.sheetObject,
-      trackId: props.leaf.trackId,
+      trackId: props.leaf.trackId!,
     },
   ])
   const [isDragging] = useDragForSingleKeyframeDot(node, props, {
@@ -209,7 +209,7 @@ function useSingleKeyframeContextMenu(
                   {
                     ...props.leaf.sheetObject.address,
                     keyframeIds: [props.keyframe.id],
-                    trackId: props.leaf.trackId,
+                    trackId: props.leaf.trackId!,
                   },
                 )
               })
@@ -333,7 +333,7 @@ function useDragForSingleKeyframeDot(
               stateEditors.coreByProject.historic.sheetsById.sequence.replaceKeyframes(
                 {
                   ...propsAtStartOfDrag.leaf.sheetObject.address,
-                  trackId: propsAtStartOfDrag.leaf.trackId,
+                  trackId: propsAtStartOfDrag.leaf.trackId!,
                   keyframes: [{...original, position: newPosition}],
                   snappingFunction: val(
                     propsAtStartOfDrag.layoutP.sheet,
