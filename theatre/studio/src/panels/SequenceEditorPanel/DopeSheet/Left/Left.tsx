@@ -6,6 +6,8 @@ import React from 'react'
 import styled from 'styled-components'
 import LeftSheetObjectRow from './SheetObjectRow'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
+import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SearchContext'
+import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/treeSearch'
 
 const Container = styled.div`
   position: absolute;
@@ -22,14 +24,21 @@ const ListContainer = styled.ul`
 const Left: React.VFC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
+  const {searchTerm, searchTrigger} = useSearch()
+
   return usePrism(() => {
     const tree = val(layoutP.tree)
     const width = val(layoutP.leftDims.width)
 
+    // Apply search filter if search term exists
+    const filteredTree = searchTerm.trim()
+      ? filterSequenceEditorTree(tree, searchTerm)
+      : tree
+
     return (
-      <Container style={{width: width + 'px', top: tree.top + 'px'}}>
+      <Container style={{width: width + 'px', top: filteredTree.top + 'px'}}>
         <ListContainer>
-          {tree.children.map((sheetObjectLeaf) => (
+          {filteredTree.children.map((sheetObjectLeaf) => (
             <LeftSheetObjectRow
               key={
                 'sheetObject-' +
@@ -41,7 +50,7 @@ const Left: React.VFC<{
         </ListContainer>
       </Container>
     )
-  }, [layoutP])
+  }, [layoutP, searchTerm, searchTrigger])
 }
 
 export default Left

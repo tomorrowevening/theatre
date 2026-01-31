@@ -50,6 +50,7 @@ import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
 import SheetObjectModal from './SheetObjectModal'
 import type {SheetObjectModalRef} from './SheetObjectModal'
+import {SearchProvider} from './SearchContext'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -148,6 +149,8 @@ const Content: React.VFC<{}> = () => {
   const [containerNode, setContainerNode] = useState<null | HTMLDivElement>(
     null,
   )
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTrigger, setSearchTrigger] = useState(0)
 
   // SVGViewer ref for controlling it from the Start Menu
   const svgViewerRef = useRef<SVGViewerRef>(null)
@@ -224,6 +227,14 @@ const Content: React.VFC<{}> = () => {
 
   const handleSheetObjectCreate = useCallback(() => {
     sheetObjectModalRef.current?.open()
+  }, [])
+
+  const handleSearchChange = useCallback((newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm)
+  }, [])
+
+  const handleSearchTrigger = useCallback((newTrigger: number) => {
+    setSearchTrigger(newTrigger)
   }, [])
 
   const handleSheetObjectModalConfirm = useCallback(
@@ -621,6 +632,7 @@ const Content: React.VFC<{}> = () => {
   }, [])
 
   usePresenceListenersOnRootElement(containerNode)
+
   return usePrism(() => {
     const panelSize = prism.memo(
       'panelSize',
@@ -656,6 +668,45 @@ const Content: React.VFC<{}> = () => {
     // Store current sheet in ref for handlers to access
     currentSheetRef.current = sheet
 
+    // Auto-adjust sequence editor time range to match sheet duration
+    // This runs inside usePrism so it's reactive to sheet changes
+    const sheetSequence = sheet.getSequence()
+    const sequenceDuration = sheetSequence.length
+
+    // Check if we need to adjust the range
+    const currentRange = val(
+      getStudio().atomP.ahistoric.projects.stateByProjectId[
+        sheet.address.projectId
+      ].stateBySheetId[sheet.address.sheetId].sequence.clippedSpaceRange,
+    ) || {start: 0, end: 10}
+
+    // Only auto-adjust if:
+    // 1. Duration is valid and not default
+    // 2. Current range doesn't match sequence duration
+    // 3. Current range appears to be the default (start: 0, end: 10) - indicating no user interaction
+    const isDefaultRange = currentRange.start === 0 && currentRange.end === 10
+    // Add 5% padding to the end so users can see the full duration including end markers
+    const paddedDuration = sequenceDuration * 1.05
+    const needsAdjustment =
+      sequenceDuration > 0 &&
+      sequenceDuration !== 10 &&
+      currentRange.end !== paddedDuration &&
+      isDefaultRange
+
+    if (needsAdjustment) {
+      // Use setTimeout to avoid calling transaction inside usePrism
+      setTimeout(() => {
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.ahistoric.projects.stateByProjectId.stateBySheetId.sequence.clippedSpaceRange.set(
+            {
+              ...sheet.address,
+              range: {start: 0, end: paddedDuration},
+            },
+          )
+        })
+      }, 0)
+    }
+
     const panelSizeP = valToAtom('panelSizeP', panelSize).pointer
 
     // We make a unique key based on the sheet's address, so that
@@ -663,15 +714,7 @@ const Content: React.VFC<{}> = () => {
     // don't have to listen to changes in sheet
     const key = prism.memo('key', () => JSON.stringify(sheet.address), [sheet])
 
-    const layoutP = prism
-      .memo(
-        'layout',
-        () => {
-          return sequenceEditorPanelLayout(sheet, panelSizeP)
-        },
-        [sheet, panelSizeP],
-      )
-      .getValue()
+    const layoutP = sequenceEditorPanelLayout(sheet, panelSizeP).getValue()
 
     // Always show sequence editor when a sheet is selected
     // With the new Start Menu, users can dynamically add objects and properties
@@ -722,6 +765,8 @@ const Content: React.VFC<{}> = () => {
           onSheetCreate={handleSheetCreate}
           onSheetDuplicate={handleSheetDuplicate}
           onSheetObjectCreate={handleSheetObjectCreate}
+          onSearchChange={handleSearchChange}
+          onSearchTrigger={handleSearchTrigger}
         />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
@@ -733,7 +778,12 @@ const Content: React.VFC<{}> = () => {
             renderMode="both"
             color="#4575e3"
           />
-          <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />
+          <SearchProvider searchTerm={searchTerm} searchTrigger={searchTrigger}>
+            <DopeSheet
+              key={key + '-dopeSheet-' + searchTerm + '-' + searchTrigger}
+              layoutP={layoutP}
+            />
+          </SearchProvider>
           {graphEditorOpen && (
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
           )}
@@ -756,7 +806,7 @@ const Content: React.VFC<{}> = () => {
         />
       </Container>
     )
-  }, [dims, containerNode])
+  }, [dims, containerNode, searchTerm, searchTrigger])
 }
 
 const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({

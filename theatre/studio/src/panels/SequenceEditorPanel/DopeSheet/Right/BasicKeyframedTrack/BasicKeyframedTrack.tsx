@@ -38,6 +38,10 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
       null,
     )
     const {selectedKeyframeIds, selection} = usePrism(() => {
+      if (!leaf.trackId) {
+        return {selectedKeyframeIds: undefined, selection: undefined}
+      }
+
       const selectionAtom = val(layoutP.selectionAtom)
       const selectedKeyframeIds = val(
         selectionAtom.pointer.current.byObjectKey[
@@ -65,7 +69,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
     const snapPositionsState = useVal(snapPositionsStateD)
 
     const snapPositions =
-      snapPositionsState.mode === 'snapToSome'
+      snapPositionsState.mode === 'snapToSome' && leaf.trackId
         ? snapPositionsState.positions[leaf.sheetObject.address.objectKey]?.[
             leaf.trackId
           ]
@@ -73,10 +77,14 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
 
     const snapToAllKeyframes = snapPositionsState.mode === 'snapToAll'
 
+    if (!leaf.trackId) {
+      return null
+    }
+
     const track = useMemo(
       () => ({
         data: trackData,
-        id: leaf.trackId,
+        id: leaf.trackId!,
         sheetObject: props.leaf.sheetObject,
       }),
       [trackData, leaf.trackId],
@@ -87,7 +95,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
         key={'keyframe-' + kf.id}
         itemKey={createStudioSheetItemKey.forTrackKeyframe(
           leaf.sheetObject,
-          leaf.trackId,
+          leaf.trackId!,
           kf.id,
         )}
         keyframe={kf}
@@ -95,11 +103,15 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
         track={track}
         layoutP={layoutP}
         leaf={leaf}
-        selection={selectedKeyframeIds[kf.id] === true ? selection : undefined}
+        selection={
+          selectedKeyframeIds && selectedKeyframeIds[kf.id] === true
+            ? selection
+            : undefined
+        }
       />
     ))
 
-    const snapTargets = snapPositions.map((position) => (
+    const snapTargets = snapPositions.map((position: number) => (
       <KeyframeSnapTarget
         key={'snap-target-' + position}
         layoutP={layoutP}
@@ -179,6 +191,8 @@ function pasteKeyframesContextMenuItem(
         const keyframeOffset = earliestKeyframe(singleTrackKeyframes)?.position!
 
         for (const keyframe of singleTrackKeyframes) {
+          if (!props.leaf.trackId) continue
+
           stateEditors.coreByProject.historic.sheetsById.sequence.setKeyframeAtPosition(
             {
               ...props.leaf.sheetObject.address,

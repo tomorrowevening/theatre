@@ -115,6 +115,22 @@ const Tooltip = styled.div<{active: boolean}>`
   }
 `
 
+const TooltipInput = styled.input`
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 10px;
+  line-height: 18px;
+  text-align: center;
+  width: 40px;
+  outline: none;
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+`
+
 /**
  * The little scrollbar on the bottom of the Right side
  */
@@ -161,6 +177,93 @@ const HorizontalScrollbar: React.FC<{
   const [beingDragged, setBeingDragged] = useState<
     'nothing' | 'both' | 'start' | 'end'
   >('nothing')
+
+  const [editingStart, setEditingStart] = useState(false)
+  const [editingEnd, setEditingEnd] = useState(false)
+  const [startInputValue, setStartInputValue] = useState('')
+  const [endInputValue, setEndInputValue] = useState('')
+
+  const inputHandlers = useMemo(() => {
+    const updateRange = (newStart: number, newEnd: number) => {
+      // Clamp values to reasonable bounds, but allow extending beyond sequence length
+      const clampedStart = Math.max(0, Math.min(newStart, newEnd - 0.01))
+      const clampedEnd = Math.max(newStart + 0.01, newEnd) // Remove upper bound limit
+
+      val(layoutP.clippedSpace.setRange)({
+        start: clampedStart,
+        end: clampedEnd,
+      })
+    }
+
+    return {
+      onStartInputClick: (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setEditingStart(true)
+        setStartInputValue(unitPosToHumanReadablePos(clippedSpaceRange.start))
+      },
+
+      onEndInputClick: (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setEditingEnd(true)
+        setEndInputValue(unitPosToHumanReadablePos(clippedSpaceRange.end))
+      },
+
+      onStartInputChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        setStartInputValue(e.target.value)
+      },
+
+      onEndInputChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEndInputValue(e.target.value)
+      },
+
+      onStartInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+          const newValue = parseFloat(startInputValue)
+          if (!isNaN(newValue)) {
+            updateRange(newValue, clippedSpaceRange.end)
+          }
+          setEditingStart(false)
+        } else if (e.key === 'Escape') {
+          setEditingStart(false)
+        }
+      },
+
+      onEndInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+          const newValue = parseFloat(endInputValue)
+          if (!isNaN(newValue)) {
+            updateRange(clippedSpaceRange.start, newValue)
+          }
+          setEditingEnd(false)
+        } else if (e.key === 'Escape') {
+          setEditingEnd(false)
+        }
+      },
+
+      onStartInputBlur: () => {
+        const newValue = parseFloat(startInputValue)
+        if (!isNaN(newValue)) {
+          updateRange(newValue, clippedSpaceRange.end)
+        }
+        setEditingStart(false)
+      },
+
+      onEndInputBlur: () => {
+        const newValue = parseFloat(endInputValue)
+        if (!isNaN(newValue)) {
+          updateRange(clippedSpaceRange.start, newValue)
+        }
+        setEditingEnd(false)
+      },
+    }
+  }, [
+    layoutP,
+    relevantValuesD,
+    clippedSpaceRange,
+    startInputValue,
+    endInputValue,
+    unitPosToHumanReadablePos,
+  ])
 
   const handles = useMemo(() => {
     let valuesBeforeDrag = val(relevantValuesD)
@@ -299,16 +402,50 @@ const HorizontalScrollbar: React.FC<{
           ref={setRangeStartDragNode}
           style={{transform: `translate3d(${rangeStartX}px, 0, 0)`}}
         >
-          <Tooltip active={beingDragged === 'both' || beingDragged === 'start'}>
-            {unitPosToHumanReadablePos(clippedSpaceRange.start)}
+          <Tooltip
+            active={
+              beingDragged === 'both' ||
+              beingDragged === 'start' ||
+              editingStart
+            }
+          >
+            {editingStart ? (
+              <TooltipInput
+                value={startInputValue}
+                onChange={inputHandlers.onStartInputChange}
+                onKeyDown={inputHandlers.onStartInputKeyDown}
+                onBlur={inputHandlers.onStartInputBlur}
+                autoFocus
+              />
+            ) : (
+              <span onClick={inputHandlers.onStartInputClick}>
+                {unitPosToHumanReadablePos(clippedSpaceRange.start)}
+              </span>
+            )}
           </Tooltip>
         </RangeStartHandle>
         <RangeEndHandle
           ref={setRangeEndDragNode}
           style={{transform: `translate3d(${rangeEndX}px, 0, 0)`}}
         >
-          <Tooltip active={beingDragged === 'both' || beingDragged === 'end'}>
-            {unitPosToHumanReadablePos(clippedSpaceRange.end)}
+          <Tooltip
+            active={
+              beingDragged === 'both' || beingDragged === 'end' || editingEnd
+            }
+          >
+            {editingEnd ? (
+              <TooltipInput
+                value={endInputValue}
+                onChange={inputHandlers.onEndInputChange}
+                onKeyDown={inputHandlers.onEndInputKeyDown}
+                onBlur={inputHandlers.onEndInputBlur}
+                autoFocus
+              />
+            ) : (
+              <span onClick={inputHandlers.onEndInputClick}>
+                {unitPosToHumanReadablePos(clippedSpaceRange.end)}
+              </span>
+            )}
           </Tooltip>
         </RangeEndHandle>
       </TimeThread>

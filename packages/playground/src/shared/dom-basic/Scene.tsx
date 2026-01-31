@@ -12,6 +12,7 @@ const SceneCSS: CSSProperties = {
   right: '0',
   top: '0',
   bottom: '0',
+  pointerEvents: 'none',
 }
 
 export const Scene: React.FC<{project: IProject}> = ({project}) => {
@@ -29,6 +30,15 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
       sheet.sequence.getMarkerPosition('mid'),
       sheet.sequence.getMarkerPosition('end'), // doesn't exist, should return undefined
     )
+
+    function onEvent(evt: any) {
+      console.log(evt.name, evt.value)
+    }
+    sheet.sequence.listen('test', onEvent)
+
+    return () => {
+      sheet.sequence.unlisten('test', onEvent)
+    }
   }, [projectReady])
 
   // Sets Project Ready

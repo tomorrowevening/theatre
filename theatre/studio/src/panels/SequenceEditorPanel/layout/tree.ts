@@ -165,7 +165,7 @@ export const calculateSequenceEditorTree = (
         collapsableItemSetP.byId[
           createStudioSheetItemKey.forSheetObject(sheetObject)
         ].isCollapsed,
-      ) ?? false
+      ) ?? true
 
     const row: SequenceEditorTree_SheetObject = {
       type: 'sheetObject',

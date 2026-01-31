@@ -68,7 +68,7 @@ const BasicKeyframeConnector: React.VFC<IBasicKeyframeConnectorProps> = (
     () =>
       isConnectionEditingInCurvePopover({
         ...props.leaf.sheetObject.address,
-        trackId: props.leaf.trackId,
+        trackId: props.leaf.trackId!,
         left: cur,
         right: next,
       }),
@@ -113,6 +113,10 @@ const SingleCurveEditorPopover: React.FC<
 
   const trackId = props.leaf.trackId
   const address = props.leaf.sheetObject.address
+
+  if (!trackId) {
+    return null
+  }
 
   const selectedConnections = usePrism(
     () =>
@@ -192,7 +196,7 @@ function useDragKeyframe(
               stateEditors.coreByProject.historic.sheetsById.sequence.transformKeyframes(
                 {
                   ...propsAtStartOfDrag.leaf.sheetObject.address,
-                  trackId: propsAtStartOfDrag.leaf.trackId,
+                  trackId: propsAtStartOfDrag.leaf.trackId!,
                   keyframeIds: [
                     propsAtStartOfDrag.keyframe.id,
                     propsAtStartOfDrag.track.data.keyframes[
@@ -274,7 +278,7 @@ function useConnectorContextMenu(
                   {
                     ...props.leaf.sheetObject.address,
                     keyframeIds: [cur.id, next.id],
-                    trackId: props.leaf.trackId,
+                    trackId: props.leaf.trackId!,
                   },
                 )
               })

@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import styled from 'styled-components'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
-import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {SequenceEditorPanelLayout} from './layout/layout'
 import {usePrism} from '@tomorrowevening/theatre-react'
 
 type MenuItem = {
@@ -27,6 +27,8 @@ type StartMenuProps = {
   onSheetCreate?: () => void
   onSheetDuplicate?: () => void
   onSheetObjectCreate?: () => void
+  onSearchChange?: (searchTerm: string) => void
+  onSearchTrigger?: (trigger: number) => void
 }
 
 const MenuContainer = styled.div`
@@ -34,6 +36,31 @@ const MenuContainer = styled.div`
   bottom: 10px;
   left: 10px;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const SearchInput = styled.input<{hasValue: boolean}>`
+  background: ${(props) => (props.hasValue ? '#1e1e1e' : '#2d2d30')};
+  color: #cccccc;
+  border: 1px solid ${(props) => (props.hasValue ? '#0078d4' : '#3e3e42')};
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  width: 200px;
+  transition: all 0.15s ease-out;
+
+  &:focus {
+    outline: none;
+    border-color: #0078d4;
+    background: #1e1e1e;
+  }
+
+  &::placeholder {
+    color: #6a6a6a;
+  }
 `
 
 const MenuButton = styled.button<{isOpen: boolean}>`
@@ -150,8 +177,12 @@ const StartMenu: React.FC<StartMenuProps> = ({
   onSheetCreate,
   onSheetDuplicate,
   onSheetObjectCreate,
+  onSearchChange,
+  onSearchTrigger,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTrigger, setSearchTrigger] = useState(0) // Used to force re-renders on Enter
 
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev)
@@ -160,6 +191,34 @@ const StartMenu: React.FC<StartMenuProps> = ({
   const closeMenu = useCallback(() => {
     setIsOpen(false)
   }, [])
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setSearchTerm(value)
+      if (onSearchChange) {
+        onSearchChange(value)
+      }
+    },
+    [onSearchChange],
+  )
+
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        // Force a re-render by updating the search trigger
+        const newTrigger = searchTrigger + 1
+        setSearchTrigger(newTrigger)
+        if (onSearchTrigger) {
+          onSearchTrigger(newTrigger)
+        }
+        if (onSearchChange) {
+          onSearchChange(searchTerm)
+        }
+      }
+    },
+    [onSearchChange, onSearchTrigger, searchTerm, searchTrigger],
+  )
 
   const handleMenuItemClick = useCallback(
     (action?: () => void) => {
@@ -291,6 +350,15 @@ const StartMenu: React.FC<StartMenuProps> = ({
         <MenuPanel isOpen={isOpen}>
           <MenuSection>{menuItems.map(renderMenuItem)}</MenuSection>
         </MenuPanel>
+
+        <SearchInput
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          onKeyDown={handleSearchKeyDown}
+          hasValue={searchTerm.length > 0}
+        />
 
         {/* Invisible overlay to close menu when clicking outside */}
         {isOpen && (
