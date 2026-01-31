@@ -1,10 +1,13 @@
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {getOutlineSelection} from '@tomorrowevening/theatre-studio/selectors'
+import {generateSequenceMarkerId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
-import React, {useState} from 'react'
+import React, {useState, useCallback, useRef} from 'react'
 import styled from 'styled-components'
+import {types} from '@tomorrowevening/theatre-core'
 
 import DopeSheet from './DopeSheet/DopeSheet'
 import GraphEditor from './GraphEditor/GraphEditor'
@@ -15,7 +18,6 @@ import BasePanel, {
   usePanel,
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/BasePanel'
 import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
-import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import clamp from 'lodash-es/clamp'
 import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
@@ -38,6 +40,32 @@ import {
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
+import SVGViewer from './SVGViewer'
+import type {SVGViewerRef} from './SVGViewer'
+import StartMenu from './StartMenu'
+import SheetModal from './SheetModal'
+import type {SheetModalRef} from './SheetModal'
+import SheetObjectModal from './SheetObjectModal'
+import type {SheetObjectModalRef} from './SheetObjectModal'
+
+/**
+ * Initiates a file download for the provided data with the provided file name
+ */
+function saveFile(content: string | Blob, fileName: string) {
+  const file = new File([content], fileName)
+  const objUrl = URL.createObjectURL(file)
+  const a = Object.assign(document.createElement('a'), {
+    href: objUrl,
+    target: '_blank',
+    rel: 'noopener',
+  })
+  a.setAttribute('download', fileName)
+  a.click()
+
+  setTimeout(() => {
+    URL.revokeObjectURL(objUrl)
+  }, 40000)
+}
 
 const Container = styled(PanelWrapper)`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -56,6 +84,7 @@ const LeftBackground = styled.div`
 
 export const zIndexes = (() => {
   const s = {
+    svgViewer: 0,
     rightBackground: 0,
     scrollableArea: 0,
     rightOverlay: 0,
@@ -81,7 +110,7 @@ const Header_Container = styled(PanelDragZone)`
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 
   ${TitleBar} {
     height: 30px;
@@ -116,6 +145,315 @@ const Content: React.VFC<{}> = () => {
   const [containerNode, setContainerNode] = useState<null | HTMLDivElement>(
     null,
   )
+
+  // SVGViewer ref for controlling it from the Start Menu
+  const svgViewerRef = useRef<SVGViewerRef>(null)
+
+  // SheetModal ref for controlling it from the Start Menu
+  const sheetModalRef = useRef<SheetModalRef>(null)
+
+  // SheetObjectModal ref for controlling it from the Start Menu
+  const sheetObjectModalRef = useRef<SheetObjectModalRef>(null)
+
+  // Store for tracking object properties to prevent overwrites
+  const objectPropertiesStore = useRef<Map<string, Record<string, any>>>(
+    new Map(),
+  )
+
+  // Current sheet ref to access sheet info from handlers
+  const currentSheetRef = useRef<any>(null)
+
+  const handleSVGViewerClear = useCallback(() => {
+    svgViewerRef.current?.clearData()
+  }, [])
+
+  const handleSVGViewerLoad = useCallback(async () => {
+    try {
+      await svgViewerRef.current?.loadFromClipboard()
+    } catch (error) {
+      console.error('Failed to load from clipboard:', error)
+    }
+  }, [])
+
+  const handleSVGViewerShow = useCallback(() => {
+    svgViewerRef.current?.show()
+  }, [])
+
+  const handleSVGViewerHide = useCallback(() => {
+    svgViewerRef.current?.hide()
+  }, [])
+
+  const handleSheetCreate = useCallback(() => {
+    sheetModalRef.current?.open('create')
+  }, [])
+
+  const handleSheetDuplicate = useCallback(() => {
+    const currentSheet = currentSheetRef.current
+    const currentSheetName = currentSheet?.address?.sheetId || 'Sheet'
+    sheetModalRef.current?.open('duplicate', currentSheetName)
+  }, [])
+
+  const handleSheetModalConfirm = useCallback(
+    (sheetName: string, mode: 'create' | 'duplicate') => {
+      try {
+        const currentSheet = currentSheetRef.current
+        if (currentSheet?.project?.publicApi) {
+          // Create the sheet immediately
+          const newSheet = currentSheet.project.publicApi.sheet(sheetName)
+          console.log(
+            `✅ Successfully ${
+              mode === 'create' ? 'created' : 'duplicated'
+            } sheet: ${sheetName}`,
+          )
+        } else {
+          console.error('❌ No current sheet or project available')
+        }
+      } catch (error) {
+        console.error(`❌ Failed to ${mode} sheet:`, error)
+      }
+    },
+    [],
+  )
+
+  const handleSheetModalCancel = useCallback(() => {
+    console.log('❌ Sheet modal cancelled')
+  }, [])
+
+  const handleSheetObjectCreate = useCallback(() => {
+    sheetObjectModalRef.current?.open()
+  }, [])
+
+  const handleSheetObjectModalConfirm = useCallback(
+    (objectData: {
+      name: string
+      key: string
+      type: string
+      value: any
+      min?: number
+      max?: number
+      step?: number
+    }) => {
+      try {
+        const currentSheet = currentSheetRef.current
+        if (currentSheet) {
+          // Build the prop configuration based on type
+          let propConfig: any
+
+          switch (objectData.type) {
+            case 'number':
+              if (
+                objectData.min !== undefined ||
+                objectData.max !== undefined ||
+                objectData.step !== undefined
+              ) {
+                const rangeOptions: any = {}
+                if (
+                  objectData.min !== undefined &&
+                  objectData.max !== undefined
+                ) {
+                  rangeOptions.range = [objectData.min, objectData.max]
+                }
+                if (objectData.step !== undefined) {
+                  rangeOptions.nudgeMultiplier = objectData.step
+                }
+                propConfig = types.number(objectData.value, rangeOptions)
+              } else {
+                propConfig = types.number(objectData.value)
+              }
+              break
+            case 'string':
+              propConfig = types.string(objectData.value)
+              break
+            case 'boolean':
+              propConfig = types.boolean(objectData.value)
+              break
+            case 'rgba':
+              propConfig = types.rgba(objectData.value)
+              break
+            case 'compound':
+              propConfig = objectData.value
+              break
+            default:
+              propConfig = objectData.value
+          }
+
+          // Access the public API sheet to create the object
+          const publicSheet = currentSheet.project.publicApi.sheet(
+            currentSheet.address.sheetId,
+          )
+
+          // Get or create the object's property store
+          const objectKey = `${currentSheet.address.sheetId}:${objectData.name}`
+          let existingProps = objectPropertiesStore.current.get(objectKey) || {}
+
+          // Add the new property to existing properties
+          existingProps[objectData.key] = propConfig
+
+          // Update the store
+          objectPropertiesStore.current.set(objectKey, existingProps)
+
+          let sheetObject
+
+          try {
+            // Step 1: Try to get existing object to read its current values
+            let existingObject
+            let existingValues = {}
+
+            try {
+              // Attempt to get existing object (this might fail if object doesn't exist)
+              existingObject = publicSheet.object(objectData.name, {})
+              existingValues = existingObject.value || {}
+            } catch (existingError) {
+              // console.log('📝 No existing object found, creating fresh')
+            }
+
+            // Step 2: Merge existing values with new property types (your approach!)
+            // This preserves existing properties while adding new ones
+            const mergedConfig = {...existingProps}
+
+            // Step 3: Create/reconfigure with the complete config
+            sheetObject = publicSheet.object(objectData.name, mergedConfig, {
+              reconfigure: true,
+            })
+
+            // Verify success
+            const expectedProps = Object.keys(existingProps)
+            const actualProps = Object.keys(sheetObject.value || {})
+            const missingProps = expectedProps.filter(
+              (prop: string) => !(actualProps as string[]).includes(prop),
+            )
+
+            if (missingProps.length !== 0) {
+              console.log('⚠️ Still missing props:', missingProps)
+              console.log(
+                'This indicates a fundamental Theatre.js limitation with reconfigure',
+              )
+            }
+          } catch (error) {
+            console.error('❌ Object creation failed:', error)
+            throw error
+          }
+        } else {
+          console.error('❌ No current sheet available')
+        }
+      } catch (error) {
+        console.error('❌ Failed to create sheet object:', error)
+      }
+    },
+    [],
+  )
+
+  const handleSheetObjectModalCancel = useCallback(() => {
+    console.log('❌ Sheet object modal cancelled')
+  }, [])
+
+  const handleFileSave = useCallback(() => {
+    console.log('💾 Start Menu: Saving project files')
+    try {
+      const projects = val(getStudio().projectsP)
+      Object.values(projects).forEach((project) => {
+        if (project) {
+          const projectId = project.address.projectId
+          const slugifiedProjectId = projectId
+            .replace(/[^\w\d'_\-]+/g, ' ')
+            .trim()
+          const fileName = `${slugifiedProjectId}.json`
+          const str = JSON.stringify(
+            getStudio().createContentOfSaveFile(projectId),
+            null,
+            2,
+          )
+          saveFile(str, fileName)
+          console.log(`✅ Saved project: ${fileName}`)
+        }
+      })
+    } catch (error) {
+      console.error('❌ Failed to save project files:', error)
+    }
+  }, [])
+
+  const handleMarkersAdd = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+        const sheetSequence = sheet.getSequence()
+
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceMarkers(
+            {
+              sheetAddress: sheet.address,
+              markers: [
+                {
+                  id: generateSequenceMarkerId(),
+                  position: sheetSequence.position,
+                  label: `Marker ${
+                    Math.floor(sheetSequence.position * 100) / 100
+                  }s`,
+                },
+              ],
+              snappingFunction: sheetSequence.closestGridPosition,
+            },
+          )
+        })
+      } else {
+        console.warn('⚠️ No sheet selected for adding marker')
+      }
+    } catch (error) {
+      console.error('❌ Failed to add marker:', error)
+    }
+  }, [])
+
+  const handleMarkersClear = useCallback(() => {
+    try {
+      const selectedSheets = uniq(
+        getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet => isSheet(s) || isSheetObject(s),
+          )
+          .map((s) => (isSheetObject(s) ? s.sheet : s)),
+      )
+
+      if (selectedSheets.length > 0) {
+        const sheet = selectedSheets[0]
+
+        // Get all existing marker IDs first
+        const markerSetP =
+          getStudio().atomP.historic.projects.stateByProjectId[
+            sheet.address.projectId
+          ].stateBySheetId[sheet.address.sheetId].sequenceEditor.markerSet
+        const markerAllIds = val(markerSetP.allIds)
+
+        if (markerAllIds && Object.keys(markerAllIds).length > 0) {
+          // Remove each marker individually using the correct transaction pattern
+          Object.keys(markerAllIds).forEach((markerId) => {
+            getStudio().transaction(({stateEditors}) => {
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.removeMarker(
+                {
+                  sheetAddress: sheet.address,
+                  markerId: markerId as any,
+                },
+              )
+            })
+          })
+        } else {
+          console.log('ℹ️ No markers to clear')
+        }
+      } else {
+        console.warn('⚠️ No sheet selected for clearing markers')
+      }
+    } catch (error) {
+      console.error('❌ Failed to clear markers:', error)
+    }
+  }, [])
+
   usePresenceListenersOnRootElement(containerNode)
   return usePrism(() => {
     const panelSize = prism.memo(
@@ -149,6 +487,9 @@ const Content: React.VFC<{}> = () => {
 
     if (!sheet) return <></>
 
+    // Store current sheet in ref for handlers to access
+    currentSheetRef.current = sheet
+
     const panelSizeP = valToAtom('panelSizeP', panelSize).pointer
 
     // We make a unique key based on the sheet's address, so that
@@ -166,7 +507,8 @@ const Content: React.VFC<{}> = () => {
       )
       .getValue()
 
-    // Show sequence editor if there are keyframed properties, or if there's a sequence duration or markers
+    // Always show sequence editor when a sheet is selected
+    // With the new Start Menu, users can dynamically add objects and properties
     const hasChildren = val(layoutP.tree.children).length > 0
     const sequenceState = val(
       sheet.project.pointers.historic.sheetsById[sheet.address.sheetId]
@@ -176,7 +518,8 @@ const Content: React.VFC<{}> = () => {
       (sequenceState?.length && sequenceState.length > 0) ||
       (sequenceState?.markers && sequenceState.markers.length > 0)
 
-    if (!hasChildren && !hasSequenceData) return <></>
+    // Always show the panel when a sheet is selected - users can now create content dynamically
+    // if (!hasChildren && !hasSequenceData) return <></>
 
     const containerRef = prism.memo(
       'containerRef',
@@ -197,8 +540,29 @@ const Content: React.VFC<{}> = () => {
         }}
       >
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
+        <StartMenu
+          layoutP={layoutP}
+          onSVGViewerClear={handleSVGViewerClear}
+          onSVGViewerLoad={handleSVGViewerLoad}
+          onSVGViewerShow={handleSVGViewerShow}
+          onSVGViewerHide={handleSVGViewerHide}
+          onFileSave={handleFileSave}
+          onMarkersAdd={handleMarkersAdd}
+          onMarkersClear={handleMarkersClear}
+          onSheetCreate={handleSheetCreate}
+          onSheetDuplicate={handleSheetDuplicate}
+          onSheetObjectCreate={handleSheetObjectCreate}
+        />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
+          <SVGViewer
+            ref={svgViewerRef}
+            key={key + '-svgViewer'}
+            layoutP={layoutP}
+            sheetAddress={sheet.address}
+            renderMode="both"
+            color="#4575e3"
+          />
           <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />
           {graphEditorOpen && (
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
@@ -206,6 +570,20 @@ const Content: React.VFC<{}> = () => {
           {graphEditorAvailable && <GraphEditorToggle layoutP={layoutP} />}
           <RightOverlay layoutP={layoutP} />
         </FrameStampPositionProvider>
+
+        {/* Sheet Modal */}
+        <SheetModal
+          ref={sheetModalRef}
+          onConfirm={handleSheetModalConfirm}
+          onCancel={handleSheetModalCancel}
+        />
+
+        {/* Sheet Object Modal */}
+        <SheetObjectModal
+          ref={sheetObjectModalRef}
+          onConfirm={handleSheetObjectModalConfirm}
+          onCancel={handleSheetObjectModalCancel}
+        />
       </Container>
     )
   }, [dims, containerNode])
@@ -280,7 +658,7 @@ const FrameTimeInput = styled(TimeInput)`
 `
 
 const FpsTimeInput = styled(TimeInput)`
-  width: 30px;
+  width: 40px;
 `
 
 const PositionInput: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> =

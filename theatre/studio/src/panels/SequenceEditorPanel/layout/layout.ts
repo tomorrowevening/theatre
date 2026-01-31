@@ -173,6 +173,8 @@ const panelSplitRatio = 0.3
 
 const initialClippedSpaceRange: IRange = {start: 0, end: 10}
 
+const minLeftPanelWidth = 320
+
 export function sequenceEditorPanelLayout(
   sheet: Sheet,
   panelDimsP: Pointer<PanelDims>,
@@ -215,7 +217,10 @@ export function sequenceEditorPanelLayout(
       'leftDims',
       () => {
         const leftDims: DimsOfPanelPart = {
-          width: Math.floor(panelDims.width * panelSplitRatio),
+          width: Math.max(
+            minLeftPanelWidth,
+            Math.floor(panelDims.width * panelSplitRatio),
+          ),
           height: panelDims.height,
           screenX: panelDims.screenX,
           screenY: panelDims.screenY,
@@ -237,8 +242,7 @@ export function sequenceEditorPanelLayout(
             : 0) * panelDims.heightWithoutBorder,
         )
 
-        const bottomHeight = 0 + graphEditorHeight
-        const dopeSheetHeight = panelDims.height - bottomHeight
+        const dopeSheetHeight = panelDims.height
 
         const dopeSheetDims: SequenceEditorPanelLayout['dopeSheetDims'] = {
           width: panelDims.width,
