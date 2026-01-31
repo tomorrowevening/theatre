@@ -335,9 +335,6 @@ function usePlayheadContextMenu(
                     {
                       id: generateSequenceMarkerId(),
                       position: sheetSequence.position,
-                      label: `Marker ${
-                        Math.floor(sheetSequence.position * 100) / 100
-                      }s`,
                     },
                   ],
                   snappingFunction: sheetSequence.closestGridPosition,

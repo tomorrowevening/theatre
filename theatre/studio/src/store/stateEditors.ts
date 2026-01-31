@@ -431,9 +431,17 @@ namespace stateEditors {
 
                 const sanitizedEvents = p.events
                   .filter((event) => {
-                    if (!isFinite(event.position)) return false
-                    if (!event.name || typeof event.name !== 'string')
+                    if (!isFinite(event.position)) {
+                      console.warn(
+                        'Event filtered out: invalid position',
+                        event,
+                      )
                       return false
+                    }
+                    if (!event.name || typeof event.name !== 'string') {
+                      console.warn('Event filtered out: invalid name', event)
+                      return false
+                    }
 
                     return true // event looks valid
                   })
