@@ -50,6 +50,7 @@ import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
 import SheetObjectModal from './SheetObjectModal'
 import type {SheetObjectModalRef} from './SheetObjectModal'
+import {SearchProvider} from './SearchContext'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -148,6 +149,8 @@ const Content: React.VFC<{}> = () => {
   const [containerNode, setContainerNode] = useState<null | HTMLDivElement>(
     null,
   )
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTrigger, setSearchTrigger] = useState(0)
 
   // SVGViewer ref for controlling it from the Start Menu
   const svgViewerRef = useRef<SVGViewerRef>(null)
@@ -224,6 +227,14 @@ const Content: React.VFC<{}> = () => {
 
   const handleSheetObjectCreate = useCallback(() => {
     sheetObjectModalRef.current?.open()
+  }, [])
+
+  const handleSearchChange = useCallback((newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm)
+  }, [])
+
+  const handleSearchTrigger = useCallback((newTrigger: number) => {
+    setSearchTrigger(newTrigger)
   }, [])
 
   const handleSheetObjectModalConfirm = useCallback(
@@ -703,15 +714,7 @@ const Content: React.VFC<{}> = () => {
     // don't have to listen to changes in sheet
     const key = prism.memo('key', () => JSON.stringify(sheet.address), [sheet])
 
-    const layoutP = prism
-      .memo(
-        'layout',
-        () => {
-          return sequenceEditorPanelLayout(sheet, panelSizeP)
-        },
-        [sheet, panelSizeP],
-      )
-      .getValue()
+    const layoutP = sequenceEditorPanelLayout(sheet, panelSizeP).getValue()
 
     // Always show sequence editor when a sheet is selected
     // With the new Start Menu, users can dynamically add objects and properties
@@ -762,6 +765,8 @@ const Content: React.VFC<{}> = () => {
           onSheetCreate={handleSheetCreate}
           onSheetDuplicate={handleSheetDuplicate}
           onSheetObjectCreate={handleSheetObjectCreate}
+          onSearchChange={handleSearchChange}
+          onSearchTrigger={handleSearchTrigger}
         />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
@@ -773,7 +778,12 @@ const Content: React.VFC<{}> = () => {
             renderMode="both"
             color="#4575e3"
           />
-          <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />
+          <SearchProvider searchTerm={searchTerm} searchTrigger={searchTrigger}>
+            <DopeSheet
+              key={key + '-dopeSheet-' + searchTerm + '-' + searchTrigger}
+              layoutP={layoutP}
+            />
+          </SearchProvider>
           {graphEditorOpen && (
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
           )}
@@ -796,7 +806,7 @@ const Content: React.VFC<{}> = () => {
         />
       </Container>
     )
-  }, [dims, containerNode])
+  }, [dims, containerNode, searchTerm, searchTrigger])
 }
 
 const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({

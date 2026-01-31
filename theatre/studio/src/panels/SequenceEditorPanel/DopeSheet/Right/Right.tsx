@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
 import RightSheetObjectRow from './SheetObjectRow'
+import {useSearch} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\SearchContext'
+import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\layout\treeSearch'
 
 export const contentWidth = 1000000
 
@@ -23,13 +25,21 @@ const ListContainer = styled.ul`
 const Right: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
+  const {searchTerm, searchTrigger} = useSearch()
+
   return usePrism(() => {
     const tree = val(layoutP.tree)
+
+    // Apply search filter if search term exists
+    const filteredTree = searchTerm.trim()
+      ? filterSequenceEditorTree(tree, searchTerm)
+      : tree
+
     const height =
       val(layoutP.tree.top) +
       // stretch the height of the dope sheet in case the rows don't cover its whole vertical space
       Math.max(
-        val(layoutP.tree.heightIncludingChildren),
+        filteredTree.heightIncludingChildren,
         val(layoutP.dopeSheetDims.height),
       )
 
@@ -37,8 +47,8 @@ const Right: React.FC<{
       <>
         <HorizontallyScrollableArea layoutP={layoutP} height={height}>
           <DopeSheetSelectionView layoutP={layoutP} height={height}>
-            <ListContainer style={{top: tree.top + 'px'}}>
-              {tree.children.map((sheetObjectLeaf) => (
+            <ListContainer style={{top: filteredTree.top + 'px'}}>
+              {filteredTree.children.map((sheetObjectLeaf) => (
                 <RightSheetObjectRow
                   layoutP={layoutP}
                   key={
@@ -53,7 +63,7 @@ const Right: React.FC<{
         </HorizontallyScrollableArea>
       </>
     )
-  }, [layoutP])
+  }, [layoutP, searchTerm, searchTrigger])
 }
 
 export default Right
