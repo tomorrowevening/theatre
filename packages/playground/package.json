@@ -25,6 +25,7 @@
     "@tomorrowevening/theatre-r3f": "workspace:*",
     "@tomorrowevening/theatre-react": "workspace:*",
     "@tomorrowevening/theatre-studio": "workspace:*",
+    "@tomorrowevening/theatric": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^15.6.2",
@@ -38,7 +39,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^5.3.11",
-    "theatric": "workspace:*",
     "three": "^0.155.0",
     "typescript": "5.1.6",
     "vite": "^4.3.9"

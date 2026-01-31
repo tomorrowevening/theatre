@@ -1,4 +1,4 @@
-import {button, initialize, types, useControls} from 'theatric'
+import {button, initialize, types, useControls} from '@tomorrowevening/theatric'
 import ReactDom from 'react-dom/client'
 import React, {useState} from 'react'
 import state from './state.json'

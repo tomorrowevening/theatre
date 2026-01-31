@@ -39,7 +39,7 @@ prog
       '@tomorrowevening/theatre-react',
       '@tomorrowevening/theatre-browser-bundles',
       '@tomorrowevening/theatre-r3f',
-      'theatric',
+      '@tomorrowevening/theatric',
     ]
 
     await Promise.all([
@@ -54,7 +54,7 @@ prog.command('build', 'Builds all the main packages').action(async () => {
     '@tomorrowevening/theatre-react',
     '@tomorrowevening/theatre-browser-bundles',
     '@tomorrowevening/theatre-r3f',
-    'theatric',
+    '@tomorrowevening/theatric',
   ]
   async function build() {
     await Promise.all([
@@ -84,7 +84,7 @@ prog
       '@tomorrowevening/theatre-react',
       '@tomorrowevening/theatre-browser-bundles',
       '@tomorrowevening/theatre-r3f',
-      'theatric',
+      '@tomorrowevening/theatric',
     ]
 
     const packagesToPublish = [
@@ -94,7 +94,7 @@ prog
       '@tomorrowevening/theatre-react',
       '@tomorrowevening/theatre-browser-bundles',
       '@tomorrowevening/theatre-r3f',
-      'theatric',
+      '@tomorrowevening/theatric',
     ]
 
     /**
@@ -290,7 +290,7 @@ prog
       '@tomorrowevening/theatre-react',
       '@tomorrowevening/theatre-browser-bundles',
       '@tomorrowevening/theatre-r3f',
-      'theatric',
+      '@tomorrowevening/theatric',
     ]
 
     /**
