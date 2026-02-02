@@ -4,7 +4,15 @@
  * @packageDocumentation
  */
 
-export * from './coreExports'
+export {
+  getProject,
+  onChange,
+  val,
+  notify,
+  types,
+  createRafDriver,
+} from './coreExports'
+export type {IRafDriver} from './coreExports'
 export type {IProject, IProjectConfig} from './projects/TheatreProject'
 export type {ISequence} from './sequences/TheatreSequence'
 export type {ISheetObject} from './sheetObjects/TheatreSheetObject'

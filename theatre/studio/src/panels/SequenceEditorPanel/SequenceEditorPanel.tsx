@@ -45,6 +45,8 @@ import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 import SVGViewer from './SVGViewer'
 import type {SVGViewerRef} from './SVGViewer'
+import SVGLoadPopup from './SVGLoadPopup'
+import type {SVGDataPoint} from './SVGLoadPopup'
 import StartMenu from './StartMenu'
 import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
@@ -155,6 +157,9 @@ const Content: React.VFC<{}> = () => {
   // SVGViewer ref for controlling it from the Start Menu
   const svgViewerRef = useRef<SVGViewerRef>(null)
 
+  // SVG Load Popup state
+  const [showSVGLoadPopup, setShowSVGLoadPopup] = useState(false)
+
   // SheetModal ref for controlling it from the Start Menu
   const sheetModalRef = useRef<SheetModalRef>(null)
 
@@ -173,12 +178,8 @@ const Content: React.VFC<{}> = () => {
     svgViewerRef.current?.clearData()
   }, [])
 
-  const handleSVGViewerLoad = useCallback(async () => {
-    try {
-      await svgViewerRef.current?.loadFromClipboard()
-    } catch (error) {
-      console.error('Failed to load from clipboard:', error)
-    }
+  const handleSVGViewerLoad = useCallback(() => {
+    setShowSVGLoadPopup(true)
   }, [])
 
   const handleSVGViewerShow = useCallback(() => {
@@ -187,6 +188,18 @@ const Content: React.VFC<{}> = () => {
 
   const handleSVGViewerHide = useCallback(() => {
     svgViewerRef.current?.hide()
+  }, [])
+
+  const handleSVGLoadPopupLoad = useCallback(
+    (data: SVGDataPoint[], color: string) => {
+      svgViewerRef.current?.addData(data, color)
+      setShowSVGLoadPopup(false)
+    },
+    [],
+  )
+
+  const handleSVGLoadPopupCancel = useCallback(() => {
+    setShowSVGLoadPopup(false)
   }, [])
 
   const handleSheetCreate = useCallback(() => {
@@ -450,7 +463,8 @@ const Content: React.VFC<{}> = () => {
                   position: sheetSequence.position,
                 },
               ],
-              snappingFunction: sheetSequence.closestGridPosition,
+              // Remove snapping function to allow free positioning
+              // snappingFunction: sheetSequence.closestGridPosition,
             },
           )
         })
@@ -804,9 +818,17 @@ const Content: React.VFC<{}> = () => {
           onConfirm={handleSheetObjectModalConfirm}
           onCancel={handleSheetObjectModalCancel}
         />
+
+        {/* SVG Load Popup */}
+        {showSVGLoadPopup && (
+          <SVGLoadPopup
+            onLoad={handleSVGLoadPopupLoad}
+            onCancel={handleSVGLoadPopupCancel}
+          />
+        )}
       </Container>
     )
-  }, [dims, containerNode, searchTerm, searchTrigger])
+  }, [dims, containerNode, searchTerm, searchTrigger, showSVGLoadPopup])
 }
 
 const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({

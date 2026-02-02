@@ -292,7 +292,7 @@ const StartMenu: React.FC<StartMenuProps> = ({
       ],
     },
     {
-      label: 'SVG Viewer',
+      label: 'Data Viewer',
       submenu: [
         {
           label: 'Show',
