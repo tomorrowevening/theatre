@@ -17,6 +17,13 @@ export type SVGDataPoint = {
   value: number
 }
 
+export type SVGDataset = {
+  id: string
+  data: SVGDataPoint[]
+  color: string
+  name?: string
+}
+
 export type SVGViewerProps = {
   layoutP: Pointer<SequenceEditorPanelLayout>
   sheetAddress?: {projectId: string; sheetId: string}
@@ -29,7 +36,8 @@ export type SVGViewerProps = {
 
 export type SVGViewerRef = {
   clearData: () => void
-  loadData: (data: SVGDataPoint[]) => void
+  addData: (data: SVGDataPoint[], color?: string) => void
+  loadData: (data: SVGDataPoint[], color?: string) => void // Keep for backward compatibility
   loadFromClipboard: () => Promise<void>
   show: () => void
   hide: () => void
@@ -75,14 +83,37 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
     const loadDataFromStorage = (address?: {
       projectId: string
       sheetId: string
-    }): SVGDataPoint[] => {
+    }): SVGDataset[] => {
       try {
         const key = getStorageKey(address)
         const stored = localStorage.getItem(key)
         if (stored) {
           const parsed = JSON.parse(stored)
+          // Handle backward compatibility with old single dataset format
           if (Array.isArray(parsed)) {
-            return parsed
+            // Old format: array of data points
+            if (
+              parsed.length > 0 &&
+              typeof parsed[0] === 'object' &&
+              'time' in parsed[0]
+            ) {
+              return [
+                {
+                  id: 'legacy',
+                  data: parsed,
+                  color: '#4a9eff',
+                  name: 'Legacy Data',
+                },
+              ]
+            }
+            // New format: array of datasets
+            return parsed.filter(
+              (dataset) =>
+                dataset &&
+                typeof dataset === 'object' &&
+                Array.isArray(dataset.data) &&
+                typeof dataset.color === 'string',
+            )
           }
         }
       } catch (error) {
@@ -95,15 +126,12 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
     }
 
     const saveDataToStorage = (
-      data: SVGDataPoint[],
+      datasets: SVGDataset[],
       address?: {projectId: string; sheetId: string},
     ) => {
       try {
         const key = getStorageKey(address)
-        localStorage.setItem(key, JSON.stringify(data))
-        console.log(
-          `💾 SVGViewer: Saved ${data.length} data points to localStorage for ${key}`,
-        )
+        localStorage.setItem(key, JSON.stringify(datasets))
       } catch (error) {
         console.warn(
           '⚠️ SVGViewer: Failed to save data to localStorage:',
@@ -112,16 +140,16 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       }
     }
 
-    // Initialize data from localStorage for the current sheet
-    const [data, setData] = useState<SVGDataPoint[]>(() =>
+    // Initialize datasets from localStorage for the current sheet
+    const [datasets, setDatasets] = useState<SVGDataset[]>(() =>
       loadDataFromStorage(sheetAddress),
     )
     const [isVisible, setIsVisible] = useState(true)
 
     // Reload data when sheet address changes
     useEffect(() => {
-      const newData = loadDataFromStorage(sheetAddress)
-      setData(newData)
+      const newDatasets = loadDataFromStorage(sheetAddress)
+      setDatasets(newDatasets)
     }, [sheetAddress?.projectId, sheetAddress?.sheetId])
 
     // Helper function to parse SVG data from clipboard
@@ -184,19 +212,43 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       ref,
       () => ({
         clearData: () => {
-          console.log('🗑️ SVGViewer: Clearing data')
-          const newData: SVGDataPoint[] = []
-          setData(newData)
-          saveDataToStorage(newData, sheetAddress)
+          const newDatasets: SVGDataset[] = []
+          setDatasets(newDatasets)
+          saveDataToStorage(newDatasets, sheetAddress)
         },
-        loadData: (newData: SVGDataPoint[]) => {
+        addData: (newData: SVGDataPoint[], newColor?: string) => {
           console.log(
-            '📊 SVGViewer: Loading data with',
+            '📊 SVGViewer: Adding dataset with',
             newData.length,
             'points',
+            newColor ? `and color ${newColor}` : '',
           )
-          setData(newData)
-          saveDataToStorage(newData, sheetAddress)
+          const newDataset: SVGDataset = {
+            id: `dataset-${Date.now()}-${Math.random()
+              .toString(36)
+              .substring(2, 11)}`,
+            data: newData,
+            color: newColor || color,
+            name: `Dataset ${datasets.length + 1}`,
+          }
+          const updatedDatasets = [...datasets, newDataset]
+          setDatasets(updatedDatasets)
+          saveDataToStorage(updatedDatasets, sheetAddress)
+        },
+        loadData: (newData: SVGDataPoint[], newColor?: string) => {
+          // Keep for backward compatibility - now just calls addData
+          console.log('📊 SVGViewer: loadData called, redirecting to addData')
+          const newDataset: SVGDataset = {
+            id: `dataset-${Date.now()}-${Math.random()
+              .toString(36)
+              .substring(2, 11)}`,
+            data: newData,
+            color: newColor || color,
+            name: `Dataset ${datasets.length + 1}`,
+          }
+          const updatedDatasets = [...datasets, newDataset]
+          setDatasets(updatedDatasets)
+          saveDataToStorage(updatedDatasets, sheetAddress)
         },
         loadFromClipboard: async () => {
           try {
@@ -206,10 +258,19 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
               console.log(
                 '✅ SVGViewer: Successfully parsed',
                 parsedData.length,
-                'data points',
+                'data points from clipboard',
               )
-              setData(parsedData)
-              saveDataToStorage(parsedData, sheetAddress)
+              const newDataset: SVGDataset = {
+                id: `clipboard-${Date.now()}-${Math.random()
+                  .toString(36)
+                  .substring(2, 11)}`,
+                data: parsedData,
+                color: color,
+                name: `Clipboard Data ${datasets.length + 1}`,
+              }
+              const updatedDatasets = [...datasets, newDataset]
+              setDatasets(updatedDatasets)
+              saveDataToStorage(updatedDatasets, sheetAddress)
             } else {
               console.warn('⚠️ SVGViewer: No valid data found in clipboard')
             }
@@ -227,7 +288,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
           setIsVisible(false)
         },
       }),
-      [sheetAddress],
+      [sheetAddress, datasets, color],
     )
 
     return usePrism(() => {
@@ -238,29 +299,11 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       )(1)
       const leftPadding = val(layoutP.scaledSpace.leftPadding)
 
-      // Calculate value range for normalization
-      const values = data.map((d) => d.value)
-      const minValue = values.length > 0 ? Math.min(...values) : 0
-      const maxValue = values.length > 0 ? Math.max(...values) : 1
-      const valueRange = maxValue - minValue || 1
-
-      // Convert data points to screen coordinates
-      const points = data.map((point, index) => {
-        const x = point.time * unitSpaceToScaledSpaceMultiplier
-        const normalizedValue = (point.value - minValue) / valueRange
-        const y = height - normalizedValue * (height - 40) - 20 // 20px padding top/bottom
-        return {x, y, originalValue: point.value, time: point.time, index}
-      })
-
-      // Generate path for lines
-      const pathData =
-        points.length > 0
-          ? `M ${points[0].x} ${points[0].y} ` +
-            points
-              .slice(1)
-              .map((p) => `L ${p.x} ${p.y}`)
-              .join(' ')
-          : ''
+      // Use fixed 0-1 range for consistent scaling
+      // This ensures that value 0.25 appears at 25% height, not full height
+      const minValue = 0
+      const maxValue = 1
+      const valueRange = 1
 
       return (
         <Container
@@ -284,34 +327,70 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
                   transform: `translate(${leftPadding}px, 0px)`,
                 }}
               >
-                {/* Render lines */}
-                {(renderMode === 'lines' || renderMode === 'both') &&
-                  points.length > 1 && (
-                    <path
-                      d={pathData}
-                      fill="none"
-                      stroke={color}
-                      strokeWidth={strokeWidth}
-                      opacity={0.8}
-                    />
-                  )}
+                {/* Render each dataset */}
+                {datasets.map((dataset) => {
+                  // Convert data points to screen coordinates for this dataset
+                  const points = dataset.data.map((point, index) => {
+                    const x = point.time * unitSpaceToScaledSpaceMultiplier
+                    const normalizedValue =
+                      (point.value - minValue) / valueRange
+                    const y = height - normalizedValue * (height - 40) - 20 // 20px padding top/bottom
+                    return {
+                      x,
+                      y,
+                      originalValue: point.value,
+                      time: point.time,
+                      index,
+                    }
+                  })
 
-                {/* Render circles */}
-                {(renderMode === 'circles' || renderMode === 'both') &&
-                  points.map((point) => (
-                    <circle
-                      key={`point-${point.index}-${point.time}-${point.originalValue}`}
-                      cx={point.x}
-                      cy={point.y}
-                      r={circleRadius}
-                      fill={color}
-                      opacity={0.9}
-                    >
-                      <title>{`Time: ${point.time.toFixed(
-                        2,
-                      )}, Value: ${point.originalValue.toFixed(3)}`}</title>
-                    </circle>
-                  ))}
+                  // Generate path for lines for this dataset
+                  const pathData =
+                    points.length > 0
+                      ? `M ${points[0].x} ${points[0].y} ` +
+                        points
+                          .slice(1)
+                          .map((p) => `L ${p.x} ${p.y}`)
+                          .join(' ')
+                      : ''
+
+                  return (
+                    <g key={dataset.id}>
+                      {/* Render lines for this dataset */}
+                      {(renderMode === 'lines' || renderMode === 'both') &&
+                        points.length > 1 && (
+                          <path
+                            d={pathData}
+                            fill="none"
+                            stroke={dataset.color}
+                            strokeWidth={strokeWidth}
+                            opacity={0.8}
+                          />
+                        )}
+
+                      {/* Render circles for this dataset */}
+                      {(renderMode === 'circles' || renderMode === 'both') &&
+                        points.map((point) => (
+                          <circle
+                            key={`${dataset.id}-point-${point.index}-${point.time}-${point.originalValue}`}
+                            cx={point.x}
+                            cy={point.y}
+                            r={circleRadius}
+                            fill={dataset.color}
+                            opacity={0.9}
+                          >
+                            <title>{`${
+                              dataset.name || 'Dataset'
+                            } - Time: ${point.time.toFixed(
+                              2,
+                            )}, Value: ${point.originalValue.toFixed(
+                              3,
+                            )}`}</title>
+                          </circle>
+                        ))}
+                    </g>
+                  )
+                })}
               </g>
             </SVGContainer>
           </HorizontallyScrollableArea>
@@ -319,9 +398,8 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       )
     }, [
       layoutP,
-      data,
+      datasets,
       renderMode,
-      color,
       strokeWidth,
       circleRadius,
       customHeight,

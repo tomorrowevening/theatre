@@ -50,6 +50,9 @@ export async function createBundles(watch: boolean) {
       esbuildConfig.target = ['firefox57', 'chrome58']
       esbuildConfig.conditions = ['browser', 'node']
     } else {
+      // For studio build, make @tomorrowevening/theatre-core external to prevent double-bundling
+      esbuildConfig.external!.push('@tomorrowevening/theatre-core')
+
       esbuildConfig.define!['process.env.NODE_ENV'] =
         JSON.stringify('production')
 

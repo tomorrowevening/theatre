@@ -19,7 +19,9 @@ const config = ['studio', 'core'].map((which) => {
     external: (s) => {
       if (
         s === '@tomorrowevening/theatre-dataverse' ||
-        s.startsWith(`@tomorrowevening/theatre-${which === 'studio' ? 'core' : 'studio'}`)
+        s.startsWith(
+          `@tomorrowevening/theatre-${which === 'studio' ? 'core' : 'studio'}`,
+        )
       ) {
         return true
       }
@@ -36,7 +38,12 @@ const config = ['studio', 'core'].map((which) => {
     },
 
     plugins: [
-      dts({respectExternal: true}),
+      dts({
+        respectExternal: true,
+        compilerOptions: {preserveSymlinks: false},
+        // Bundle all declarations into a single file
+        bundleDeclarations: true,
+      }),
       alias({
         entries: [
           {

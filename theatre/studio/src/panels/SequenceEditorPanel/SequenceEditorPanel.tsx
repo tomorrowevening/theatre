@@ -45,6 +45,9 @@ import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
 import SVGViewer from './SVGViewer'
 import type {SVGViewerRef} from './SVGViewer'
+import SVGLoadPopup from './SVGLoadPopup'
+import type {SVGDataPoint} from './SVGLoadPopup'
+import AttachAudioPopup from './AttachAudioPopup'
 import StartMenu from './StartMenu'
 import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
@@ -155,6 +158,13 @@ const Content: React.VFC<{}> = () => {
   // SVGViewer ref for controlling it from the Start Menu
   const svgViewerRef = useRef<SVGViewerRef>(null)
 
+  // SVG Load Popup state
+  const [showSVGLoadPopup, setShowSVGLoadPopup] = useState(false)
+
+  // Attach Audio Popup state
+  const [showAttachAudioPopup, setShowAttachAudioPopup] = useState(false)
+  const [currentSheet, setCurrentSheet] = useState<any>(null)
+
   // SheetModal ref for controlling it from the Start Menu
   const sheetModalRef = useRef<SheetModalRef>(null)
 
@@ -173,12 +183,8 @@ const Content: React.VFC<{}> = () => {
     svgViewerRef.current?.clearData()
   }, [])
 
-  const handleSVGViewerLoad = useCallback(async () => {
-    try {
-      await svgViewerRef.current?.loadFromClipboard()
-    } catch (error) {
-      console.error('Failed to load from clipboard:', error)
-    }
+  const handleSVGViewerLoad = useCallback(() => {
+    setShowSVGLoadPopup(true)
   }, [])
 
   const handleSVGViewerShow = useCallback(() => {
@@ -187,6 +193,62 @@ const Content: React.VFC<{}> = () => {
 
   const handleSVGViewerHide = useCallback(() => {
     svgViewerRef.current?.hide()
+  }, [])
+
+  const handleSVGLoadPopupLoad = useCallback(
+    (data: SVGDataPoint[], color: string) => {
+      svgViewerRef.current?.addData(data, color)
+      setShowSVGLoadPopup(false)
+    },
+    [],
+  )
+
+  const handleSVGLoadPopupCancel = useCallback(() => {
+    setShowSVGLoadPopup(false)
+  }, [])
+
+  const handleAttachAudio = useCallback(
+    async (source: string | File) => {
+      if (!currentSheet) {
+        throw new Error('No sheet selected')
+      }
+
+      try {
+        // Access the public API sheet to get the sequence with attachAudio method
+        const publicSheet = currentSheet.project.publicApi.sheet(
+          currentSheet.address.sheetId,
+        )
+        const sequence = publicSheet.sequence
+
+        // Convert File to URL if needed, since attachAudio only accepts string or AudioBuffer
+        let audioSource: string
+        if (source instanceof File) {
+          audioSource = URL.createObjectURL(source)
+        } else {
+          audioSource = source
+        }
+
+        await sequence.attachAudio({source: audioSource})
+        console.log('✅ Audio attached successfully')
+
+        // Clean up the object URL if we created one
+        if (source instanceof File) {
+          // Clean up after a delay to ensure the audio is loaded
+          setTimeout(() => {
+            URL.revokeObjectURL(audioSource)
+          }, 5000)
+        }
+      } catch (error) {
+        console.error('❌ Failed to attach audio:', error)
+        throw error
+      }
+    },
+    [currentSheet],
+  )
+
+  const handleAttachAudioPopupCancel = useCallback(() => {
+    setShowAttachAudioPopup(false)
+    setCurrentSheet(null)
   }, [])
 
   const handleSheetCreate = useCallback(() => {
@@ -235,6 +297,27 @@ const Content: React.VFC<{}> = () => {
 
   const handleSearchTrigger = useCallback((newTrigger: number) => {
     setSearchTrigger(newTrigger)
+  }, [])
+
+  // Add event listener for attach audio custom event
+  React.useEffect(() => {
+    const handleAttachAudioEvent = (event: CustomEvent) => {
+      const {sheet} = event.detail
+      setCurrentSheet(sheet)
+      setShowAttachAudioPopup(true)
+    }
+
+    document.addEventListener(
+      'theatre:attachAudio',
+      handleAttachAudioEvent as EventListener,
+    )
+
+    return () => {
+      document.removeEventListener(
+        'theatre:attachAudio',
+        handleAttachAudioEvent as EventListener,
+      )
+    }
   }, [])
 
   const handleSheetObjectModalConfirm = useCallback(
@@ -450,7 +533,8 @@ const Content: React.VFC<{}> = () => {
                   position: sheetSequence.position,
                 },
               ],
-              snappingFunction: sheetSequence.closestGridPosition,
+              // Remove snapping function to allow free positioning
+              // snappingFunction: sheetSequence.closestGridPosition,
             },
           )
         })
@@ -804,9 +888,32 @@ const Content: React.VFC<{}> = () => {
           onConfirm={handleSheetObjectModalConfirm}
           onCancel={handleSheetObjectModalCancel}
         />
+
+        {/* SVG Load Popup */}
+        {showSVGLoadPopup && (
+          <SVGLoadPopup
+            onLoad={handleSVGLoadPopupLoad}
+            onCancel={handleSVGLoadPopupCancel}
+          />
+        )}
+
+        {/* Attach Audio Popup */}
+        {showAttachAudioPopup && (
+          <AttachAudioPopup
+            onAttach={handleAttachAudio}
+            onCancel={handleAttachAudioPopupCancel}
+          />
+        )}
       </Container>
     )
-  }, [dims, containerNode, searchTerm, searchTrigger])
+  }, [
+    dims,
+    containerNode,
+    searchTerm,
+    searchTrigger,
+    showSVGLoadPopup,
+    showAttachAudioPopup,
+  ])
 }
 
 const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({

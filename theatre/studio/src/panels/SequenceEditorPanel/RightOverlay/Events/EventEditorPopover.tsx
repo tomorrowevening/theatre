@@ -100,7 +100,8 @@ const EventEditorPopover: React.FC<{
             {
               sheetAddress: sheet.address,
               events: [{...event, position: newTime}],
-              snappingFunction: sheet.getSequence().closestGridPosition,
+              // Remove snapping function to allow free positioning
+              // snappingFunction: sheet.getSequence().closestGridPosition,
             },
           )
         })
@@ -121,7 +122,8 @@ const EventEditorPopover: React.FC<{
             {
               sheetAddress: sheet.address,
               events: [{...event, position: newTime}],
-              snappingFunction: sheet.getSequence().closestGridPosition,
+              // Remove snapping function to allow free positioning
+              // snappingFunction: sheet.getSequence().closestGridPosition,
             },
           )
         })
