@@ -38,7 +38,7 @@ const EVENT_HOVER_SIZE_H_PX = EVENT_SIZE_H_PX * 2
 const EventDotContainer = styled.div`
   position: absolute;
   // below the sequence ruler "top bar"
-  top: 30px;
+  top: 20px;
   z-index: ${() => zIndexes.marker};
 `
 
@@ -107,7 +107,7 @@ type IEventDotProps = {
   eventId: SequenceEventId
 }
 
-const EventDot: React.VFC<IEventDotProps> = ({layoutP, eventId}) => {
+const EventDot: React.FC<IEventDotProps> = ({layoutP, eventId}) => {
   const sheetAddress = useVal(layoutP.sheet.address)
   const event = useVal(
     getStudio().atomP.historic.projects.stateByProjectId[sheetAddress.projectId]
@@ -153,10 +153,7 @@ type IEventDotVisibleProps = {
   event: StudioHistoricStateSequenceEditorEvent
 }
 
-const EventDotVisible: React.VFC<IEventDotVisibleProps> = ({
-  layoutP,
-  event,
-}) => {
+const EventDotVisible: React.FC<IEventDotVisibleProps> = ({layoutP, event}) => {
   const sheetAddress = useVal(layoutP.sheet.address)
 
   const [eventRef, eventNode] = useRefAndState<HTMLDivElement | null>(null)
@@ -275,8 +272,8 @@ function useDragEvent(
                 {
                   sheetAddress: val(props.layoutP.sheet.address),
                   events: [{...original, position: newPosition}],
-                  snappingFunction: val(props.layoutP.sheet).getSequence()
-                    .closestGridPosition,
+                  // Remove snapping function to allow free positioning
+                  // snappingFunction: val(props.layoutP.sheet).getSequence().closestGridPosition,
                 },
               )
             })

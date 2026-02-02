@@ -360,7 +360,8 @@ function usePlayheadContextMenu(
                       position: sheetSequence.position,
                     },
                   ],
-                  snappingFunction: sheetSequence.closestGridPosition,
+                  // Remove snapping function to allow free positioning
+                  // snappingFunction: sheetSequence.closestGridPosition,
                 },
               )
             })

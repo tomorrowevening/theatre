@@ -425,7 +425,7 @@ namespace stateEditors {
               export function replaceEvents(p: {
                 sheetAddress: SheetAddress
                 events: Array<StudioHistoricStateSequenceEditorEvent>
-                snappingFunction: (p: number) => number
+                snappingFunction?: (p: number) => number
               }) {
                 const currentEventSet = _ensureEvents(p.sheetAddress)
 
@@ -447,7 +447,9 @@ namespace stateEditors {
                   })
                   .map((event) => ({
                     ...event,
-                    position: p.snappingFunction(event.position),
+                    position: p.snappingFunction
+                      ? p.snappingFunction(event.position)
+                      : event.position,
                   }))
 
                 const newEventsById = keyBy(sanitizedEvents, 'id')
