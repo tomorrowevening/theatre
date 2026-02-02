@@ -132,9 +132,6 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       try {
         const key = getStorageKey(address)
         localStorage.setItem(key, JSON.stringify(datasets))
-        console.log(
-          `💾 SVGViewer: Saved ${datasets.length} datasets to localStorage for ${key}`,
-        )
       } catch (error) {
         console.warn(
           '⚠️ SVGViewer: Failed to save data to localStorage:',
@@ -215,7 +212,6 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       ref,
       () => ({
         clearData: () => {
-          console.log('🗑️ SVGViewer: Clearing all datasets')
           const newDatasets: SVGDataset[] = []
           setDatasets(newDatasets)
           saveDataToStorage(newDatasets, sheetAddress)
