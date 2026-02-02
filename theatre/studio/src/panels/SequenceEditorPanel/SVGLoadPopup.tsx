@@ -2,6 +2,7 @@ import React, {useState, useRef, useEffect} from 'react'
 import styled from 'styled-components'
 import BasicStringInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicStringInput'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
+import {analyzeAudioFile, isAudioFile, formatFileSize} from './audioAnalysis'
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -135,6 +136,106 @@ const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
   }
 `
 
+const AudioSection = styled.div`
+  border-top: 1px solid #3a3a3a;
+  padding-top: 16px;
+  margin-top: 8px;
+`
+
+const FileUploadContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+const FileUploadArea = styled.div<{isDragOver: boolean; hasFile: boolean}>`
+  border: 2px dashed ${(props) => (props.isDragOver ? '#4a9eff' : '#3a3a3a')};
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+  background: ${(props) =>
+    props.isDragOver ? 'rgba(74, 158, 255, 0.1)' : 'transparent'};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  ${(props) =>
+    props.hasFile &&
+    `
+    border-color: #4a9eff;
+    background: rgba(74, 158, 255, 0.05);
+  `}
+
+  &:hover {
+    border-color: #4a9eff;
+    background: rgba(74, 158, 255, 0.05);
+  }
+`
+
+const FileUploadText = styled.div`
+  color: #999;
+  font-size: 12px;
+  margin-bottom: 4px;
+`
+
+const FileInfo = styled.div`
+  color: #ccc;
+  font-size: 11px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+`
+
+const AudioOptions = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 8px;
+`
+
+const OptionGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`
+
+const OptionLabel = styled.label`
+  ${propNameTextCSS};
+  font-size: 11px;
+  color: #999;
+`
+
+const NumberInput = styled.input`
+  width: 80px;
+  padding: 4px 8px;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #ccc;
+  font-size: 12px;
+
+  &:focus {
+    outline: none;
+    border-color: #4a9eff;
+  }
+`
+
+const AnalysisStatus = styled.div<{
+  status: 'idle' | 'analyzing' | 'complete' | 'error'
+}>`
+  font-size: 11px;
+  margin-top: 8px;
+  color: ${(props) => {
+    switch (props.status) {
+      case 'analyzing':
+        return '#4a9eff'
+      case 'complete':
+        return '#4a9eff'
+      case 'error':
+        return '#ff6b6b'
+      default:
+        return '#666'
+    }
+  }};
+`
+
 const EXAMPLE_DATA = `[
   {"time": 0, "value": 0},
   {"time": 1, "value": 0.5},
@@ -169,7 +270,15 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
   const [color, setColor] = useState('#4a9eff')
   const [hexValue, setHexValue] = useState('#4a9eff')
   const [svgData, setSvgData] = useState('')
+  const [audioFile, setAudioFile] = useState<File | null>(null)
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [sampleRate, setSampleRate] = useState(100)
+  const [analysisStatus, setAnalysisStatus] = useState<
+    'idle' | 'analyzing' | 'complete' | 'error'
+  >('idle')
+  const [analysisError, setAnalysisError] = useState<string>('')
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Focus the text area when component mounts
   useEffect(() => {
@@ -234,7 +343,88 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
   }
 
   const parsedDataCount = parseSVGData(svgData).length
-  const isDataValid = parsedDataCount > 0
+  const isDataValid = parsedDataCount > 0 || audioFile !== null
+
+  // Handle audio file analysis
+  const analyzeAudio = async (file: File) => {
+    setAnalysisStatus('analyzing')
+    setAnalysisError('')
+
+    try {
+      const results = await analyzeAudioFile(file, {
+        sampleRate,
+        normalize: true,
+      })
+
+      // Convert audio analysis results to SVG data format
+      const svgDataPoints = results.map((result) => ({
+        time: result.time,
+        value: result.amplitude,
+      }))
+
+      // Update the text area with the analyzed data
+      setSvgData(JSON.stringify(svgDataPoints, null, 2))
+      setAnalysisStatus('complete')
+    } catch (error) {
+      console.error('Audio analysis failed:', error)
+      setAnalysisError(
+        error instanceof Error ? error.message : 'Analysis failed',
+      )
+      setAnalysisStatus('error')
+    }
+  }
+
+  // Handle file selection
+  const handleFileSelect = (file: File) => {
+    if (!isAudioFile(file)) {
+      setAnalysisError(
+        'Please select a supported audio file (MP3, WAV, OGG, M4A, AAC)',
+      )
+      setAnalysisStatus('error')
+      return
+    }
+
+    setAudioFile(file)
+    setAnalysisStatus('idle')
+    setAnalysisError('')
+
+    // Auto-analyze the file
+    analyzeAudio(file)
+  }
+
+  // Handle drag and drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 0) {
+      handleFileSelect(files[0])
+    }
+  }
+
+  // Handle file input change
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      handleFileSelect(files[0])
+    }
+  }
+
+  // Handle click on upload area
+  const handleUploadAreaClick = () => {
+    fileInputRef.current?.click()
+  }
 
   const handleCreate = () => {
     const parsedData = parseSVGData(svgData)
@@ -279,6 +469,9 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
     setSvgData('')
     setColor('#4a9eff')
     setHexValue('#4a9eff')
+    setAudioFile(null)
+    setAnalysisStatus('idle')
+    setAnalysisError('')
     onCancel()
   }
 
@@ -321,6 +514,66 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
             </DataPreview>
           )}
         </Row>
+
+        <AudioSection>
+          <Label>Or Analyze Audio File</Label>
+          <FileUploadContainer>
+            <FileUploadArea
+              isDragOver={isDragOver}
+              hasFile={audioFile !== null}
+              onClick={handleUploadAreaClick}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <FileUploadText>
+                {audioFile
+                  ? 'Click to select a different audio file'
+                  : 'Click to select or drag & drop an audio file'}
+              </FileUploadText>
+              <FileUploadText style={{fontSize: '11px', color: '#666'}}>
+                Supported formats: MP3, WAV, OGG, M4A, AAC
+              </FileUploadText>
+              {audioFile && (
+                <FileInfo>
+                  📁 {audioFile.name} ({formatFileSize(audioFile.size)})
+                </FileInfo>
+              )}
+            </FileUploadArea>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac"
+              onChange={handleFileInputChange}
+              style={{display: 'none'}}
+            />
+
+            <AudioOptions>
+              <OptionGroup>
+                <OptionLabel>Sample Rate (Hz)</OptionLabel>
+                <NumberInput
+                  type="number"
+                  min="10"
+                  max="1000"
+                  value={sampleRate}
+                  onChange={(e) =>
+                    setSampleRate(parseInt(e.target.value) || 100)
+                  }
+                />
+              </OptionGroup>
+            </AudioOptions>
+
+            {analysisStatus !== 'idle' && (
+              <AnalysisStatus status={analysisStatus}>
+                {analysisStatus === 'analyzing' && '🎵 Analyzing audio...'}
+                {analysisStatus === 'complete' &&
+                  '✅ Audio analysis complete! Data loaded above.'}
+                {analysisStatus === 'error' && `❌ ${analysisError}`}
+              </AnalysisStatus>
+            )}
+          </FileUploadContainer>
+        </AudioSection>
 
         <ButtonContainer>
           <Button onClick={handleCancel}>Cancel</Button>

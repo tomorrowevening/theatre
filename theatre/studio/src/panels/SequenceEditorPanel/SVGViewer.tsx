@@ -230,7 +230,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
           const newDataset: SVGDataset = {
             id: `dataset-${Date.now()}-${Math.random()
               .toString(36)
-              .substr(2, 9)}`,
+              .substring(2, 11)}`,
             data: newData,
             color: newColor || color,
             name: `Dataset ${datasets.length + 1}`,
@@ -245,7 +245,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
           const newDataset: SVGDataset = {
             id: `dataset-${Date.now()}-${Math.random()
               .toString(36)
-              .substr(2, 9)}`,
+              .substring(2, 11)}`,
             data: newData,
             color: newColor || color,
             name: `Dataset ${datasets.length + 1}`,
@@ -267,7 +267,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
               const newDataset: SVGDataset = {
                 id: `clipboard-${Date.now()}-${Math.random()
                   .toString(36)
-                  .substr(2, 9)}`,
+                  .substring(2, 11)}`,
                 data: parsedData,
                 color: color,
                 name: `Clipboard Data ${datasets.length + 1}`,

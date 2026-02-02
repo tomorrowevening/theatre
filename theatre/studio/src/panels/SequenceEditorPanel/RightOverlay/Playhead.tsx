@@ -367,6 +367,19 @@ function usePlayheadContextMenu(
             })
           },
         },
+        {
+          label: 'Attach audio',
+          callback: () => {
+            // Trigger the attach audio popup
+            // We'll need to communicate with the parent component
+            const event = new CustomEvent('theatre:attachAudio', {
+              detail: {
+                sheet: val(options.layoutP.sheet),
+              },
+            })
+            document.dispatchEvent(event)
+          },
+        },
       ]
     },
   })
