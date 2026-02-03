@@ -40,7 +40,10 @@ import {
   doesPathStartWith,
   encodePathToProp,
 } from '@tomorrowevening/theatre-shared/utils/addresses'
-import type {ObjectAddressKey, SequenceTrackId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {
+  ObjectAddressKey,
+  SequenceTrackId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import type Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
 import KeyframeSnapTarget, {
   snapPositionsStateD,
@@ -256,7 +259,7 @@ function collectedSelectedPositions(
 
     return {
       selectedPositions: selectedAtPositions,
-      selection: val(selectionAtom.pointer.current),
+      selection: selection,
     }
   })
 }

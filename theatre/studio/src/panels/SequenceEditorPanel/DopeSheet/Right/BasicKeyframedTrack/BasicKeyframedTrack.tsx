@@ -43,6 +43,15 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
       }
 
       const selectionAtom = val(layoutP.selectionAtom)
+      const currentSelection = val(selectionAtom.pointer.current)
+
+      if (!currentSelection) {
+        return {
+          selectedKeyframeIds: {},
+          selection: undefined,
+        }
+      }
+
       const selectedKeyframeIds = val(
         selectionAtom.pointer.current.byObjectKey[
           leaf.sheetObject.address.objectKey
@@ -51,7 +60,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
       if (selectedKeyframeIds) {
         return {
           selectedKeyframeIds,
-          selection: val(selectionAtom.pointer.current),
+          selection: currentSelection,
         }
       } else {
         return {

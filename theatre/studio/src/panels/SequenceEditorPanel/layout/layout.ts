@@ -392,7 +392,7 @@ export function sequenceEditorPanelLayout(
     const selectionAtom = prism.memo(
       'selection.current',
       (): SequenceEditorPanelLayout['selectionAtom'] => {
-        return new Atom({})
+        return new Atom({current: undefined})
       },
       [],
     )

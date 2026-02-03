@@ -141,6 +141,7 @@ function useCaptureSelection(
                 val(layoutP),
                 ref.current,
               )
+
               val(layoutP.selectionAtom).set({current: selection})
             },
             onDragEnd(_dragHappened) {
@@ -247,27 +248,28 @@ namespace utils {
         ].trackData[trackId],
       )!
 
+      // Use nodeHeight (not heightIncludingChildren) to match the aggregated keyframes logic
       if (
-        bounds.v[0] >
-          leaf.top + leaf.heightIncludingChildren / 2 + HITBOX_SIZE_PX ||
-        leaf.top + leaf.heightIncludingChildren / 2 - HITBOX_SIZE_PX >
-          bounds.v[1]
+        bounds.v[0] > leaf.top + leaf.nodeHeight / 2 + HITBOX_SIZE_PX ||
+        leaf.top + leaf.nodeHeight / 2 - HITBOX_SIZE_PX > bounds.v[1]
       ) {
         return
       }
 
       for (const kf of trackData.keyframes) {
-        if (
-          kf.position + layout.scaledSpace.toUnitSpace(HITBOX_SIZE_PX) <=
-          bounds.h[0]
-        )
-          continue
-        if (
-          kf.position - layout.scaledSpace.toUnitSpace(HITBOX_SIZE_PX) >=
-          bounds.h[1]
-        )
-          break
+        const hitboxWidth = layout.scaledSpace.toUnitSpace(HITBOX_SIZE_PX)
 
+        // Skip keyframes that are completely to the left of the selection
+        if (kf.position + hitboxWidth <= bounds.h[0]) {
+          continue
+        }
+
+        // Stop checking keyframes that are completely to the right of the selection
+        if (kf.position - hitboxWidth >= bounds.h[1]) {
+          break
+        }
+
+        // At this point, the keyframe overlaps with the selection bounds
         mutableSetDeep(
           selectionByObjectKey,
           (selectionByObjectKeyP) =>
@@ -303,15 +305,20 @@ namespace utils {
     bounds: SelectionBounds,
     selectionByObjectKey: DopeSheetSelection['byObjectKey'],
   ) {
-    // don't collect from non rendered
-    if (!leaf.shouldRender) return
+    // If this node shouldn't render, still check its children but skip processing this node itself
+    if (!leaf.shouldRender) {
+      collectChildren(logger, layout, leaf, bounds, selectionByObjectKey)
+      return
+    }
 
+    // Early return if leaf is completely outside vertical bounds
     if (
       bounds.v[0] > leaf.top + leaf.heightIncludingChildren ||
       leaf.top > bounds.v[1]
     ) {
       return
     }
+
     const collector = collectorByLeafType[leaf.type]
     if (collector) {
       collector(
