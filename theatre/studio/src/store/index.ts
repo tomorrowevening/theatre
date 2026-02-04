@@ -29,6 +29,11 @@ const initialState: StudioState = {
     },
     autoKey: true,
     coreByProject: {},
+    panels: {
+      sequenceEditor: {
+        rightPanelOpen: true,
+      },
+    },
     panelInstanceDesceriptors: {},
   },
   ephemeral: {

@@ -50,6 +50,7 @@ type Panels = {
       isOpen?: boolean
       height?: number
     }
+    rightPanelOpen?: boolean
   }
   objectEditor?: {}
   outlinePanel?: {

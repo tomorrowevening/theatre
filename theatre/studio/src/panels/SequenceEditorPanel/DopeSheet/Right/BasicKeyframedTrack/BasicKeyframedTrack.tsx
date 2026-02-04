@@ -47,7 +47,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
 
       if (!currentSelection) {
         return {
-          selectedKeyframeIds: {},
+          selectedKeyframeIds: undefined,
           selection: undefined,
         }
       }
@@ -64,7 +64,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
         }
       } else {
         return {
-          selectedKeyframeIds: {},
+          selectedKeyframeIds: undefined,
           selection: undefined,
         }
       }
@@ -113,7 +113,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
         layoutP={layoutP}
         leaf={leaf}
         selection={
-          selectedKeyframeIds && selectedKeyframeIds[kf.id] === true
+          selectedKeyframeIds?.[kf.id] === true
             ? selection
             : undefined
         }

@@ -63,6 +63,28 @@ const SearchInput = styled.input<{hasValue: boolean}>`
   }
 `
 
+const ToggleButton = styled.button<{isActive: boolean}>`
+  background: ${(props) => (props.isActive ? '#0078d4' : '#2d2d30')};
+  color: white;
+  border: 1px solid #3e3e42;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background: ${(props) => (props.isActive ? '#106ebe' : '#3e3e42')};
+  }
+
+  &:active {
+    background: ${(props) => (props.isActive ? '#005a9e' : '#1e1e1e')};
+  }
+`
+
 const MenuButton = styled.button<{isOpen: boolean}>`
   background: ${(props) => (props.isOpen ? '#0078d4' : '#2d2d30')};
   color: white;
@@ -160,6 +182,24 @@ const SubmenuPanel = styled.div`
   transition: all 0.15s ease-out;
   z-index: 1001;
 `
+
+function ToggleSVGIcon() {
+  return (
+    <svg
+      fill="#FFFFFF"
+      width="800px"
+      height="800px"
+      viewBox="0 0 1920 1920"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        width: '15px',
+        height: '15px',
+      }}
+    >
+      <path d="M1637.718 0c93.4 0 169.406 76.007 169.406 169.407v1581.13c0 93.512-76.007 169.407-169.406 169.407H451.87V0h1185.848zM1158.7 581l-79.861 79.861 242.422 242.423H667v112.94h654.262l-242.422 242.423 79.861 79.862 378.755-378.755L1158.7 581zM225.938 1920h112.938V.056H225.938z" />
+    </svg>
+  )
+}
 
 const StartMenu: React.FC<StartMenuProps> = ({
   layoutP,
@@ -339,7 +379,8 @@ const StartMenu: React.FC<StartMenuProps> = ({
   )
 
   return usePrism(() => {
-    const leftWidth = val(layoutP.leftDims.width)
+    const layout = val(layoutP)
+    const rightPanelOpen = layout.rightPanelOpen
 
     return (
       <MenuContainer>
@@ -359,6 +400,21 @@ const StartMenu: React.FC<StartMenuProps> = ({
           onKeyDown={handleSearchKeyDown}
           hasValue={searchTerm.length > 0}
         />
+
+        <ToggleButton
+          isActive={rightPanelOpen}
+          onClick={() => {
+            layout.setRightPanelOpen(!rightPanelOpen)
+          }}
+          title={
+            rightPanelOpen ? 'Hide timeline editor' : 'Show timeline editor'
+          }
+          style={{
+            transform: `scale(${rightPanelOpen ? -1 : 1}, 1)`,
+          }}
+        >
+          <ToggleSVGIcon />
+        </ToggleButton>
 
         {/* Invisible overlay to close menu when clicking outside */}
         {isOpen && (
