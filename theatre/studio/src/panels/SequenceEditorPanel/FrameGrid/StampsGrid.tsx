@@ -2,7 +2,6 @@ import type {ISequencePositionFormatter} from '@tomorrowevening/theatre-core/seq
 import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
-import {darken} from 'polished'
 import React, {useLayoutEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import createGrid from './createGrid'
@@ -17,11 +16,9 @@ const Container = styled.div`
 `
 
 export const stampsGridTheme = {
-  fullUnitStampColor: `#6a6a6a`,
+  fullUnitStampColor: `#999999`,
   stampFontSize: '10px',
-  get subUnitStampColor(): string {
-    return darken(0.2, stampsGridTheme.fullUnitStampColor)
-  },
+  subUnitStampColor: '#666666',
 }
 
 const TheStamps = styled.div`

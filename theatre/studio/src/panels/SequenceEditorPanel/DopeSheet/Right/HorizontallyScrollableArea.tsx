@@ -16,7 +16,6 @@ import {snapToAll, snapToNone} from './KeyframeSnapTarget'
 
 const Container = styled.div`
   position: absolute;
-
   right: 0;
   overflow-x: scroll;
   overflow-y: hidden;

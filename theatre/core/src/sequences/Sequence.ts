@@ -187,6 +187,7 @@ export default class Sequence implements PointerToPrismProvider {
           // Use requestAnimationFrame to defer the pause completely outside current execution
           requestAnimationFrame(() => {
             this.pause()
+            this._playbackControllerBox.get().gotoPosition(event.position)
           })
           return // Exit early to prevent further processing
         } else if (event.name === 'goTo' && event.value !== undefined) {

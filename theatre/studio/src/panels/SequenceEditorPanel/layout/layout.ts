@@ -160,6 +160,9 @@ export type SequenceEditorPanelLayout = {
   }
 
   selectionAtom: Atom<{current?: DopeSheetSelection}>
+
+  rightPanelOpen: boolean
+  setRightPanelOpen: (value: boolean) => void
 }
 
 // type UnitSpaceProression = number
@@ -200,6 +203,10 @@ export function sequenceEditorPanelLayout(
       studio.atomP.historic.panels.sequenceEditor.graphEditor,
     )
 
+    const rightPanelOpenP =
+      studio.atomP.historic.panels.sequenceEditor.rightPanelOpen
+    const rightPanelOpenValue = val(rightPanelOpenP) ?? true
+
     const selectedPropsByObject = val(
       historicStateP.sequenceEditor.selectedPropsByObject,
     )
@@ -216,17 +223,20 @@ export function sequenceEditorPanelLayout(
     } = prism.memo(
       'leftDims',
       () => {
+        const rightPanelOpenValue = val(rightPanelOpenP) ?? true
         const leftDims: DimsOfPanelPart = {
-          width: Math.max(
-            minLeftPanelWidth,
-            Math.floor(panelDims.width * panelSplitRatio),
-          ),
+          width: rightPanelOpenValue
+            ? Math.max(
+                minLeftPanelWidth,
+                Math.floor(panelDims.width * panelSplitRatio),
+              )
+            : panelDims.width,
           height: panelDims.height,
           screenX: panelDims.screenX,
           screenY: panelDims.screenY,
         }
         const rightDims: DimsOfPanelPart = {
-          width: panelDims.width - leftDims.width,
+          width: rightPanelOpenValue ? panelDims.width - leftDims.width : 0,
           height: panelDims.height,
           screenX: (panelDims.screenX +
             leftDims.width) as PositionInScreenSpace,
@@ -278,7 +288,7 @@ export function sequenceEditorPanelLayout(
           horizontalScrollbarDims,
         }
       },
-      [panelDims, graphEditorState, graphEditorAvailable],
+      [panelDims, graphEditorState, graphEditorAvailable, rightPanelOpenP],
     )
 
     const graphEditorVerticalSpace = prism.memo(
@@ -392,7 +402,21 @@ export function sequenceEditorPanelLayout(
     const selectionAtom = prism.memo(
       'selection.current',
       (): SequenceEditorPanelLayout['selectionAtom'] => {
-        return new Atom({})
+        return new Atom<{current?: DopeSheetSelection}>({current: undefined})
+      },
+      [],
+    )
+
+    const setRightPanelOpen = prism.memo(
+      'setRightPanelOpen',
+      () => {
+        return function setRightPanelOpen(value: boolean): void {
+          studio.transaction(({stateEditors}) => {
+            stateEditors.studio.historic.panels.sequenceEditor.setRightPanelOpen(
+              value,
+            )
+          })
+        }
       },
       [],
     )
@@ -412,6 +436,8 @@ export function sequenceEditorPanelLayout(
       graphEditorDims,
       graphEditorVerticalSpace,
       selectionAtom,
+      rightPanelOpen: rightPanelOpenValue,
+      setRightPanelOpen,
     })
 
     return finalAtom.pointer

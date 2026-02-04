@@ -169,6 +169,17 @@ namespace stateEditors {
               _ensure().isOpen = p.isOpen
             }
           }
+          export function setRightPanelOpen(value: boolean) {
+            const s = sequenceEditor._ensure()
+            s.rightPanelOpen = value
+          }
+          export function _ensureRightPanelOpen() {
+            const s = sequenceEditor._ensure()
+            if (s.rightPanelOpen === undefined) {
+              s.rightPanelOpen = true
+            }
+            return s.rightPanelOpen
+          }
         }
       }
       export namespace projects {

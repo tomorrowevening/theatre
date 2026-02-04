@@ -74,9 +74,13 @@ function saveFile(content: string | Blob, fileName: string) {
   }, 40000)
 }
 
-const Container = styled(PanelWrapper)`
+const Container = styled(PanelWrapper)<{collapsedWidth?: number}>`
   z-index: ${panelZIndexes.sequenceEditorPanel};
   box-shadow: 2px 2px 0 rgb(0 0 0 / 11%);
+  ${(props) =>
+    props.collapsedWidth
+      ? `width: ${props.collapsedWidth}px !important; max-width: ${props.collapsedWidth}px !important;`
+      : ''}
 `
 
 const LeftBackground = styled.div`
@@ -133,18 +137,23 @@ const defaultPosition: PanelPosition = {
   },
 }
 
-const minDims = {width: 800, height: 200}
+const SequenceEditorPanel: React.VFC<{}> = () => {
+  return usePrism(() => {
+    const studio = getStudio()!
+    const rightPanelOpen =
+      val(studio.atomP.historic.panels.sequenceEditor.rightPanelOpen) ?? true
+    const minDims = {width: rightPanelOpen ? 800 : 320, height: 200}
 
-const SequenceEditorPanel: React.VFC<{}> = (props) => {
-  return (
-    <BasePanel
-      panelId={'sequenceEditor' as UIPanelId}
-      defaultPosition={defaultPosition}
-      minDims={minDims}
-    >
-      <Content />
-    </BasePanel>
-  )
+    return (
+      <BasePanel
+        panelId={'sequenceEditor' as UIPanelId}
+        defaultPosition={defaultPosition}
+        minDims={minDims}
+      >
+        <Content />
+      </BasePanel>
+    )
+  }, [])
 }
 
 const Content: React.VFC<{}> = () => {
@@ -718,10 +727,15 @@ const Content: React.VFC<{}> = () => {
   usePresenceListenersOnRootElement(containerNode)
 
   return usePrism(() => {
+    // Get rightPanelOpen state from studio early so we can use it in panelSize calculation
+    const studio = getStudio()!
+    const rightPanelOpenFromStudio =
+      val(studio.atomP.historic.panels.sequenceEditor.rightPanelOpen) ?? true
+
     const panelSize = prism.memo(
       'panelSize',
       (): PanelDims => {
-        const width = dims.width
+        const width = rightPanelOpenFromStudio ? dims.width : 320
         const height = dims.height
         return {
           width: width,
@@ -734,7 +748,7 @@ const Content: React.VFC<{}> = () => {
           screenY: dims.top,
         }
       },
-      [dims],
+      [dims, rightPanelOpenFromStudio],
     )
 
     const selectedSheets = uniq(
@@ -822,14 +836,20 @@ const Content: React.VFC<{}> = () => {
 
     const graphEditorAvailable = val(layoutP.graphEditorDims.isAvailable)
     const graphEditorOpen = val(layoutP.graphEditorDims.isOpen)
+    const rightPanelOpen = val(layoutP.rightPanelOpen)
+    const collapsedWidth = !rightPanelOpen ? 320 : undefined
 
     return (
       <Container
+        collapsedWidth={collapsedWidth}
         ref={(elt) => {
           containerRef(elt as HTMLDivElement)
           if (elt !== containerNode) {
             setContainerNode(elt as HTMLDivElement)
           }
+        }}
+        style={{
+          overflow: 'hidden',
         }}
       >
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
