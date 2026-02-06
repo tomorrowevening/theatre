@@ -128,7 +128,7 @@ export const calculateSequenceEditorTree = (
     children: [],
     sheetItemKey: createStudioSheetItemKey.forSheet(),
     shouldRender: rootShouldRender,
-    top: 30,
+    top: 60,
     depth: 0,
     n: nSoFar,
     nodeHeight: rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0,

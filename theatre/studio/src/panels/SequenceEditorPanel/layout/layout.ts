@@ -176,7 +176,7 @@ const panelSplitRatio = 0.3
 
 const initialClippedSpaceRange: IRange = {start: 0, end: 10}
 
-const minLeftPanelWidth = 320
+export const minLeftPanelWidth = 250
 
 export function sequenceEditorPanelLayout(
   sheet: Sheet,

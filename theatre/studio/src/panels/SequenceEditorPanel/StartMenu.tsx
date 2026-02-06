@@ -31,7 +31,7 @@ type StartMenuProps = {
   onSearchTrigger?: (trigger: number) => void
 }
 
-const MenuContainer = styled.div`
+const MenuContainer = styled.div<{width: number}>`
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -39,6 +39,8 @@ const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  width: ${(props) => props.width - 20}px; /* Subtract left/right margins */
+  box-sizing: border-box;
 `
 
 const SearchInput = styled.input<{hasValue: boolean}>`
@@ -49,7 +51,8 @@ const SearchInput = styled.input<{hasValue: boolean}>`
   border-radius: 4px;
   font-size: 12px;
   font-family: inherit;
-  width: 200px;
+  flex: 1; /* Expand to fill available space */
+  min-width: 80px; /* Minimum width to ensure usability */
   transition: all 0.15s ease-out;
 
   &:focus {
@@ -64,7 +67,7 @@ const SearchInput = styled.input<{hasValue: boolean}>`
 `
 
 const ToggleButton = styled.button<{isActive: boolean}>`
-  background: ${(props) => (props.isActive ? '#0078d4' : '#2d2d30')};
+  background: #2d2d30;
   color: white;
   border: 1px solid #3e3e42;
   padding: 8px 12px;
@@ -77,11 +80,11 @@ const ToggleButton = styled.button<{isActive: boolean}>`
   gap: 4px;
 
   &:hover {
-    background: ${(props) => (props.isActive ? '#106ebe' : '#3e3e42')};
+    background: #3e3e42;
   }
 
   &:active {
-    background: ${(props) => (props.isActive ? '#005a9e' : '#1e1e1e')};
+    background: #1e1e1e;
   }
 `
 
@@ -381,9 +384,10 @@ const StartMenu: React.FC<StartMenuProps> = ({
   return usePrism(() => {
     const layout = val(layoutP)
     const rightPanelOpen = layout.rightPanelOpen
+    const leftWidth = layout.leftDims.width
 
     return (
-      <MenuContainer>
+      <MenuContainer width={leftWidth}>
         <MenuButton isOpen={isOpen} onClick={toggleMenu}>
           <span>☰</span>
         </MenuButton>
