@@ -15,7 +15,7 @@ import {types} from '@tomorrowevening/theatre-core'
 import DopeSheet from './DopeSheet/DopeSheet'
 import GraphEditor from './GraphEditor/GraphEditor'
 import type {PanelDims, SequenceEditorPanelLayout} from './layout/layout'
-import {sequenceEditorPanelLayout} from './layout/layout'
+import {minLeftPanelWidth, sequenceEditorPanelLayout} from './layout/layout'
 import RightOverlay from './RightOverlay/RightOverlay'
 import BasePanel, {
   usePanel,
@@ -124,7 +124,11 @@ const Header_Container = styled(PanelDragZone)`
   z-index: 2;
 
   ${TitleBar} {
-    height: 30px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+    padding: 0;
   }
 `
 
@@ -142,7 +146,10 @@ const SequenceEditorPanel: React.VFC<{}> = () => {
     const studio = getStudio()!
     const rightPanelOpen =
       val(studio.atomP.historic.panels.sequenceEditor.rightPanelOpen) ?? true
-    const minDims = {width: rightPanelOpen ? 800 : 320, height: 200}
+    const minDims = {
+      width: rightPanelOpen ? 800 : minLeftPanelWidth,
+      height: 200,
+    }
 
     return (
       <BasePanel
@@ -735,7 +742,7 @@ const Content: React.VFC<{}> = () => {
     const panelSize = prism.memo(
       'panelSize',
       (): PanelDims => {
-        const width = rightPanelOpenFromStudio ? dims.width : 320
+        const width = rightPanelOpenFromStudio ? dims.width : minLeftPanelWidth
         const height = dims.height
         return {
           width: width,
@@ -837,7 +844,7 @@ const Content: React.VFC<{}> = () => {
     const graphEditorAvailable = val(layoutP.graphEditorDims.isAvailable)
     const graphEditorOpen = val(layoutP.graphEditorDims.isOpen)
     const rightPanelOpen = val(layoutP.rightPanelOpen)
-    const collapsedWidth = !rightPanelOpen ? 320 : undefined
+    const collapsedWidth = !rightPanelOpen ? minLeftPanelWidth : undefined
 
     return (
       <Container
@@ -847,9 +854,6 @@ const Content: React.VFC<{}> = () => {
           if (elt !== containerNode) {
             setContainerNode(elt as HTMLDivElement)
           }
-        }}
-        style={{
-          overflow: 'hidden',
         }}
       >
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
@@ -892,7 +896,7 @@ const Content: React.VFC<{}> = () => {
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
           )}
           {graphEditorAvailable && <GraphEditorToggle layoutP={layoutP} />}
-          <RightOverlay layoutP={layoutP} />
+          {rightPanelOpen && <RightOverlay layoutP={layoutP} />}
         </FrameStampPositionProvider>
 
         {/* Sheet Modal */}
@@ -949,21 +953,41 @@ const Header: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
           width: val(layoutP.leftDims.width),
         }}
       >
-        <TitleBar>
-          <TitleBar_Piece>{sheet.address.sheetId}</TitleBar_Piece>
-
-          <TimeInputsContainer>
-            <PositionInput layoutP={layoutP} />
-            <TitleBar_Punctuation>/</TitleBar_Punctuation>
-            <DurationInput layoutP={layoutP} />
-            <TitleBar_Punctuation>-</TitleBar_Punctuation>
-            <FrameInput layoutP={layoutP} />
-            <TitleBar_Punctuation>:</TitleBar_Punctuation>
-            <FpsInput layoutP={layoutP} />
-            <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>
-              fps
+        <TitleBar
+          style={{
+            borderRight: '1px solid #222',
+          }}
+        >
+          <TitleRow
+            style={{
+              borderBottom: '1px solid #222',
+            }}
+          >
+            <TitleBar_Piece
+              style={{
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: 'bold',
+              }}
+            >
+              {sheet.address.sheetId}
             </TitleBar_Piece>
-          </TimeInputsContainer>
+          </TitleRow>
+
+          <TimeInputsRow>
+            <TimeInputsContainer>
+              <PositionInput layoutP={layoutP} />
+              <TitleBar_Punctuation>/</TitleBar_Punctuation>
+              <DurationInput layoutP={layoutP} />
+              <TitleBar_Punctuation>-</TitleBar_Punctuation>
+              <FrameInput layoutP={layoutP} />
+              <TitleBar_Punctuation>:</TitleBar_Punctuation>
+              <FpsInput layoutP={layoutP} />
+              <TitleBar_Piece style={{fontSize: '9px', opacity: 0.7}}>
+                fps
+              </TitleBar_Piece>
+            </TimeInputsContainer>
+          </TimeInputsRow>
         </TitleBar>
       </Header_Container>
     )
@@ -974,8 +998,21 @@ const TimeInputsContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
-  margin-right: 8px;
+  height: 30px;
+`
+
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px;
+`
+
+const TimeInputsRow = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px;
 `
 
 const TimeInput = styled(BasicNumberInput)`
