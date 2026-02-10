@@ -1016,7 +1016,8 @@ const TimeInputsRow = styled.div`
 `
 
 const TimeInput = styled(BasicNumberInput)`
-  width: 50px;
+  flex: 1;
+  min-width: 0;
   height: 20px;
   font-size: 12px;
   padding: 0;
