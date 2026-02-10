@@ -4,6 +4,7 @@ import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {useVal} from '@tomorrowevening/theatre-react'
 import ExtensionPaneWrapper from '@tomorrowevening/theatre-studio/panels/BasePanel/ExtensionPaneWrapper'
 import SequenceEditorPanel from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SequenceEditorPanel'
+import DetailPanel from '@tomorrowevening/theatre-studio/panels/DetailPanel/DetailPanel'
 
 const PanelsRoot: React.VFC = () => {
   const panes = useVal(getStudio().paneManager.allPanesD)
@@ -21,6 +22,7 @@ const PanelsRoot: React.VFC = () => {
       {paneEls}
       <OutlinePanel />
       <SequenceEditorPanel />
+      <DetailPanel />
     </>
   )
 }

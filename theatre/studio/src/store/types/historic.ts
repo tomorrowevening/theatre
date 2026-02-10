@@ -18,6 +18,7 @@ import type {
   ProjectId,
   SequenceMarkerId,
   SequenceEventId,
+  SequenceSubSequenceId,
   SheetId,
   SheetInstanceId,
   UIPanelId,
@@ -109,6 +110,37 @@ export type StudioHistoricStateSequenceEditorEvent = {
 }
 
 /**
+ * SubSequence allows you to nest sequences within other sequences.
+ * Similar to After Effects Compositions.
+ *
+ * See root {@link StudioHistoricState}
+ */
+export type StudioHistoricStateSequenceEditorSubSequence = {
+  id: SequenceSubSequenceId
+  /**
+   * The ID of the sheet/sequence being referenced
+   */
+  sheetId: string
+  /**
+   * The position where this sub-sequence starts in the parent sequence
+   */
+  position: number
+  /**
+   * Optional duration override. If not specified, uses the referenced sequence's duration
+   */
+  duration?: number
+  /**
+   * Optional time scale factor. Default is 1.0 (normal speed)
+   * 2.0 = double speed, 0.5 = half speed
+   */
+  timeScale?: number
+  /**
+   * Optional label for UI display
+   */
+  label?: string
+}
+
+/**
  * See parent {@link StudioHistoricStateProject}.
  * See root {@link StudioHistoricState}
  */
@@ -122,6 +154,10 @@ export type StudioHistoricStateProjectSheet = {
     eventSet?: PointableSet<
       SequenceEventId,
       StudioHistoricStateSequenceEditorEvent
+    >
+    subSequenceSet?: PointableSet<
+      SequenceSubSequenceId,
+      StudioHistoricStateSequenceEditorSubSequence
     >
     selectedPropsByObject: StrictRecord<
       ObjectAddressKey,

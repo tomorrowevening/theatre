@@ -295,6 +295,47 @@ export default class StudioStore {
             }
           }
         }
+
+        // Copy sub-sequences from studio state to the exported state
+        if (sheetState?.sequenceEditor?.subSequenceSet) {
+          const subSequenceSet = sheetState.sequenceEditor.subSequenceSet
+          if (
+            subSequenceSet.allIds &&
+            Object.keys(subSequenceSet.allIds).length > 0
+          ) {
+            // Ensure the sheet exists in the generated state
+            if (!generatedOnDiskState.sheetsById[sheetId]) {
+              generatedOnDiskState.sheetsById[sheetId] = {
+                staticOverrides: {byObject: {}},
+              }
+            }
+
+            const sheet = generatedOnDiskState.sheetsById[sheetId]
+
+            // Ensure the sequence exists
+            if (sheet && !sheet.sequence) {
+              sheet.sequence = {
+                type: 'PositionalSequence',
+                length: 10,
+                subUnitsPerUnit: 30,
+                tracksByObject: {},
+              }
+            }
+
+            // Convert PointableSet to array
+            const subSequences = Object.entries(subSequenceSet.byId)
+              .map(([id, subSequence]) => subSequence)
+              .filter(
+                (subSequence): subSequence is NonNullable<typeof subSequence> =>
+                  subSequence !== undefined,
+              )
+              .sort((a, b) => a.position - b.position)
+
+            if (sheet?.sequence) {
+              sheet.sequence.subSequences = subSequences
+            }
+          }
+        }
       }
     }
 

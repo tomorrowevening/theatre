@@ -252,6 +252,82 @@ export interface ISequence {
   ): void
 
   /**
+   * Adds a sub-sequence to this sequence at the specified position.
+   * Sub-sequences allow you to reuse animations from other sheets within this sequence.
+   *
+   * @param sheetId - The ID of the sheet to use as a sub-sequence
+   * @param position - The position in this sequence where the sub-sequence should start
+   * @param options - Optional configuration for the sub-sequence
+   * @returns The ID of the created sub-sequence
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * // Add a sub-sequence at position 2 seconds
+   * const subSeqId = sheet.sequence.addSubSequence('Sheet 2', 2)
+   *
+   * // Add a sub-sequence with custom duration, playback rate, and label
+   * const subSeqId = sheet.sequence.addSubSequence('Sheet 2', 2, {
+   *   duration: 5,
+   *   playbackRate: 1.5,
+   *   label: 'My Animation'
+   * })
+   * ```
+   */
+  addSubSequence(
+    sheetId: string,
+    position: number,
+    options?: {
+      duration?: number
+      playbackRate?: number
+      label?: string
+    },
+  ): string
+
+  /**
+   * Removes a sub-sequence from this sequence.
+   *
+   * @param subSequenceId - The ID of the sub-sequence to remove
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const subSeqId = sheet.sequence.addSubSequence('Sheet 2', 2)
+   * // Later...
+   * sheet.sequence.removeSubSequence(subSeqId)
+   * ```
+   */
+  removeSubSequence(subSequenceId: string): void
+
+  /**
+   * Updates properties of an existing sub-sequence.
+   *
+   * @param subSequenceId - The ID of the sub-sequence to update
+   * @param updates - The properties to update
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const subSeqId = sheet.sequence.addSubSequence('Sheet 2', 2)
+   * // Update the position, duration, and label
+   * sheet.sequence.updateSubSequence(subSeqId, {
+   *   position: 3,
+   *   duration: 10,
+   *   label: 'Updated Animation'
+   * })
+   * ```
+   */
+  updateSubSequence(
+    subSequenceId: string,
+    updates: {
+      position?: number
+      duration?: number
+      playbackRate?: number
+      label?: string
+    },
+  ): void
+
+  /**
    * Attaches an audio source to the sequence. Playing the sequence automatically
    * plays the audio source and their times are kept in sync.
    *
@@ -491,6 +567,34 @@ export default class TheatreSequence implements ISequence {
     listener: (event: {name: string; position: number; value?: any}) => void,
   ): void {
     return privateAPI(this).unlisten(eventName, listener)
+  }
+
+  addSubSequence(
+    sheetId: string,
+    position: number,
+    options?: {
+      duration?: number
+      playbackRate?: number
+      label?: string
+    },
+  ): string {
+    return privateAPI(this).addSubSequence(sheetId, position, options)
+  }
+
+  removeSubSequence(subSequenceId: string): void {
+    return privateAPI(this).removeSubSequence(subSequenceId)
+  }
+
+  updateSubSequence(
+    subSequenceId: string,
+    updates: {
+      position?: number
+      duration?: number
+      playbackRate?: number
+      label?: string
+    },
+  ): void {
+    return privateAPI(this).updateSubSequence(subSequenceId, updates)
   }
 }
 

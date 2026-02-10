@@ -15,6 +15,29 @@ export const SheetInstanceItem: React.FC<{
     })
   }, [sheet])
 
+  const handleDragStart = useCallback(
+    (e: React.DragEvent) => {
+      // Set drag data with sheet information
+      const dragData = {
+        type: 'theatre-sheet',
+        projectId: sheet.address.projectId,
+        sheetId: sheet.address.sheetId,
+        sheetInstanceId: sheet.address.sheetInstanceId,
+      }
+      e.dataTransfer.setData('application/json', JSON.stringify(dragData))
+      e.dataTransfer.effectAllowed = 'copy'
+
+      // Add visual feedback
+      document.body.classList.add('dragging-sheet')
+    },
+    [sheet],
+  )
+
+  const handleDragEnd = useCallback(() => {
+    // Remove visual feedback
+    document.body.classList.remove('dragging-sheet')
+  }, [])
+
   return usePrism(() => {
     const selection = getOutlineSelection()
 
@@ -32,7 +55,10 @@ export const SheetInstanceItem: React.FC<{
             : 'not-selected'
         }
         label={`${sheet.address.sheetId}: ${sheet.address.sheetInstanceId}`}
+        draggable={true}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       />
     )
-  }, [depth])
+  }, [depth, handleDragStart, handleDragEnd])
 }

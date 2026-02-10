@@ -563,13 +563,6 @@ function AggregateKeyframeBar_memo(props: IAggregateKeyframeBarProps) {
           },
         },
         {
-          label: 'Reset Color',
-          callback: () => {
-            resetAggregateKeyframeColor(viewModel)
-            setColor('#40AAA4')
-          },
-        },
-        {
           label: 'Delete',
           callback: () => {
             getStudio().transaction(({stateEditors}) => {

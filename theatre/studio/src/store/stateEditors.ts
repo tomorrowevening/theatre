@@ -20,6 +20,7 @@ import type {
   KeyframeId,
   SequenceMarkerId,
   SequenceEventId,
+  SequenceSubSequenceId,
   SequenceTrackId,
   UIPanelId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
@@ -51,6 +52,7 @@ import type {
   StudioEphemeralState,
   StudioHistoricStateSequenceEditorMarker,
   StudioHistoricStateSequenceEditorEvent,
+  StudioHistoricStateSequenceEditorSubSequence,
 } from './types'
 import {clamp, uniq} from 'lodash-es'
 import {
@@ -577,6 +579,248 @@ namespace stateEditors {
                     if (coreEvent) {
                       coreEvent.name = options.name
                       coreEvent.value = options.value
+                    }
+                  }
+                }
+              }
+
+              function _ensureSubSequences(sheetAddress: SheetAddress) {
+                const sequenceEditor =
+                  stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId._ensure(
+                    sheetAddress,
+                  ).sequenceEditor
+
+                if (!sequenceEditor.subSequenceSet) {
+                  sequenceEditor.subSequenceSet = pointableSetUtil.create()
+                }
+
+                return sequenceEditor.subSequenceSet
+              }
+
+              export function replaceSubSequences(p: {
+                sheetAddress: SheetAddress
+                subSequences: Array<StudioHistoricStateSequenceEditorSubSequence>
+                snappingFunction: (p: number) => number
+              }) {
+                const currentSubSequenceSet = _ensureSubSequences(
+                  p.sheetAddress,
+                )
+
+                const sanitizedSubSequences = p.subSequences
+                  .filter((subSeq) => {
+                    if (!isFinite(subSeq.position)) {
+                      console.warn(
+                        'SubSequence filtered out: invalid position',
+                        subSeq,
+                      )
+                      return false
+                    }
+                    if (!subSeq.sheetId || typeof subSeq.sheetId !== 'string') {
+                      console.warn(
+                        'SubSequence filtered out: invalid sheetId',
+                        subSeq,
+                      )
+                      return false
+                    }
+                    if (
+                      subSeq.duration !== undefined &&
+                      !isFinite(subSeq.duration)
+                    ) {
+                      console.warn(
+                        'SubSequence filtered out: invalid duration',
+                        subSeq,
+                      )
+                      return false
+                    }
+                    if (
+                      subSeq.timeScale !== undefined &&
+                      (!isFinite(subSeq.timeScale) || subSeq.timeScale <= 0)
+                    ) {
+                      console.warn(
+                        'SubSequence filtered out: invalid timeScale',
+                        subSeq,
+                      )
+                      return false
+                    }
+
+                    return true // subSequence looks valid
+                  })
+                  .map((subSeq) => ({
+                    ...subSeq,
+                    position: p.snappingFunction(subSeq.position),
+                    timeScale: subSeq.timeScale ?? 1.0,
+                  }))
+
+                const newSubSequencesById = keyBy(sanitizedSubSequences, 'id')
+
+                /** Usually starts as the "unselected" sub-sequences */
+                let subSequencesThatArentBeingReplaced =
+                  pointableSetUtil.filter(
+                    currentSubSequenceSet,
+                    (subSeq) => subSeq && !newSubSequencesById[subSeq.id],
+                  )
+
+                // Build a map of existing sub-sequences by position range for overlap detection
+                // Only include subsequences that aren't being replaced
+                const existingSubSequencesByPosition = Object.values(
+                  subSequencesThatArentBeingReplaced.byId,
+                ).filter(
+                  (subSeq): subSeq is NonNullable<typeof subSeq> =>
+                    subSeq !== undefined,
+                )
+
+                // If the new transformed sub-sequences overlap with any existing sub-sequences,
+                // we remove the overlapped sub-sequences
+                sanitizedSubSequences.forEach((newSubSeq) => {
+                  const newStart = newSubSeq.position
+                  const newEnd = newSubSeq.position + (newSubSeq.duration ?? 0)
+
+                  existingSubSequencesByPosition.forEach((existingSubSeq) => {
+                    const existingStart = existingSubSeq.position
+                    const existingEnd =
+                      existingSubSeq.position + (existingSubSeq.duration ?? 0)
+
+                    // Check for overlap
+                    if (newStart < existingEnd && newEnd > existingStart) {
+                      subSequencesThatArentBeingReplaced =
+                        pointableSetUtil.remove(
+                          subSequencesThatArentBeingReplaced,
+                          existingSubSeq.id,
+                        )
+                    }
+                  })
+                })
+
+                Object.assign(
+                  currentSubSequenceSet,
+                  pointableSetUtil.merge([
+                    subSequencesThatArentBeingReplaced,
+                    pointableSetUtil.create(
+                      sanitizedSubSequences.map((subSeq) => [
+                        subSeq.id,
+                        subSeq,
+                      ]),
+                    ),
+                  ]),
+                )
+
+                // Also update the core project state for immediate availability
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    p.sheetAddress,
+                  )
+                if (!coreSheetState.sequence) {
+                  coreSheetState.sequence = {
+                    type: 'PositionalSequence',
+                    length: 10,
+                    subUnitsPerUnit: 30,
+                    tracksByObject: {},
+                  }
+                }
+
+                // Convert studio sub-sequences to core sub-sequences format
+                const allSubSequences = [
+                  ...Object.values(
+                    subSequencesThatArentBeingReplaced.byId,
+                  ).filter(
+                    (subSeq): subSeq is NonNullable<typeof subSeq> =>
+                      subSeq !== undefined,
+                  ),
+                  ...sanitizedSubSequences,
+                ].sort((a, b) => a.position - b.position)
+
+                coreSheetState.sequence.subSequences = allSubSequences.map(
+                  (subSeq) => ({
+                    id: subSeq.id,
+                    sheetId: subSeq.sheetId,
+                    position: subSeq.position,
+                    duration: subSeq.duration,
+                    timeScale: subSeq.timeScale,
+                    label: subSeq.label,
+                  }),
+                )
+              }
+
+              export function removeSubSequence(options: {
+                sheetAddress: SheetAddress
+                subSequenceId: SequenceSubSequenceId
+              }) {
+                const currentSubSequenceSet = _ensureSubSequences(
+                  options.sheetAddress,
+                )
+                Object.assign(
+                  currentSubSequenceSet,
+                  pointableSetUtil.remove(
+                    currentSubSequenceSet,
+                    options.subSequenceId,
+                  ),
+                )
+
+                // Also update the core project state
+                const coreSheetState =
+                  stateEditors.coreByProject.historic.sheetsById._ensure(
+                    options.sheetAddress,
+                  )
+                if (coreSheetState.sequence?.subSequences) {
+                  coreSheetState.sequence.subSequences =
+                    coreSheetState.sequence.subSequences.filter(
+                      (subSeq) => subSeq.id !== options.subSequenceId,
+                    )
+                }
+              }
+
+              export function updateSubSequence(options: {
+                sheetAddress: SheetAddress
+                subSequenceId: SequenceSubSequenceId
+                updates: Partial<
+                  Omit<
+                    StudioHistoricStateSequenceEditorSubSequence,
+                    'id' | 'sheetId'
+                  >
+                >
+              }) {
+                const currentSubSequenceSet = _ensureSubSequences(
+                  options.sheetAddress,
+                )
+                const subSeq = currentSubSequenceSet.byId[options.subSequenceId]
+                if (subSeq !== undefined) {
+                  // Apply updates
+                  if (options.updates.position !== undefined) {
+                    subSeq.position = options.updates.position
+                  }
+                  if (options.updates.duration !== undefined) {
+                    subSeq.duration = options.updates.duration
+                  }
+                  if (options.updates.timeScale !== undefined) {
+                    subSeq.timeScale = options.updates.timeScale
+                  }
+                  if (options.updates.label !== undefined) {
+                    subSeq.label = options.updates.label
+                  }
+
+                  // Also update the core project state
+                  const coreSheetState =
+                    stateEditors.coreByProject.historic.sheetsById._ensure(
+                      options.sheetAddress,
+                    )
+                  if (coreSheetState.sequence?.subSequences) {
+                    const coreSubSeq =
+                      coreSheetState.sequence.subSequences.find(
+                        (s) => s.id === options.subSequenceId,
+                      )
+                    if (coreSubSeq) {
+                      if (options.updates.position !== undefined) {
+                        coreSubSeq.position = options.updates.position
+                      }
+                      if (options.updates.duration !== undefined) {
+                        coreSubSeq.duration = options.updates.duration
+                      }
+                      if (options.updates.timeScale !== undefined) {
+                        coreSubSeq.timeScale = options.updates.timeScale
+                      }
+                      if (options.updates.label !== undefined) {
+                        coreSubSeq.label = options.updates.label
+                      }
                     }
                   }
                 }

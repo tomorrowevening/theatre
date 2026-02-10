@@ -5,6 +5,7 @@ import type {
   SequenceMarkerId,
   SequenceEventId,
   SequenceTrackId,
+  SequenceSubSequenceId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
   SerializableMap,
@@ -55,6 +56,12 @@ export type HistoricPositionalSequence = {
    * Events allow you to trigger actions at specific positions in your sequence.
    */
   events?: SequenceEvent[]
+
+  /**
+   * Sub-sequences allow you to nest sequences within sequences, similar to After Effects compositions.
+   * This enables animation reuse and retiming.
+   */
+  subSequences?: SubSequence[]
 
   tracksByObject: StrictRecord<
     ObjectAddressKey,
@@ -142,4 +149,33 @@ export type SequenceEvent = {
    * Optional value associated with the event
    */
   value?: any
+}
+
+/**
+ * Represents a sub-sequence (nested sequence) within a parent sequence.
+ * Similar to After Effects compositions, this allows reusing and retiming animations.
+ */
+export type SubSequence = {
+  id: SequenceSubSequenceId
+  /**
+   * The ID of the sheet/sequence being referenced
+   */
+  sheetId: string
+  /**
+   * The position where this sub-sequence starts in the parent sequence
+   */
+  position: number
+  /**
+   * Optional duration override. If not specified, uses the referenced sequence's length.
+   */
+  duration?: number
+  /**
+   * Optional time scale factor. Default is 1.0 (normal speed).
+   * Values > 1.0 speed up, values < 1.0 slow down.
+   */
+  timeScale?: number
+  /**
+   * Optional label for UI display
+   */
+  label?: string
 }

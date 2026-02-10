@@ -22,6 +22,7 @@ export type PaneInstanceId = Nominal<'PaneInstanceId'>
 export type SequenceTrackId = Nominal<'SequenceTrackId'>
 export type SequenceMarkerId = Nominal<'SequenceMarkerId'>
 export type SequenceEventId = Nominal<'SequenceEventId'>
+export type SequenceSubSequenceId = Nominal<'SequenceSubSequenceId'>
 export type ObjectAddressKey = Nominal<'ObjectAddressKey'>
 
 /**
@@ -69,6 +70,10 @@ export function generateSequenceEventId(): SequenceEventId {
   return generateNonSecure(10) as SequenceEventId
 }
 
+export function generateSequenceSubSequenceId(): SequenceSubSequenceId {
+  return generateNonSecure(10) as SequenceSubSequenceId
+}
+
 /**
  * This will not necessarily maintain consistent key values if any
  * versioning happens where something needs to
@@ -80,6 +85,11 @@ export const createStudioSheetItemKey = {
   forSheetObject(obj: SheetObject): StudioSheetItemKey {
     return stableValueHash({
       o: obj.address.objectKey,
+    }) as StudioSheetItemKey
+  },
+  forSubSequence(subSequenceId: SequenceSubSequenceId): StudioSheetItemKey {
+    return stableValueHash({
+      ss: subSequenceId,
     }) as StudioSheetItemKey
   },
   forSheetObjectProp(

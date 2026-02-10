@@ -46,6 +46,7 @@ const LeftRowHead_Label = styled.span`
   padding-right: 4px;
   line-height: 26px;
   flex-wrap: nowrap;
+  width: 100%;
 
   ${LeftRowHeader}:hover & {
     color: #ccc;
@@ -134,7 +135,7 @@ const AnyCompositeRow: React.FC<{
         <LeftRowHead_Icon isCollapsed={isCollapsed} onClick={toggleCollapsed}>
           <HiOutlineChevronRight />
         </LeftRowHead_Icon>
-        <LeftRowHead_Label>{label}</LeftRowHead_Label>
+        <LeftRowHead_Label onClick={toggleCollapsed}>{label}</LeftRowHead_Label>
         {valueDisplay && <LeftRowHead_Value>{valueDisplay}</LeftRowHead_Value>}
       </LeftRowHeader>
       {hasChildren && <LeftRowChildren>{children}</LeftRowChildren>}
