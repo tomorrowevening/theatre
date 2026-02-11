@@ -7,9 +7,8 @@ export default function onPointerOutside(
   threshold: number,
   onPointerOutside: (e: MouseEvent) => void,
 ) {
-  const containerRect = node.getBoundingClientRect()
-
   const onMouseMove = (e: MouseEvent) => {
+    const containerRect = node.getBoundingClientRect()
     if (
       e.clientX < containerRect.left - threshold ||
       e.clientX > containerRect.left + containerRect.width + threshold ||
