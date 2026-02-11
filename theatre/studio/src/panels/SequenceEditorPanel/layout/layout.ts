@@ -214,6 +214,10 @@ export function sequenceEditorPanelLayout(
     const graphEditorAvailable =
       !!selectedPropsByObject && Object.keys(selectedPropsByObject).length > 0
 
+    const dopesheetLeftWidth =
+      val(studio.atomP.historic.panels.sequenceEditor.dopesheetLeftWidth) ??
+      Math.floor(panelDims.width * panelSplitRatio)
+
     const {
       leftDims,
       rightDims,
@@ -225,12 +229,7 @@ export function sequenceEditorPanelLayout(
       () => {
         const rightPanelOpenValue = val(rightPanelOpenP) ?? true
         const leftDims: DimsOfPanelPart = {
-          width: rightPanelOpenValue
-            ? Math.max(
-                minLeftPanelWidth,
-                Math.floor(panelDims.width * panelSplitRatio),
-              )
-            : panelDims.width,
+          width: dopesheetLeftWidth,
           height: panelDims.height,
           screenX: panelDims.screenX,
           screenY: panelDims.screenY,
@@ -288,7 +287,13 @@ export function sequenceEditorPanelLayout(
           horizontalScrollbarDims,
         }
       },
-      [panelDims, graphEditorState, graphEditorAvailable, rightPanelOpenP],
+      [
+        panelDims,
+        graphEditorState,
+        graphEditorAvailable,
+        rightPanelOpenP,
+        dopesheetLeftWidth,
+      ],
     )
 
     const graphEditorVerticalSpace = prism.memo(

@@ -52,6 +52,7 @@ type Panels = {
       height?: number
     }
     rightPanelOpen?: boolean
+    dopesheetLeftWidth?: number
   }
   objectEditor?: {}
   outlinePanel?: {

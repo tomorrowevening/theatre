@@ -4,6 +4,7 @@ import React from 'react'
 import styled from 'styled-components'
 import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import Left from './Left/Left'
+import DopesheetSplitter from './DopesheetSplitter'
 import DopeSheetBackground from './Right/DopeSheetBackground'
 import Right from './Right/Right'
 import VerticalScrollContainer from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/VerticalScrollContainer'
@@ -26,6 +27,7 @@ const DopeSheet: React.VFC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
         <Left layoutP={layoutP} />
         <Right layoutP={layoutP} />
       </VerticalScrollContainer>
+      <DopesheetSplitter layoutP={layoutP} />
     </Container>
   )
 }
