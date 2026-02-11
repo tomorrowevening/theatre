@@ -252,7 +252,7 @@ namespace stateEditors {
                   possibleColors.size > 0
                     ? possibleColors.values().next().value
                     : Object.keys(graphEditorColors)[0]
-
+                // @ts-ignore
                 selectedProps[path] = color
               }
 
