@@ -147,7 +147,7 @@ const SequenceEditorPanel: React.VFC<{}> = () => {
     const rightPanelOpen =
       val(studio.atomP.historic.panels.sequenceEditor.rightPanelOpen) ?? true
     const minDims = {
-      width: minLeftPanelWidth * (rightPanelOpen ? 2 : 1),
+      width: rightPanelOpen ? minLeftPanelWidth * 2 : minLeftPanelWidth,
       height: 200,
     }
 
@@ -742,7 +742,7 @@ const Content: React.VFC<{}> = () => {
     const panelSize = prism.memo(
       'panelSize',
       (): PanelDims => {
-        const width = rightPanelOpenFromStudio ? dims.width : minLeftPanelWidth
+        const width = dims.width
         const height = dims.height
         return {
           width: width,
@@ -844,7 +844,9 @@ const Content: React.VFC<{}> = () => {
     const graphEditorAvailable = val(layoutP.graphEditorDims.isAvailable)
     const graphEditorOpen = val(layoutP.graphEditorDims.isOpen)
     const rightPanelOpen = val(layoutP.rightPanelOpen)
-    const collapsedWidth = !rightPanelOpen ? minLeftPanelWidth : undefined
+    const collapsedWidth = !rightPanelOpen
+      ? val(layoutP.leftDims.width)
+      : undefined
 
     return (
       <Container

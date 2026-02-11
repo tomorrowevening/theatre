@@ -175,6 +175,10 @@ namespace stateEditors {
             const s = sequenceEditor._ensure()
             s.rightPanelOpen = value
           }
+          export function setDopesheetLeftWidth(value: number) {
+            const s = sequenceEditor._ensure()
+            s.dopesheetLeftWidth = value
+          }
           export function _ensureRightPanelOpen() {
             const s = sequenceEditor._ensure()
             if (s.rightPanelOpen === undefined) {

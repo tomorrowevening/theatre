@@ -10,6 +10,8 @@ import {panelDimsToPanelPosition, usePanel} from './BasePanel'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import {clamp} from 'lodash-es'
 import {minVisibleSize} from './common'
+import {val} from '@tomorrowevening/theatre-dataverse'
+import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 
 const Base = styled.div`
   position: absolute;
@@ -216,6 +218,23 @@ const PanelResizeHandle: React.FC<{
                 position,
                 panelId: stuffBeforeDrag.panelId,
               })
+
+              if (
+                which.endsWith('Right') &&
+                stuffBeforeDrag.panelId === ('sequenceEditor' as UIPanelId)
+              ) {
+                const rightPanelOpen =
+                  val(
+                    getStudio()!.atomP.historic.panels.sequenceEditor
+                      .rightPanelOpen,
+                  ) ?? true
+
+                if (!rightPanelOpen) {
+                  stateEditors.studio.historic.panels.sequenceEditor.setDopesheetLeftWidth(
+                    newDims.width,
+                  )
+                }
+              }
             })
           },
           onDragEnd(dragHappened) {

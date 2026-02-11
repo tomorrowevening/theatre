@@ -70,7 +70,7 @@ const ToggleButton = styled.button<{isActive: boolean}>`
   background: #2d2d30;
   color: white;
   border: 1px solid #3e3e42;
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
@@ -92,7 +92,7 @@ const MenuButton = styled.button<{isOpen: boolean}>`
   background: ${(props) => (props.isOpen ? '#0078d4' : '#2d2d30')};
   color: white;
   border: 1px solid #3e3e42;
-  padding: 8px 16px;
+  padding: 8px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
