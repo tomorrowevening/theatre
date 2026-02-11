@@ -147,7 +147,7 @@ const SequenceEditorPanel: React.VFC<{}> = () => {
     const rightPanelOpen =
       val(studio.atomP.historic.panels.sequenceEditor.rightPanelOpen) ?? true
     const minDims = {
-      width: rightPanelOpen ? 800 : minLeftPanelWidth,
+      width: minLeftPanelWidth * (rightPanelOpen ? 2 : 1),
       height: 200,
     }
 

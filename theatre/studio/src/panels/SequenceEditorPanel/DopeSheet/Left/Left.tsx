@@ -2,7 +2,7 @@ import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/pa
 import {usePrism} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useLayoutEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import LeftSheetObjectRow from './SheetObjectRow'
 import SubSequenceRow from './SubSequenceRow'
@@ -26,7 +26,7 @@ const Container = styled.div`
 `
 
 const ListContainer = styled.ul`
-  margin: 0;
+  margin: 0 0 50px 0;
   padding: 0;
   list-style: none;
 `
@@ -42,6 +42,18 @@ const Left: React.VFC<{
     sheetInstanceId: string
   } | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
+
+  useLayoutEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+
+    const handleWheel = (e: WheelEvent) => {
+      e.stopPropagation()
+    }
+
+    node.addEventListener('wheel', handleWheel, {passive: true})
+    return () => node.removeEventListener('wheel', handleWheel)
+  }, [])
 
   const addSubSequencePopover = usePopover(
     {debugName: 'Left/addSubSequence'},
