@@ -3,7 +3,10 @@ import React from 'react'
 import styled, {css} from 'styled-components'
 import noop from '@tomorrowevening/theatre-shared/utils/noop'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
-import {ChevronDown, Package} from '@tomorrowevening/theatre-studio/uiComponents/icons'
+import {
+  ChevronDown,
+  Package,
+} from '@tomorrowevening/theatre-studio/uiComponents/icons'
 
 export const Container = styled.li`
   margin: 0;
@@ -141,6 +144,9 @@ const BaseItem: React.FC<{
   children?: React.ReactNode | undefined
   collapsed?: boolean
   setIsCollapsed?: (v: boolean) => void
+  draggable?: boolean
+  onDragStart?: (e: React.DragEvent) => void
+  onDragEnd?: (e: React.DragEvent) => void
 }> = ({
   label,
   children,
@@ -150,6 +156,9 @@ const BaseItem: React.FC<{
   labelDecoration,
   collapsed = false,
   setIsCollapsed,
+  draggable,
+  onDragStart,
+  onDragEnd,
 }) => {
   const canContainChildren = children !== undefined
 
@@ -161,7 +170,14 @@ const BaseItem: React.FC<{
       }
       className={collapsed ? 'collapsed' : ''}
     >
-      <Header className={selectionStatus} onClick={select ?? noop} data-header>
+      <Header
+        className={selectionStatus}
+        onClick={select ?? noop}
+        data-header
+        draggable={draggable}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      >
         <Head_IconContainer>
           {canContainChildren ? (
             <Head_Icon_WithDescendants

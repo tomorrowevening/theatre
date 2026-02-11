@@ -3,6 +3,7 @@ import {usePrism} from '@tomorrowevening/theatre-react'
 import React from 'react'
 import LeftSheetObjectRow from './SheetObjectRow'
 import AnyCompositeRow from './AnyCompositeRow'
+import SubSequenceRow from './SubSequenceRow'
 import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
 
@@ -22,17 +23,21 @@ const SheetRow: React.VFC<{
           })
         }}
       >
-        {leaf.children.map((sheetObjectLeaf) => (
-          <LeftSheetObjectRow
-            key={
-              'sheetObject-' +
-              // we don't use the object's address as the key because if a user calls `sheet.detachObject(key)` and later
-              // calls `sheet.object(key)` with the same key, we want to re-render this row.
-              uniqueKeyForAnyObject(sheetObjectLeaf.sheetObject)
-            }
-            leaf={sheetObjectLeaf}
-          />
-        ))}
+        {leaf.children.map((childLeaf) =>
+          childLeaf.type === 'sheetObject' ? (
+            <LeftSheetObjectRow
+              key={
+                'sheetObject-' +
+                // we don't use the object's address as the key because if a user calls `sheet.detachObject(key)` and later
+                // calls `sheet.object(key)` with the same key, we want to re-render this row.
+                uniqueKeyForAnyObject(childLeaf.sheetObject)
+              }
+              leaf={childLeaf}
+            />
+          ) : childLeaf.type === 'subSequence' ? (
+            <SubSequenceRow key={childLeaf.sheetItemKey} leaf={childLeaf} />
+          ) : null,
+        )}
       </AnyCompositeRow>
     )
   }, [leaf])

@@ -7,10 +7,16 @@ import styled from 'styled-components'
 import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
 import RightSheetObjectRow from './SheetObjectRow'
+import SubSequenceRow from './SubSequenceRow'
 import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SearchContext'
 import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/treeSearch'
+import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export const contentWidth = 1000000
+
+const Wrapper = styled.div`
+  position: relative;
+`
 
 const ListContainer = styled.ul`
   margin: 0;
@@ -44,24 +50,35 @@ const Right: React.FC<{
       )
 
     return (
-      <>
+      <Wrapper>
         <HorizontallyScrollableArea layoutP={layoutP} height={height}>
           <DopeSheetSelectionView layoutP={layoutP} height={height}>
             <ListContainer style={{top: filteredTree.top + 'px'}}>
-              {filteredTree.children.map((sheetObjectLeaf) => (
-                <RightSheetObjectRow
-                  layoutP={layoutP}
-                  key={
-                    'sheetObject-' +
-                    sheetObjectLeaf.sheetObject.address.objectKey
-                  }
-                  leaf={sheetObjectLeaf}
-                />
-              ))}
+              {filteredTree.children.map((leaf) => {
+                if (leaf.type === 'subSequence') {
+                  return (
+                    <SubSequenceRow
+                      layoutP={layoutP}
+                      key={createStudioSheetItemKey.forSubSequence(
+                        leaf.subSequence.id,
+                      )}
+                      leaf={leaf}
+                    />
+                  )
+                }
+                // existing sheetObject rendering
+                return (
+                  <RightSheetObjectRow
+                    layoutP={layoutP}
+                    key={'sheetObject-' + leaf.sheetObject.address.objectKey}
+                    leaf={leaf}
+                  />
+                )
+              })}
             </ListContainer>
           </DopeSheetSelectionView>
         </HorizontallyScrollableArea>
-      </>
+      </Wrapper>
     )
   }, [layoutP, searchTerm, searchTrigger])
 }

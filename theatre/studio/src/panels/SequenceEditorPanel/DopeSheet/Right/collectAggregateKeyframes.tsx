@@ -106,7 +106,12 @@ function keyframesByPositionFromTrackWithIds(tracks: TrackWithId[]) {
 function collectAggregateKeyframesSheet(
   leaf: SequenceEditorTree_Sheet,
 ): TrackWithId[] {
-  return leaf.children.flatMap(collectAggregateKeyframesCompoundOrObject)
+  return leaf.children
+    .filter(
+      (child): child is SequenceEditorTree_SheetObject =>
+        child.type === 'sheetObject',
+    )
+    .flatMap(collectAggregateKeyframesCompoundOrObject)
 }
 
 function collectAggregateKeyframesCompoundOrObject(
@@ -149,12 +154,17 @@ export function collectAggregateSnapPositionsSheet(
   snapTargetPositions: {[key: string]: {[key: string]: number[]}},
 ): number[] {
   return uniq(
-    leaf.children.flatMap((childLeaf) =>
-      collectAggregateSnapPositionsObjectOrCompound(
-        childLeaf,
-        snapTargetPositions,
+    leaf.children
+      .filter(
+        (child): child is SequenceEditorTree_SheetObject =>
+          child.type === 'sheetObject',
+      )
+      .flatMap((childLeaf) =>
+        collectAggregateSnapPositionsObjectOrCompound(
+          childLeaf,
+          snapTargetPositions,
+        ),
       ),
-    ),
   )
 }
 

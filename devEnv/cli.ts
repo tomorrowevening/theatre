@@ -5,26 +5,42 @@ import * as os from 'os'
 
 const root = path.join(__dirname, '..')
 
+if (process.platform === 'win32') {
+  $.shell = 'powershell.exe'
+  $.prefix = ''
+  $.quote = function quote(arg) {
+    // Determine if quoting is needed. PowerShell parses arguments.
+    // Safe characters: a-z, A-Z, 0-9, _, -, ., /, \
+    if (/^[a-z0-9/_.-]+$/i.test(arg)) {
+      return arg
+    }
+    // PowerShell quoting: wrap in single quotes Use '' to escape '
+    return `'${arg.replace(/'/g, "''")}'`
+  }
+}
+
 const prog = sade('cli').describe('CLI for Theatre.js development')
 
 // better quote function from https://github.com/google/zx/pull/167
-$.quote = function quote(arg) {
-  if (/^[a-z0-9/_.-]+$/i.test(arg)) {
-    return arg
+if (process.platform !== 'win32') {
+  $.quote = function quote(arg) {
+    if (/^[a-z0-9/_.-]+$/i.test(arg)) {
+      return arg
+    }
+    return (
+      `$'` +
+      arg
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\f/g, '\\f')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/\t/g, '\\t')
+        .replace(/\v/g, '\\v')
+        .replace(/\0/g, '\\0') +
+      `'`
+    )
   }
-  return (
-    `$'` +
-    arg
-      .replace(/\\/g, '\\\\')
-      .replace(/'/g, "\\'")
-      .replace(/\f/g, '\\f')
-      .replace(/\n/g, '\\n')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t')
-      .replace(/\v/g, '\\v')
-      .replace(/\0/g, '\\0') +
-    `'`
-  )
 }
 
 prog

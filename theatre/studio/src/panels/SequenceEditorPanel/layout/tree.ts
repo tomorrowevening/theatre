@@ -10,6 +10,7 @@ import type {PathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
+  SequenceSubSequenceId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
@@ -60,7 +61,9 @@ export type SequenceEditorTree = SequenceEditorTree_Sheet
 export type SequenceEditorTree_Sheet = SequenceEditorTree_Row<'sheet'> & {
   sheet: Sheet
   isCollapsed: boolean
-  children: SequenceEditorTree_SheetObject[]
+  children: Array<
+    SequenceEditorTree_SheetObject | SequenceEditorTree_SubSequence
+  >
 }
 
 export type SequenceEditorTree_SheetObject =
@@ -92,11 +95,25 @@ export type SequenceEditorTree_PrimitiveProp =
     propConf: PropTypeConfig_AllSimples
   }
 
+export type SequenceEditorTree_SubSequence =
+  SequenceEditorTree_Row<'subSequence'> & {
+    subSequence: {
+      id: SequenceSubSequenceId
+      sheetId: string
+      position: number
+      duration: number
+      timeScale: number
+      label: string
+    }
+    sheet: Sheet
+  }
+
 export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_Sheet
   | SequenceEditorTree_SheetObject
   | SequenceEditorTree_PropWithChildren
   | SequenceEditorTree_PrimitiveProp
+  | SequenceEditorTree_SubSequence
 
 const HEIGHT_OF_ANY_TITLE = 28
 
@@ -141,9 +158,52 @@ export const calculateSequenceEditorTree = (
 
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
     if (sheetObject) {
-      addObject(sheetObject, tree.children, tree.depth + 1, true)
+      addObject(
+        sheetObject,
+        tree.children as Array<SequenceEditorTree_SheetObject>,
+        tree.depth + 1,
+        true,
+      )
     }
   }
+
+  // Add sub-sequences to the tree
+  const sheetState = val(
+    studio.atomP.historic.projects.stateByProjectId[sheet.address.projectId]
+      .stateBySheetId[sheet.address.sheetId],
+  )
+  // @ts-ignore
+  const sequenceEditor = val(sheetState.sequenceEditor)
+  if (sequenceEditor) {
+    const subSequenceSet = sequenceEditor.subSequenceSet
+    if (subSequenceSet) {
+      // Convert PointableSet to array
+      const subSequences: Array<SequenceEditorTree_SubSequence['subSequence']> =
+        Object.values(subSequenceSet.byId || {})
+          .filter((val): val is any => val !== undefined)
+          .map((subSequence: any) => subSequence)
+          .sort((a, b) => a.position - b.position)
+
+      for (const subSequence of subSequences) {
+        const subSequenceRow: SequenceEditorTree_SubSequence = {
+          type: 'subSequence',
+          subSequence,
+          sheet,
+          sheetItemKey: createStudioSheetItemKey.forSubSequence(subSequence.id),
+          shouldRender: true,
+          top: topSoFar,
+          depth: tree.depth + 1,
+          n: nSoFar,
+          nodeHeight: HEIGHT_OF_ANY_TITLE,
+          heightIncludingChildren: HEIGHT_OF_ANY_TITLE,
+        }
+        tree.children.push(subSequenceRow)
+        topSoFar += HEIGHT_OF_ANY_TITLE
+        nSoFar += 1
+      }
+    }
+  }
+
   tree.heightIncludingChildren = topSoFar - tree.top
 
   function addObject(

@@ -138,6 +138,42 @@ export default async function initialiseProjectState(
             )
           }
         }
+
+        // Load sub-sequences from disk state into studio state
+        if (sheetState?.sequence?.subSequences) {
+          const subSequences = sheetState.sequence.subSequences
+
+          // Use the replaceSubSequences state editor to load sub-sequences
+          if (
+            stateEditors?.studio?.historic?.projects?.stateByProjectId
+              ?.stateBySheetId?.sequenceEditor?.replaceSubSequences
+          ) {
+            // Get the current subsequences from studio state
+            const currentSubSequences =
+              stateEditors.studio.historic.projects.stateByProjectId[projectId]
+                ?.stateBySheetId[sheetId]?.sequenceEditor?.subSequenceSet
+
+            // Only load subsequences that don't already exist in studio state
+            // This prevents duplication when studio state is restored from localStorage
+            // before initialiseProjectState is called
+            const subSequencesToLoad = currentSubSequences
+              ? subSequences.filter(
+                  (subSeq) => !currentSubSequences.byId[subSeq.id],
+                )
+              : subSequences
+
+            // Only call replaceSubSequences if there are new subsequences to load
+            if (subSequencesToLoad.length > 0) {
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceSubSequences(
+                {
+                  sheetAddress: {projectId, sheetId},
+                  subSequences: subSequencesToLoad,
+                  snappingFunction: (p: number) => p,
+                },
+              )
+            }
+          }
+        }
       }
     })
   }

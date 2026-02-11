@@ -62,9 +62,50 @@ const config = {
         ],
       },
     },
+    Simple: {
+      staticOverrides: {
+        byObject: {},
+      },
+      sequence: {
+        subUnitsPerUnit: 30,
+        length: 0.5,
+        type: 'PositionalSequence',
+        tracksByObject: {
+          Example: {
+            trackData: {
+              ncYW4XRntY: {
+                type: 'BasicKeyframedTrack',
+                __debugName: 'Example:["opacity"]',
+                keyframes: [
+                  {
+                    id: 'oWg7ODD3eI',
+                    position: 0,
+                    connectedRight: true,
+                    handles: [0.5, 1, 0.5, 0],
+                    type: 'bezier',
+                    value: 1,
+                  },
+                  {
+                    id: 'V3JpckFa7m',
+                    position: 0.5,
+                    connectedRight: true,
+                    handles: [0.5, 1, 0.5, 0],
+                    type: 'bezier',
+                    value: 0,
+                  },
+                ],
+              },
+            },
+            trackIdByPropPath: {
+              '["opacity"]': 'ncYW4XRntY',
+            },
+          },
+        },
+      },
+    },
   },
   definitionVersion: '0.4.0',
-  revisionHistory: ['tuRjUa-qdS1HoL-_'],
+  revisionHistory: ['qnfoTbsOxWEu3Y53', 'tuRjUa-qdS1HoL-_'],
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

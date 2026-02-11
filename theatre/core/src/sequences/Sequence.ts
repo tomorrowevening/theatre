@@ -27,6 +27,13 @@ import type {ISequence} from '..'
 import {notify} from '@tomorrowevening/theatre-shared/notify'
 import type {$IntentionalAny} from '@tomorrowevening/theatre-dataverse/src/types'
 import {isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import type {
+  SheetId,
+  SheetInstanceId} from '@tomorrowevening/theatre-shared/utils/ids';
+import {
+  generateSequenceSubSequenceId
+} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export type IPlaybackRange = [from: number, to: number]
 
@@ -108,6 +115,10 @@ export default class Sequence implements PointerToPrismProvider {
     this._positionD.onStale(() => {
       const currentPosition = this._positionD.getValue()
       this._processEventsForPositionChange(
+        this._lastProcessedPosition,
+        currentPosition,
+      )
+      this._processSubSequencesForPositionChange(
         this._lastProcessedPosition,
         currentPosition,
       )
@@ -230,6 +241,72 @@ export default class Sequence implements PointerToPrismProvider {
     }
   }
 
+  private _processSubSequencesForPositionChange(
+    fromPosition: number,
+    toPosition: number,
+  ): void {
+    const subSequences = this._getSubSequences()
+
+    if (!subSequences || subSequences.length === 0) return
+
+    // Process each sub-sequence to see if it should be playing at the current position
+    for (const subSequence of subSequences) {
+      const subSeqStart = subSequence.position
+      const subSeqDuration =
+        subSequence.duration ??
+        this._getSubSequenceDuration(subSequence.sheetId)
+      const timeScale = subSequence.timeScale ?? 1.0
+      // Calculate visual end position accounting for time scale
+      // Visual width = duration / timeScale
+      const subSeqEnd = subSeqStart + subSeqDuration / timeScale
+
+      // Check if current position is within this sub-sequence's range
+      if (toPosition >= subSeqStart && toPosition <= subSeqEnd) {
+        // Calculate the position within the sub-sequence
+        const relativePosition = toPosition - subSeqStart
+        const scaledPosition = relativePosition * timeScale
+
+        // Get the referenced sheet and its sequence
+        try {
+          const referencedSheet = this._project.getOrCreateSheet(
+            subSequence.sheetId as SheetId,
+            'default' as SheetInstanceId, // Use default instance for now
+          )
+          const referencedSequence = referencedSheet.getSequence()
+
+          // Set the position of the referenced sequence
+          // Use the private method to avoid pausing
+          if (
+            referencedSequence &&
+            '_gotoPositionWithoutPausing' in referencedSequence
+          ) {
+            ;(referencedSequence as any)._gotoPositionWithoutPausing(
+              scaledPosition,
+            )
+          }
+        } catch (error) {
+          // Log error if sheet not found
+          this._logger._error(
+            `Sub-sequence references non-existent sheet: ${subSequence.sheetId}`,
+          )
+        }
+      }
+    }
+  }
+
+  private _getSubSequenceDuration(sheetId: string): number {
+    try {
+      const referencedSheet = this._project.getOrCreateSheet(
+        sheetId as SheetId,
+        'default' as SheetInstanceId,
+      )
+      const referencedSequence = referencedSheet.getSequence()
+      return referencedSequence?.length ?? 0
+    } catch (error) {
+      return 0
+    }
+  }
+
   private _getEvents() {
     const sheetState =
       this._project.pointers.historic.sheetsById[this._sheet.address.sheetId]
@@ -237,6 +314,15 @@ export default class Sequence implements PointerToPrismProvider {
 
     const events = sequenceState?.events || []
     return events
+  }
+
+  private _getSubSequences() {
+    const sheetState =
+      this._project.pointers.historic.sheetsById[this._sheet.address.sheetId]
+    const sequenceState = val(sheetState.sequence)
+
+    const subSequences = sequenceState?.subSequences || []
+    return subSequences
   }
 
   pointerToPrism<V>(pointer: Pointer<V>): Prism<V> {
@@ -638,6 +724,198 @@ To fix this, either set \`conf.range[1]\` to be less the duration of the sequenc
     }
 
     this.position = position
+  }
+
+  /**
+   * Adds a sub-sequence to this sequence.
+   *
+   * @param sheetId - The ID of the sheet/sequence to reference
+   * @param position - The position in this sequence where the sub-sequence should start
+   * @param options - Optional configuration for the sub-sequence
+   * @returns The ID of the created sub-sequence
+   */
+  addSubSequence(
+    sheetId: string,
+    position: number,
+    options?: {
+      duration?: number
+      timeScale?: number
+      label?: string
+    },
+  ): string {
+    const studio = getStudio()
+    if (!studio) {
+      throw new Error(
+        'addSubSequence() can only be called when Theatre.js Studio is loaded.',
+      )
+    }
+
+    // Check if a subsequence with the same sheetId and label already exists
+    const existingSubSequences = this._getSubSequences()
+    if (existingSubSequences) {
+      const label = options?.label
+      const duplicate = existingSubSequences.find(
+        (subSeq) => subSeq.sheetId === sheetId && subSeq.label === label,
+      )
+      if (duplicate) {
+        // Return the existing subsequence ID instead of creating a duplicate
+        this._logger._warn(
+          `Sub-sequence with sheetId "${sheetId}" and label "${label}" already exists. Returning existing ID.`,
+        )
+        return duplicate.id
+      }
+    }
+
+    // Generate a unique ID for the sub-sequence
+    const subSequenceId = generateSequenceSubSequenceId()
+
+    // Validate position
+    if (typeof position !== 'number' || position < 0) {
+      throw new InvalidArgumentError(
+        `Position must be a non-negative number. ${JSON.stringify(
+          position,
+        )} given.`,
+      )
+    }
+
+    // Validate optional parameters
+    if (
+      options?.duration !== undefined &&
+      (typeof options.duration !== 'number' || options.duration <= 0)
+    ) {
+      throw new InvalidArgumentError(
+        `Duration must be a positive number. ${JSON.stringify(
+          options.duration,
+        )} given.`,
+      )
+    }
+
+    if (
+      options?.timeScale !== undefined &&
+      (typeof options.timeScale !== 'number' || options.timeScale <= 0)
+    ) {
+      throw new InvalidArgumentError(
+        `Time scale must be a positive number. ${JSON.stringify(
+          options.timeScale,
+        )} given.`,
+      )
+    }
+
+    // Create the sub-sequence using the state editor
+    studio.transaction(({stateEditors}) => {
+      const subSequence = {
+        id: subSequenceId,
+        sheetId: sheetId as $IntentionalAny, // Cast to handle SheetId nominal type
+        position,
+        duration: options?.duration,
+        timeScale: options?.timeScale,
+        label: options?.label,
+      }
+
+      stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceSubSequences(
+        {
+          sheetAddress: this._sheet.address,
+          subSequences: [subSequence],
+          snappingFunction: this.closestGridPosition,
+        },
+      )
+    })
+
+    return subSequenceId
+  }
+
+  /**
+   * Removes a sub-sequence from this sequence.
+   *
+   * @param subSequenceId - The ID of the sub-sequence to remove
+   */
+  removeSubSequence(subSequenceId: string): void {
+    const studio = getStudio()
+    if (!studio) {
+      throw new Error(
+        'removeSubSequence() can only be called when Theatre.js Studio is loaded.',
+      )
+    }
+
+    // Remove the sub-sequence using the state editor
+    studio.transaction(({stateEditors}) => {
+      stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.removeSubSequence(
+        {
+          sheetAddress: this._sheet.address,
+          subSequenceId: subSequenceId as $IntentionalAny, // Cast to handle SequenceSubSequenceId nominal type
+        },
+      )
+    })
+  }
+
+  /**
+   * Updates properties of a sub-sequence.
+   *
+   * @param subSequenceId - The ID of the sub-sequence to update
+   * @param updates - The properties to update
+   */
+  updateSubSequence(
+    subSequenceId: string,
+    updates: {
+      position?: number
+      duration?: number
+      timeScale?: number
+      label?: string
+    },
+  ): void {
+    const studio = getStudio()
+    if (!studio) {
+      throw new Error(
+        'updateSubSequence() can only be called when Theatre.js Studio is loaded.',
+      )
+    }
+
+    // Validate position if provided
+    if (
+      updates.position !== undefined &&
+      (typeof updates.position !== 'number' || updates.position < 0)
+    ) {
+      throw new InvalidArgumentError(
+        `Position must be a non-negative number. ${JSON.stringify(
+          updates.position,
+        )} given.`,
+      )
+    }
+
+    // Validate duration if provided
+    if (
+      updates.duration !== undefined &&
+      (typeof updates.duration !== 'number' || updates.duration <= 0)
+    ) {
+      throw new InvalidArgumentError(
+        `Duration must be a positive number. ${JSON.stringify(
+          updates.duration,
+        )} given.`,
+      )
+    }
+
+    // Validate timeScale if provided
+    if (
+      updates.timeScale !== undefined &&
+      (typeof updates.timeScale !== 'number' || updates.timeScale <= 0)
+    ) {
+      throw new InvalidArgumentError(
+        `Time scale must be a positive number. ${JSON.stringify(
+          updates.timeScale,
+        )} given.`,
+      )
+    }
+
+    // Update the sub-sequence using the state editor
+    studio.transaction(({stateEditors}) => {
+      stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.updateSubSequence(
+        {
+          sheetAddress: this._sheet.address,
+          subSequenceId: subSequenceId as $IntentionalAny, // Cast to handle SequenceSubSequenceId nominal type
+          updates,
+        },
+      )
+    })
   }
 }
 

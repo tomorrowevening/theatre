@@ -11,6 +11,8 @@ import {HiOutlineChevronRight} from 'react-icons/all'
 import styled from 'styled-components'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 
 export const LeftRowContainer = styled.li<{depth: number}>`
   --depth: ${(props) => props.depth - 1};
@@ -46,6 +48,7 @@ const LeftRowHead_Label = styled.span`
   padding-right: 4px;
   line-height: 26px;
   flex-wrap: nowrap;
+  width: 100%;
 
   ${LeftRowHeader}:hover & {
     color: #ccc;
@@ -102,6 +105,7 @@ const AnyCompositeRow: React.FC<{
   isCollapsed: boolean
   valueDisplay?: React.ReactNode
   children?: React.ReactNode
+  contextMenuItems?: IContextMenuItem[]
 }> = ({
   leaf,
   label,
@@ -112,6 +116,7 @@ const AnyCompositeRow: React.FC<{
   toggleCollapsed,
   isCollapsed,
   valueDisplay,
+  contextMenuItems,
 }) => {
   const hasChildren = Array.isArray(children) && children.length > 0
 
@@ -119,8 +124,13 @@ const AnyCompositeRow: React.FC<{
 
   usePropHighlightMouseEnter(rowHeaderRef.current, leaf)
 
+  const [contextMenu] = useContextMenu(rowHeaderRef.current, {
+    menuItems: contextMenuItems ?? [],
+  })
+
   return leaf.shouldRender ? (
     <LeftRowContainer depth={leaf.depth}>
+      {contextMenu}
       <LeftRowHeader
         ref={rowHeaderRef}
         style={{
@@ -134,7 +144,7 @@ const AnyCompositeRow: React.FC<{
         <LeftRowHead_Icon isCollapsed={isCollapsed} onClick={toggleCollapsed}>
           <HiOutlineChevronRight />
         </LeftRowHead_Icon>
-        <LeftRowHead_Label>{label}</LeftRowHead_Label>
+        <LeftRowHead_Label onClick={toggleCollapsed}>{label}</LeftRowHead_Label>
         {valueDisplay && <LeftRowHead_Value>{valueDisplay}</LeftRowHead_Value>}
       </LeftRowHeader>
       {hasChildren && <LeftRowChildren>{children}</LeftRowChildren>}

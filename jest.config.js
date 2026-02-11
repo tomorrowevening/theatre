@@ -7,8 +7,8 @@ module.exports = {
     '<rootDir>/devEnv/**/*.test.ts',
   ],
   moduleNameMapper: {
-    ...require('./devEnv/getAliasesFromTsConfig').getAliasesFromTsConfigForJest(),
     '\\.(css|svg|png)$': 'identity-obj-proxy',
+    ...require('./devEnv/getAliasesFromTsConfig').getAliasesFromTsConfigForJest(),
     'lodash-es/(.*)': 'lodash/$1',
     'react-use/esm/(.*)': 'react-use/lib/$1',
     'lodash-es': 'lodash',

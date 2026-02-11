@@ -21,22 +21,27 @@ export function expandMatchingItems(
   const normalizedSearchTerm = searchTerm.toLowerCase().trim()
 
   // Expand all sheet objects that have matches
-  tree.children.forEach((sheetObject) => {
-    if (shouldExpandSheetObject(sheetObject, normalizedSearchTerm)) {
-      // Expand the sheet object itself
-      setCollapsedSheetItem(false, {
-        sheetAddress: sheetObject.sheetObject.address,
-        sheetItemKey: sheetObject.sheetItemKey,
-      })
+  tree.children
+    .filter(
+      (child): child is SequenceEditorTree_SheetObject =>
+        child.type === 'sheetObject',
+    )
+    .forEach((sheetObject) => {
+      if (shouldExpandSheetObject(sheetObject, normalizedSearchTerm)) {
+        // Expand the sheet object itself
+        setCollapsedSheetItem(false, {
+          sheetAddress: sheetObject.sheetObject.address,
+          sheetItemKey: sheetObject.sheetItemKey,
+        })
 
-      // Expand any compound properties that have matches
-      expandMatchingProps(
-        sheetObject.children,
-        normalizedSearchTerm,
-        sheetObject.sheetObject.address,
-      )
-    }
-  })
+        // Expand any compound properties that have matches
+        expandMatchingProps(
+          sheetObject.children,
+          normalizedSearchTerm,
+          sheetObject.sheetObject.address,
+        )
+      }
+    })
 }
 
 /**
@@ -49,15 +54,20 @@ const originalCollapsedStates = new Map<string, boolean>()
  * Stores the collapsed state of items before expanding them for search.
  */
 function storeOriginalCollapsedState(tree: SequenceEditorTree): void {
-  tree.children.forEach((sheetObject) => {
-    const sheetKey = `${sheetObject.sheetObject.address.projectId}:${sheetObject.sheetObject.address.sheetId}:${sheetObject.sheetItemKey}`
-    originalCollapsedStates.set(sheetKey, sheetObject.isCollapsed)
-
-    storePropsCollapsedState(
-      sheetObject.children,
-      sheetObject.sheetObject.address,
+  tree.children
+    .filter(
+      (child): child is SequenceEditorTree_SheetObject =>
+        child.type === 'sheetObject',
     )
-  })
+    .forEach((sheetObject) => {
+      const sheetKey = `${sheetObject.sheetObject.address.projectId}:${sheetObject.sheetObject.address.sheetId}:${sheetObject.sheetItemKey}`
+      originalCollapsedStates.set(sheetKey, sheetObject.isCollapsed)
+
+      storePropsCollapsedState(
+        sheetObject.children,
+        sheetObject.sheetObject.address,
+      )
+    })
 }
 
 function storePropsCollapsedState(
@@ -80,25 +90,30 @@ function storePropsCollapsedState(
  * Restores the original collapsed state when search is cleared.
  */
 export function restoreOriginalCollapsedState(tree: SequenceEditorTree): void {
-  tree.children.forEach((sheetObject) => {
-    const sheetKey = `${sheetObject.sheetObject.address.projectId}:${sheetObject.sheetObject.address.sheetId}:${sheetObject.sheetItemKey}`
-    const originalState = originalCollapsedStates.get(sheetKey)
-
-    if (
-      originalState !== undefined &&
-      originalState !== sheetObject.isCollapsed
-    ) {
-      setCollapsedSheetItem(originalState, {
-        sheetAddress: sheetObject.sheetObject.address,
-        sheetItemKey: sheetObject.sheetItemKey,
-      })
-    }
-
-    restorePropsCollapsedState(
-      sheetObject.children,
-      sheetObject.sheetObject.address,
+  tree.children
+    .filter(
+      (child): child is SequenceEditorTree_SheetObject =>
+        child.type === 'sheetObject',
     )
-  })
+    .forEach((sheetObject) => {
+      const sheetKey = `${sheetObject.sheetObject.address.projectId}:${sheetObject.sheetObject.address.sheetId}:${sheetObject.sheetItemKey}`
+      const originalState = originalCollapsedStates.get(sheetKey)
+
+      if (
+        originalState !== undefined &&
+        originalState !== sheetObject.isCollapsed
+      ) {
+        setCollapsedSheetItem(originalState, {
+          sheetAddress: sheetObject.sheetObject.address,
+          sheetItemKey: sheetObject.sheetItemKey,
+        })
+      }
+
+      restorePropsCollapsedState(
+        sheetObject.children,
+        sheetObject.sheetObject.address,
+      )
+    })
 
   // Clear the stored states
   originalCollapsedStates.clear()
@@ -219,9 +234,12 @@ export function filterSequenceEditorTree(
   const normalizedSearchTerm = searchTerm.toLowerCase().trim()
 
   const filteredChildren = tree.children
-    .map((sheetObjectLeaf) =>
-      filterSheetObject(sheetObjectLeaf, normalizedSearchTerm),
-    )
+    .map((child) => {
+      if (child.type === 'sheetObject') {
+        return filterSheetObject(child, normalizedSearchTerm)
+      }
+      return null
+    })
     .filter((leaf): leaf is SequenceEditorTree_SheetObject => leaf !== null)
 
   // Recalculate positions and heights for filtered tree

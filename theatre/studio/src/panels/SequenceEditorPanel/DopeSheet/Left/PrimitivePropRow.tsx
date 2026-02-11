@@ -14,6 +14,7 @@ import {graphEditorColors} from '@tomorrowevening/theatre-studio/panels/Sequence
 import {BaseHeader, LeftRowContainer as BaseContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
+import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {simplePropEditorByPropType} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/simplePropEditorByPropType'
 import type {ISimplePropEditorReactProps} from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
 import type {PropTypeConfig_AllSimples} from '@tomorrowevening/theatre-core/propTypes'
@@ -164,6 +165,10 @@ const PrimitivePropRow: React.FC<{
 
   usePropHighlightMouseEnter(headRef.current, leaf)
 
+  const [contextMenu] = useContextMenu(headRef.current, {
+    menuItems: editingTools.contextMenuItems,
+  })
+
   // Get the appropriate prop editor component
   const PropEditorComponent = simplePropEditorByPropType[
     leaf.propConf.type
@@ -171,6 +176,7 @@ const PrimitivePropRow: React.FC<{
 
   return (
     <PrimitivePropRowContainer depth={leaf.depth}>
+      {contextMenu}
       <PrimitivePropRowHead
         ref={headRef}
         isEven={leaf.n % 2 === 0}
