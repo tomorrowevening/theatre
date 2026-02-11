@@ -261,7 +261,12 @@ function pasteKeyframesSheet(
   )
 
   if (areKeyframesAllOnSingleTrack) {
-    for (const object of viewModel.children.map((child) => child.sheetObject)) {
+    for (const object of viewModel.children
+      .filter(
+        (child): child is SequenceEditorTree_SheetObject =>
+          child.type === 'sheetObject',
+      )
+      .map((child) => child.sheetObject)) {
       const tracksByObject = pointerToPrism(
         getStudio().atomP.historic.coreByProject[projectId].sheetsById[sheetId]
           .sequence.tracksByObject[object.address.objectKey],

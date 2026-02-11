@@ -28,7 +28,12 @@ import {notify} from '@tomorrowevening/theatre-shared/notify'
 import type {$IntentionalAny} from '@tomorrowevening/theatre-dataverse/src/types'
 import {isSheetObject} from '@tomorrowevening/theatre-shared/instanceTypes'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
-import {generateSequenceSubSequenceId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {
+  SheetId,
+  SheetInstanceId} from '@tomorrowevening/theatre-shared/utils/ids';
+import {
+  generateSequenceSubSequenceId
+} from '@tomorrowevening/theatre-shared/utils/ids'
 
 export type IPlaybackRange = [from: number, to: number]
 
@@ -264,8 +269,8 @@ export default class Sequence implements PointerToPrismProvider {
         // Get the referenced sheet and its sequence
         try {
           const referencedSheet = this._project.getOrCreateSheet(
-            subSequence.sheetId,
-            'default', // Use default instance for now
+            subSequence.sheetId as SheetId,
+            'default' as SheetInstanceId, // Use default instance for now
           )
           const referencedSequence = referencedSheet.getSequence()
 
@@ -281,7 +286,7 @@ export default class Sequence implements PointerToPrismProvider {
           }
         } catch (error) {
           // Log error if sheet not found
-          this._logger.error(
+          this._logger._error(
             `Sub-sequence references non-existent sheet: ${subSequence.sheetId}`,
           )
         }
@@ -291,7 +296,10 @@ export default class Sequence implements PointerToPrismProvider {
 
   private _getSubSequenceDuration(sheetId: string): number {
     try {
-      const referencedSheet = this._project.getOrCreateSheet(sheetId, 'default')
+      const referencedSheet = this._project.getOrCreateSheet(
+        sheetId as SheetId,
+        'default' as SheetInstanceId,
+      )
       const referencedSequence = referencedSheet.getSequence()
       return referencedSequence?.length ?? 0
     } catch (error) {

@@ -7,6 +7,7 @@ import RightSheetObjectRow from './SheetObjectRow'
 import RightRow from './Row'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
+import SubSequenceRow from './SubSequenceRow'
 
 const SheetRow: React.FC<{
   leaf: SequenceEditorTree_Sheet
@@ -25,13 +26,21 @@ const SheetRow: React.FC<{
 
     return (
       <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((sheetObjectLeaf) => (
-          <RightSheetObjectRow
-            layoutP={layoutP}
-            key={'sheetObject-' + sheetObjectLeaf.sheetObject.address.objectKey}
-            leaf={sheetObjectLeaf}
-          />
-        ))}
+        {leaf.children.map((childLeaf) =>
+          childLeaf.type === 'sheetObject' ? (
+            <RightSheetObjectRow
+              layoutP={layoutP}
+              key={'sheetObject-' + childLeaf.sheetObject.address.objectKey}
+              leaf={childLeaf}
+            />
+          ) : childLeaf.type === 'subSequence' ? (
+            <SubSequenceRow
+              layoutP={layoutP}
+              leaf={childLeaf}
+              key={childLeaf.sheetItemKey}
+            />
+          ) : null,
+        )}
       </RightRow>
     )
   }, [leaf, layoutP])

@@ -4,7 +4,7 @@ export default function randomColor() {
   const l = 0.55 + Math.random() * 0.2
 
   const a = s * Math.min(l, 1 - l)
-  const f = (n) => {
+  const f = (n: number) => {
     const k = (n + h / 30) % 12
     const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
     return Math.round(255 * color)

@@ -10,6 +10,7 @@ import type {PathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
+  SequenceSubSequenceId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 import type {
@@ -97,7 +98,7 @@ export type SequenceEditorTree_PrimitiveProp =
 export type SequenceEditorTree_SubSequence =
   SequenceEditorTree_Row<'subSequence'> & {
     subSequence: {
-      id: string
+      id: SequenceSubSequenceId
       sheetId: string
       position: number
       duration: number
@@ -157,7 +158,12 @@ export const calculateSequenceEditorTree = (
 
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
     if (sheetObject) {
-      addObject(sheetObject, tree.children, tree.depth + 1, true)
+      addObject(
+        sheetObject,
+        tree.children as Array<SequenceEditorTree_SheetObject>,
+        tree.depth + 1,
+        true,
+      )
     }
   }
 
@@ -166,18 +172,17 @@ export const calculateSequenceEditorTree = (
     studio.atomP.historic.projects.stateByProjectId[sheet.address.projectId]
       .stateBySheetId[sheet.address.sheetId],
   )
+  // @ts-ignore
   const sequenceEditor = val(sheetState.sequenceEditor)
   if (sequenceEditor) {
     const subSequenceSet = sequenceEditor.subSequenceSet
     if (subSequenceSet) {
       // Convert PointableSet to array
-      const subSequences = Object.entries(subSequenceSet.byId)
-        .map(([id, subSequence]) => subSequence)
-        .filter(
-          (subSequence): subSequence is NonNullable<typeof subSequence> =>
-            subSequence !== undefined,
-        )
-        .sort((a, b) => a.position - b.position)
+      const subSequences: Array<SequenceEditorTree_SubSequence['subSequence']> =
+        Object.values(subSequenceSet.byId || {})
+          .filter((val): val is any => val !== undefined)
+          .map((subSequence: any) => subSequence)
+          .sort((a, b) => a.position - b.position)
 
       for (const subSequence of subSequences) {
         const subSequenceRow: SequenceEditorTree_SubSequence = {

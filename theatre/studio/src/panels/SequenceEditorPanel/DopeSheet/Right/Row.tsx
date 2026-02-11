@@ -50,7 +50,7 @@ const RightRowChildren = styled.ul`
 const RightRow: React.FC<{
   leaf: SequenceEditorTree_Row<string>
   node: React.ReactElement
-  isCollapsed: boolean
+  isCollapsed?: boolean
   children?: React.ReactNode | undefined
 }> = ({leaf, children, node, isCollapsed}) => {
   const hasChildren = Array.isArray(children) && children.length > 0

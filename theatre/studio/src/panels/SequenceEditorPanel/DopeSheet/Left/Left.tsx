@@ -46,7 +46,7 @@ const Left: React.VFC<{
   const addSubSequencePopover = usePopover(
     {debugName: 'Left/addSubSequence'},
     () => {
-      if (!droppedData) return null
+      if (!droppedData) return <></>
 
       let newLabel = droppedData.sheetId
 

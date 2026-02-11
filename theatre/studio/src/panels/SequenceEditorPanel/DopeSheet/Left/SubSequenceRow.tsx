@@ -83,11 +83,12 @@ const SubSequenceRow: React.FC<{
               const studio = getStudio()!
               const projects = val(studio.projectsP)
               const project = projects[leaf.sheet.address.projectId]
-              currentDuration = val(
-                project.pointers.historic.sheetsById[
-                  leaf.subSequence.sheetId as $IntentionalAny
-                ].sequence.length,
-              )
+              currentDuration =
+                val(
+                  project.pointers.historic.sheetsById[
+                    leaf.subSequence.sheetId as $IntentionalAny
+                  ].sequence.length,
+                ) ?? 0
             }
 
             const newDuration = prompt(
