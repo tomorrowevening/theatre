@@ -94,10 +94,9 @@ namespace stateEditors {
           panelId: UIPanelId
           position: PanelPosition
         }) {
-          // const h = drafts().historic
-          // h.panelPositions ??= {}
-          // h.panelPositions[p.panelId] = p.position
-          console.log('setPanelPosition>', p.position)
+          const h = drafts().historic
+          h.panelPositions ??= {}
+          h.panelPositions[p.panelId] = p.position
         }
       }
       export namespace panels {
@@ -253,7 +252,7 @@ namespace stateEditors {
                   possibleColors.size > 0
                     ? possibleColors.values().next().value
                     : Object.keys(graphEditorColors)[0]
-
+                // @ts-ignore
                 selectedProps[path] = color
               }
 
