@@ -1,5 +1,5 @@
 import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import {usePrism} from '@tomorrowevening/theatre-react'
+import {usePrism, useVal} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {val} from '@tomorrowevening/theatre-dataverse'
 import React, {useCallback, useLayoutEffect, useRef, useState} from 'react'
@@ -12,6 +12,10 @@ import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPa
 import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/treeSearch'
 import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'
+import {flattenSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/utils'
+import {useVerticalScrollState} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/VerticalScrollContainer'
+import {decideRowByPropType} from './PropWithChildrenRow'
+import type {SequenceEditorTree_AllRowTypes} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 
 const Container = styled.div`
   position: absolute;
@@ -25,10 +29,10 @@ const Container = styled.div`
   }
 `
 
-const ListContainer = styled.ul`
+const ListContainer = styled.div`
   margin: 0 0 50px 0;
   padding: 0;
-  list-style: none;
+  position: relative;
 `
 
 const Left: React.VFC<{
@@ -42,6 +46,7 @@ const Left: React.VFC<{
     sheetInstanceId: string
   } | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const scrollStateP = useVerticalScrollState()
 
   useLayoutEffect(() => {
     const node = containerRef.current
@@ -195,6 +200,8 @@ const Left: React.VFC<{
     [addSubSequencePopover],
   )
 
+  const {scrollTop, clientHeight} = useVal(scrollStateP)
+
   return usePrism(() => {
     const tree = val(layoutP.tree)
     const width = val(layoutP.leftDims.width)
@@ -204,6 +211,34 @@ const Left: React.VFC<{
       ? filterSequenceEditorTree(tree, searchTerm)
       : tree
 
+    const flattenedList = flattenSequenceEditorTree(filteredTree)
+    const visibleItems: SequenceEditorTree_AllRowTypes[] = []
+    const buffer = 500 // pixels buffer
+    const minTop = scrollTop - buffer
+    const maxTop = scrollTop + clientHeight + buffer
+
+    let startIndex = -1
+    for (let i = 0; i < flattenedList.length; i++) {
+      const item = flattenedList[i]
+      if (item.top + item.nodeHeight >= minTop) {
+        startIndex = i
+        break
+      }
+    }
+
+    if (startIndex !== -1) {
+      for (let i = startIndex; i < flattenedList.length; i++) {
+        const item = flattenedList[i]
+        if (item.top > maxTop) {
+          break
+        }
+        visibleItems.push(item)
+      }
+    }
+
+    const lastItem = flattenedList[flattenedList.length - 1]
+    const totalHeight = lastItem ? lastItem.top + lastItem.nodeHeight : 0
+
     return (
       <>
         {addSubSequencePopover.node}
@@ -212,17 +247,18 @@ const Left: React.VFC<{
           ref={containerRef}
           style={{
             width: width + 'px',
-            top: filteredTree.top + 'px',
+            top: 0,
             pointerEvents: droppedData !== null ? 'none' : 'auto',
           }}
           className={isDragOver ? 'drop-target' : ''}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          <ListContainer>
-            {filteredTree.children.map((leaf) => {
+          <ListContainer style={{height: totalHeight + 'px'}}>
+            {visibleItems.map((leaf) => {
+              let node: React.ReactNode = null
               if (leaf.type === 'subSequence') {
-                return (
+                node = (
                   <SubSequenceRow
                     key={createStudioSheetItemKey.forSubSequence(
                       leaf.subSequence.id,
@@ -230,13 +266,36 @@ const Left: React.VFC<{
                     leaf={leaf}
                   />
                 )
+              } else if (leaf.type === 'sheetObject') {
+                node = (
+                  <LeftSheetObjectRow
+                    key={
+                      'sheetObject-' + uniqueKeyForAnyObject(leaf.sheetObject)
+                    }
+                    leaf={leaf}
+                    renderChildren={false}
+                  />
+                )
+              } else if (
+                leaf.type === 'propWithChildren' ||
+                leaf.type === 'primitiveProp'
+              ) {
+                node = decideRowByPropType(leaf, false)
               }
-              // existing sheetObject rendering
+
+              if (!node) return null
+
               return (
-                <LeftSheetObjectRow
-                  key={'sheetObject-' + uniqueKeyForAnyObject(leaf.sheetObject)}
-                  leaf={leaf}
-                />
+                <div
+                  key={leaf.type + '-' + (leaf.sheetItemKey || leaf.top)}
+                  style={{
+                    position: 'absolute',
+                    top: leaf.top + 'px',
+                    width: '100%',
+                  }}
+                >
+                  {node}
+                </div>
               )
             })}
           </ListContainer>
@@ -252,6 +311,8 @@ const Left: React.VFC<{
     handleDragOver,
     handleDrop,
     addSubSequencePopover.node,
+    scrollTop,
+    clientHeight,
   ])
 }
 

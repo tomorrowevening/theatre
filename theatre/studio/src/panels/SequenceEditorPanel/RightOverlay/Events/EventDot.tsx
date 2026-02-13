@@ -38,7 +38,7 @@ const EVENT_HOVER_SIZE_H_PX = EVENT_SIZE_H_PX * 2
 const EventDotContainer = styled.div`
   position: absolute;
   // below the sequence ruler "top bar"
-  top: 45px;
+  top: 15px;
   z-index: ${() => zIndexes.marker};
 `
 

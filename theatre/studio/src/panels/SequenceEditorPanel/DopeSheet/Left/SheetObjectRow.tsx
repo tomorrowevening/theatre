@@ -8,7 +8,8 @@ import {useEditingToolsForCompoundProp} from '@tomorrowevening/theatre-studio/pr
 
 const LeftSheetObjectRow: React.FC<{
   leaf: SequenceEditorTree_SheetObject
-}> = ({leaf}) => {
+  renderChildren?: boolean
+}> = ({leaf, renderChildren = true}) => {
   const obj = leaf.sheetObject
   const tools = useEditingToolsForCompoundProp(
     obj.propsP,
@@ -37,7 +38,7 @@ const LeftSheetObjectRow: React.FC<{
         })
       }
     >
-      {leaf.children.map((leaf) => decideRowByPropType(leaf))}
+      {renderChildren && leaf.children.map((leaf) => decideRowByPropType(leaf))}
     </AnyCompositeRow>
   )
 }

@@ -24,6 +24,14 @@ const Container = styled.div`
   pointer-events: none;
 `
 
+const TopBar = styled.div`
+  background: #222;
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  height: 30px;
+`
+
 const RightOverlay: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
@@ -36,8 +44,10 @@ const RightOverlay: React.FC<{
         <HorizontalScrollbar layoutP={layoutP} />
         <FrameStamp layoutP={layoutP} />
         <TopStrip layoutP={layoutP} />
-        <Markers layoutP={layoutP} />
-        <Events layoutP={layoutP} />
+        <TopBar>
+          <Markers layoutP={layoutP} />
+          <Events layoutP={layoutP} />
+        </TopBar>
         <LengthIndicator layoutP={layoutP} />
         <FocusRangeCurtains layoutP={layoutP} />
       </Container>

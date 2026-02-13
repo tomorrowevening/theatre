@@ -38,7 +38,7 @@ const MARKER_HOVER_SIZE_H_PX = MARKER_SIZE_H_PX * 2
 const MarkerDotContainer = styled.div`
   position: absolute;
   // below the sequence ruler "top bar"
-  top: 60px;
+  top: 30px;
   z-index: ${() => zIndexes.marker};
 `
 
