@@ -53,7 +53,12 @@ const DopesheetSplitter: React.FC<{
 
         return {
           onDrag(dx) {
-            const newWidth = Math.max(100, widthBeforeDrag.current + dx)
+            const panelWidth = val(layoutP.dopeSheetDims.width)
+            const maxWidth = panelWidth - 100
+            const newWidth = Math.min(
+              maxWidth,
+              Math.max(225, widthBeforeDrag.current + dx),
+            )
 
             tempTransaction?.discard()
             tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
