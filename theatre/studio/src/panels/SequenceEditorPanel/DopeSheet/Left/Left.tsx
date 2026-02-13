@@ -274,6 +274,7 @@ const Left: React.VFC<{
                     }
                     leaf={leaf}
                     renderChildren={false}
+                    layoutP={layoutP}
                   />
                 )
               } else if (
