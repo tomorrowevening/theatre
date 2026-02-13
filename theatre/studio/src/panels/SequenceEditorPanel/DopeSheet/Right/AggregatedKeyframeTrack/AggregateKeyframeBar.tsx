@@ -25,6 +25,7 @@ import {
 } from '@tomorrowevening/theatre-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@tomorrowevening/theatre-studio/store/types'
 import type Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 
 const BarContainer = styled.div`
   position: absolute;
@@ -194,7 +195,9 @@ function getAggregateKeyframeColor(
   const storageKey = getColorStorageKey(viewModel)
   const storedColor = localStorage.getItem(storageKey)
   if (storedColor) return storedColor
-  return '#40AAA4' // default color
+  const color = randomColor()
+  localStorage.setItem(storageKey, color)
+  return color
 }
 
 /**
