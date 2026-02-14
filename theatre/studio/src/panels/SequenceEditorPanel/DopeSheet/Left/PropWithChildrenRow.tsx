@@ -13,11 +13,16 @@ import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
 
 export const decideRowByPropType = (
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp,
+  renderChildren: boolean = true,
 ): React.ReactElement => {
   const key = 'prop' + leaf.pathToProp[leaf.pathToProp.length - 1]
   return leaf.shouldRender ? (
     leaf.type === 'propWithChildren' ? (
-      <PropWithChildrenRow leaf={leaf} key={key} />
+      <PropWithChildrenRow
+        leaf={leaf}
+        key={key}
+        renderChildren={renderChildren}
+      />
     ) : (
       <PrimitivePropRow leaf={leaf} key={key} />
     )
@@ -28,7 +33,8 @@ export const decideRowByPropType = (
 
 const PropWithChildrenRow: React.VFC<{
   leaf: SequenceEditorTree_PropWithChildren
-}> = ({leaf}) => {
+  renderChildren?: boolean
+}> = ({leaf, renderChildren = true}) => {
   const pointerToProp = pointerDeep(
     leaf.sheetObject.propsP,
     leaf.pathToProp,
@@ -53,7 +59,8 @@ const PropWithChildrenRow: React.VFC<{
         })
       }
     >
-      {leaf.children.map((propLeaf) => decideRowByPropType(propLeaf))}
+      {renderChildren &&
+        leaf.children.map((propLeaf) => decideRowByPropType(propLeaf))}
     </AnyCompositeRow>
   )
 }

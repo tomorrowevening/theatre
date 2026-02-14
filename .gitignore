@@ -25,3 +25,7 @@
 
 /compat-tests/*/.yarn
 /compat-tests/*/build
+
+.yarnrc-local.yml
+
+release-windows-fixed.ps1

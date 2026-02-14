@@ -18,13 +18,8 @@ import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
-import {keyframesWithPaths} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
-import {
-  commonRootOfPathsToProps,
-  encodePathToProp,
-} from '@tomorrowevening/theatre-shared/utils/addresses'
-import type {KeyframeWithPathToPropFromCommonRoot} from '@tomorrowevening/theatre-studio/store/types'
-import type Sequence from '@tomorrowevening/theatre-core/sequences/Sequence'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
+import {pasteKeyframesAtCurrent, copyKeyframes} from './utils'
 
 const BarContainer = styled.div`
   position: absolute;
@@ -194,7 +189,9 @@ function getAggregateKeyframeColor(
   const storageKey = getColorStorageKey(viewModel)
   const storedColor = localStorage.getItem(storageKey)
   if (storedColor) return storedColor
-  return '#40AAA4' // default color
+  const color = randomColor()
+  localStorage.setItem(storageKey, color)
+  return color
 }
 
 /**
@@ -222,249 +219,6 @@ function resetAggregateKeyframeColor(
 ): void {
   const storageKey = getColorStorageKey(viewModel)
   localStorage.removeItem(storageKey)
-}
-
-/**
- * Paste keyframes at the current sequence position
- */
-function pasteKeyframesAtCurrent(
-  viewModel:
-    | SequenceEditorTree_PropWithChildren
-    | SequenceEditorTree_SheetObject
-    | SequenceEditorTree_Sheet,
-  layoutP: Pointer<SequenceEditorPanelLayout>,
-  keyframes: KeyframeWithPathToPropFromCommonRoot[],
-): void {
-  const sheet = val(layoutP.sheet)
-  const sequence = sheet.getSequence()
-
-  if (viewModel.type === 'sheet') {
-    pasteKeyframesSheet(viewModel, keyframes, sequence)
-  } else {
-    pasteKeyframesObjectOrCompound(viewModel, keyframes, sequence)
-  }
-}
-
-/**
- * Given a list of keyframes that contain paths relative to a common root,
- * this function pastes those keyframes into tracks on either the object or compound prop.
- */
-function pasteKeyframesSheet(
-  viewModel: SequenceEditorTree_Sheet,
-  keyframes: KeyframeWithPathToPropFromCommonRoot[],
-  sequence: Sequence,
-) {
-  const {projectId, sheetId, sheetInstanceId} = viewModel.sheet.address
-
-  const areKeyframesAllOnSingleTrack = keyframes.every(
-    ({pathToProp}) => pathToProp.length === 0,
-  )
-
-  if (areKeyframesAllOnSingleTrack) {
-    for (const object of viewModel.children
-      .filter(
-        (child): child is SequenceEditorTree_SheetObject =>
-          child.type === 'sheetObject',
-      )
-      .map((child) => child.sheetObject)) {
-      const tracksByObject = pointerToPrism(
-        getStudio().atomP.historic.coreByProject[projectId].sheetsById[sheetId]
-          .sequence.tracksByObject[object.address.objectKey],
-      ).getValue()
-
-      const trackIdsOnObject = Object.keys(tracksByObject?.trackData ?? {})
-
-      pasteKeyframesToMultipleTracks(
-        object.address,
-        trackIdsOnObject,
-        keyframes,
-        sequence,
-      )
-    }
-  } else {
-    const tracksByObject = pointerToPrism(
-      getStudio().atomP.historic.coreByProject[projectId].sheetsById[sheetId]
-        .sequence.tracksByObject,
-    ).getValue()
-
-    const placeableKeyframes = keyframes
-      .map(({keyframe, pathToProp}) => {
-        const objectKey = pathToProp[0] as any
-        const relativePathToProp = pathToProp.slice(1)
-        const pathToPropEncoded = encodePathToProp(relativePathToProp)
-
-        const trackIdByPropPath =
-          tracksByObject?.[objectKey]?.trackIdByPropPath ?? {}
-
-        const maybeTrackId = (trackIdByPropPath as any)[pathToPropEncoded]
-
-        return maybeTrackId
-          ? {
-              keyframe,
-              trackId: maybeTrackId,
-              address: {
-                objectKey,
-                projectId,
-                sheetId,
-                sheetInstanceId,
-              },
-            }
-          : null
-      })
-      .filter((result) => result !== null) as any[]
-
-    pasteKeyframesToSpecificTracks(placeableKeyframes, sequence)
-  }
-}
-
-function pasteKeyframesObjectOrCompound(
-  viewModel:
-    | SequenceEditorTree_PropWithChildren
-    | SequenceEditorTree_SheetObject,
-  keyframes: KeyframeWithPathToPropFromCommonRoot[],
-  sequence: Sequence,
-) {
-  const {projectId, sheetId, objectKey} = viewModel.sheetObject.address
-
-  const trackRecords = pointerToPrism(
-    getStudio().atomP.historic.coreByProject[projectId].sheetsById[sheetId]
-      .sequence.tracksByObject[objectKey],
-  ).getValue()
-
-  const areKeyframesAllOnSingleTrack = keyframes.every(
-    ({pathToProp}) => pathToProp.length === 0,
-  )
-
-  if (areKeyframesAllOnSingleTrack) {
-    const trackIdsOnObject = Object.keys(trackRecords?.trackData ?? {})
-
-    if (viewModel.type === 'sheetObject') {
-      pasteKeyframesToMultipleTracks(
-        viewModel.sheetObject.address,
-        trackIdsOnObject,
-        keyframes,
-        sequence,
-      )
-    } else {
-      const trackIdByPropPath = (trackRecords?.trackIdByPropPath || {}) as any
-
-      const trackIdsOnCompoundProp = Object.entries(trackIdByPropPath)
-        .filter(
-          ([encodedPath, trackId]) =>
-            trackId !== undefined &&
-            (encodedPath as string)
-              .split('.')
-              .slice(0, viewModel.pathToProp.length)
-              .join('.') === encodePathToProp(viewModel.pathToProp),
-        )
-        .map(([encodedPath, trackId]) => trackId) as any[]
-
-      pasteKeyframesToMultipleTracks(
-        viewModel.sheetObject.address,
-        trackIdsOnCompoundProp,
-        keyframes,
-        sequence,
-      )
-    }
-  } else {
-    const trackIdByPropPath = trackRecords?.trackIdByPropPath || {}
-
-    const rootPath =
-      viewModel.type === 'propWithChildren' ? viewModel.pathToProp : []
-
-    const trackIdByPropPathAny = (trackRecords?.trackIdByPropPath || {}) as any
-
-    const placeableKeyframes = keyframes
-      .map(({keyframe, pathToProp: relativePathToProp}) => {
-        const pathToPropEncoded = encodePathToProp([
-          ...rootPath,
-          ...relativePathToProp,
-        ])
-
-        const maybeTrackId = trackIdByPropPathAny[pathToPropEncoded]
-
-        return maybeTrackId
-          ? {
-              keyframe,
-              trackId: maybeTrackId,
-              address: viewModel.sheetObject.address,
-            }
-          : null
-      })
-      .filter((result) => result !== null) as any[]
-
-    pasteKeyframesToSpecificTracks(placeableKeyframes, sequence)
-  }
-}
-
-function pasteKeyframesToMultipleTracks(
-  address: any,
-  trackIds: any[],
-  keyframes: KeyframeWithPathToPropFromCommonRoot[],
-  sequence: Sequence,
-) {
-  sequence.position = sequence.closestGridPosition(sequence.position)
-  const keyframeOffset = earliestKeyframe(
-    keyframes.map(({keyframe}) => keyframe),
-  )?.position!
-
-  getStudio()!.transaction(({stateEditors}) => {
-    for (const trackId of trackIds) {
-      for (const {keyframe} of keyframes) {
-        stateEditors.coreByProject.historic.sheetsById.sequence.setKeyframeAtPosition(
-          {
-            ...address,
-            trackId,
-            position: sequence.position + keyframe.position - keyframeOffset,
-            handles: keyframe.handles,
-            value: keyframe.value,
-            snappingFunction: sequence.closestGridPosition,
-            type: keyframe.type,
-          },
-        )
-      }
-    }
-  })
-}
-
-function pasteKeyframesToSpecificTracks(
-  keyframesWithTracksToPlaceThemIn: any[],
-  sequence: Sequence,
-) {
-  sequence.position = sequence.closestGridPosition(sequence.position)
-  const keyframeOffset = earliestKeyframe(
-    keyframesWithTracksToPlaceThemIn.map(({keyframe}) => keyframe),
-  )?.position!
-
-  getStudio()!.transaction(({stateEditors}) => {
-    for (const {
-      keyframe,
-      trackId,
-      address,
-    } of keyframesWithTracksToPlaceThemIn) {
-      stateEditors.coreByProject.historic.sheetsById.sequence.setKeyframeAtPosition(
-        {
-          ...address,
-          trackId,
-          position: sequence.position + keyframe.position - keyframeOffset,
-          handles: keyframe.handles,
-          value: keyframe.value,
-          snappingFunction: sequence.closestGridPosition,
-          type: keyframe.type,
-        },
-      )
-    }
-  })
-}
-
-function earliestKeyframe(keyframes: any[]) {
-  let curEarliest: any = null
-  for (const keyframe of keyframes) {
-    if (curEarliest === null || keyframe.position < curEarliest.position) {
-      curEarliest = keyframe
-    }
-  }
-  return curEarliest
 }
 
 function AggregateKeyframeBar_memo(props: IAggregateKeyframeBarProps) {
@@ -501,50 +255,7 @@ function AggregateKeyframeBar_memo(props: IAggregateKeyframeBarProps) {
         {
           label: 'Copy Keyframes',
           callback: () => {
-            const kfs: KeyframeWithPathToPropFromCommonRoot[] =
-              aggregatedKeyframes.tracks.flatMap(
-                (track) =>
-                  keyframesWithPaths({
-                    ...track.sheetObject.address,
-                    trackId: track.id,
-                    keyframeIds: track.data.keyframes
-                      .filter(
-                        (kf) =>
-                          kf.position >= keyframeRange!.first &&
-                          kf.position <= keyframeRange!.last,
-                      )
-                      .map((kf) => kf.id),
-                  }) ?? [],
-              )
-
-            const basePathRelativeToSheet =
-              viewModel.type === 'sheet'
-                ? []
-                : viewModel.type === 'sheetObject'
-                ? [viewModel.sheetObject.address.objectKey]
-                : viewModel.type === 'propWithChildren'
-                ? [
-                    viewModel.sheetObject.address.objectKey,
-                    ...viewModel.pathToProp,
-                  ]
-                : []
-
-            const commonPath = commonRootOfPathsToProps([
-              basePathRelativeToSheet,
-              ...kfs.map((kf) => kf.pathToProp),
-            ])
-
-            const keyframesWithCommonRootPath = kfs.map(
-              ({keyframe, pathToProp}) => ({
-                keyframe,
-                pathToProp: pathToProp.slice(commonPath.length),
-              }),
-            )
-            getStudio().transaction((api) => {
-              api.stateEditors.studio.ahistoric.setClipboardKeyframes(
-                keyframesWithCommonRootPath,
-              )
-            })
+            copyKeyframes(viewModel, aggregatedKeyframes)
           },
         },
         {

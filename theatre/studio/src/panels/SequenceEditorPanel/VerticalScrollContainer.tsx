@@ -1,11 +1,20 @@
 import noop from '@tomorrowevening/theatre-shared/utils/noop'
-import React, {createContext, useCallback, useContext, useRef} from 'react'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import styled from 'styled-components'
 import {zIndexes} from './SequenceEditorPanel'
+import {Atom} from '@tomorrowevening/theatre-dataverse'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 
 const Container = styled.div`
   position: absolute;
-  top: 0;
+  top: 30px;
   right: 0;
   left: 0;
   bottom: 0;
@@ -23,6 +32,12 @@ const Container = styled.div`
 type ReceiveVerticalWheelEventFn = (ev: Pick<WheelEvent, 'deltaY'>) => void
 
 const ctx = createContext<ReceiveVerticalWheelEventFn>(noop)
+
+export const ScrollStateContext = createContext<
+  Pointer<{scrollTop: number; clientHeight: number}>
+>(null!)
+
+export const useVerticalScrollState = () => useContext(ScrollStateContext)
 
 /**
  * See {@link VerticalScrollContainer} and references for how to use this.
@@ -49,10 +64,51 @@ const VerticalScrollContainer: React.FC<{
     [],
   )
 
+  const scrollState = useMemo(
+    () => new Atom({scrollTop: 0, clientHeight: 0}),
+    [],
+  )
+
+  const handleScroll = useCallback(() => {
+    if (ref.current) {
+      scrollState.set({
+        scrollTop: ref.current.scrollTop,
+        clientHeight: ref.current.clientHeight,
+      })
+    }
+  }, [scrollState])
+
+  useLayoutEffect(() => {
+    if (ref.current) {
+      scrollState.set({
+        scrollTop: ref.current.scrollTop,
+        clientHeight: ref.current.clientHeight,
+      })
+    }
+    const nodes = ref.current
+    if (!nodes) return
+    const obs = new ResizeObserver(() => {
+      scrollState.set({
+        scrollTop: nodes.scrollTop,
+        clientHeight: nodes.clientHeight,
+      })
+    })
+    obs.observe(nodes)
+    return () => obs.disconnect()
+  }, [scrollState])
+
   return (
-    <ctx.Provider value={receiveVerticalWheelEvent}>
-      <Container ref={ref}>{props.children}</Container>
-    </ctx.Provider>
+    <ScrollStateContext.Provider value={scrollState.pointer}>
+      <ctx.Provider value={receiveVerticalWheelEvent}>
+        <Container
+          ref={ref}
+          onScroll={handleScroll}
+          id="VerticalScrollContainer"
+        >
+          {props.children}
+        </Container>
+      </ctx.Provider>
+    </ScrollStateContext.Provider>
   )
 }
 

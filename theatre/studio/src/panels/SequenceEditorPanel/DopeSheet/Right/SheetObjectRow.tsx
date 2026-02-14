@@ -11,7 +11,8 @@ import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyfram
 const RightSheetObjectRow: React.VFC<{
   leaf: SequenceEditorTree_SheetObject
   layoutP: Pointer<SequenceEditorPanelLayout>
-}> = ({leaf, layoutP}) => {
+  renderChildren?: boolean
+}> = ({leaf, layoutP, renderChildren = true}) => {
   return usePrism(() => {
     const aggregatedKeyframes = collectAggregateKeyframesInPrism(leaf)
 
@@ -25,7 +26,8 @@ const RightSheetObjectRow: React.VFC<{
 
     return (
       <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((leaf) => decideRowByPropType(leaf, layoutP))}
+        {renderChildren &&
+          leaf.children.map((leaf) => decideRowByPropType(leaf, layoutP))}
       </RightRow>
     )
   }, [leaf, layoutP])

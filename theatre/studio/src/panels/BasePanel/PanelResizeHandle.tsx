@@ -11,7 +11,6 @@ import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css
 import {clamp} from 'lodash-es'
 import {minVisibleSize} from './common'
 import {val} from '@tomorrowevening/theatre-dataverse'
-import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 
 const Base = styled.div`
   position: absolute;
@@ -146,6 +145,7 @@ const PanelResizeHandle: React.FC<{
   const panelStuff = usePanel()
   const panelStuffRef = useRef(panelStuff)
   panelStuffRef.current = panelStuff
+  const widthBeforeDrag = useRef(0)
 
   const [ref, node] = useRefAndState<HTMLDivElement>(null as $IntentionalAny)
   const dragOpts: Parameters<typeof useDrag>[1] = useMemo(() => {
@@ -158,8 +158,20 @@ const PanelResizeHandle: React.FC<{
         const stuffBeforeDrag = panelStuffRef.current
         const unlock = panelStuff.addBoundsHighlightLock()
 
+        widthBeforeDrag.current =
+          val(
+            getStudio()!.atomP.historic.panels.sequenceEditor
+              .dopesheetLeftWidth,
+          ) ?? 225
+
         return {
           onDrag(dx, dy) {
+            const rightPanelOpen =
+              val(
+                getStudio()!.atomP.historic.panels.sequenceEditor
+                  .rightPanelOpen,
+              ) ?? true
+
             const newDims: typeof panelStuff['dims'] = {
               ...stuffBeforeDrag.dims,
             }
@@ -214,27 +226,22 @@ const PanelResizeHandle: React.FC<{
 
             tempTransaction?.discard()
             tempTransaction = getStudio()!.tempTransaction(({stateEditors}) => {
+              if (
+                !rightPanelOpen &&
+                (which === 'BottomRight' || which === 'TopRight') &&
+                stuffBeforeDrag.panelId === 'sequenceEditor'
+              ) {
+                const newWidth = Math.max(225, widthBeforeDrag.current + dx)
+
+                stateEditors.studio.historic.panels.sequenceEditor.setDopesheetLeftWidth(
+                  newWidth,
+                )
+              }
+
               stateEditors.studio.historic.panelPositions.setPanelPosition({
                 position,
                 panelId: stuffBeforeDrag.panelId,
               })
-
-              if (
-                which.endsWith('Right') &&
-                stuffBeforeDrag.panelId === ('sequenceEditor' as UIPanelId)
-              ) {
-                const rightPanelOpen =
-                  val(
-                    getStudio()!.atomP.historic.panels.sequenceEditor
-                      .rightPanelOpen,
-                  ) ?? true
-
-                if (!rightPanelOpen) {
-                  stateEditors.studio.historic.panels.sequenceEditor.setDopesheetLeftWidth(
-                    newDims.width,
-                  )
-                }
-              }
             })
           },
           onDragEnd(dragHappened) {

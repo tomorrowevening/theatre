@@ -6,10 +6,13 @@ import AnyCompositeRow from './AnyCompositeRow'
 import SubSequenceRow from './SubSequenceRow'
 import {setCollapsedSheetItem} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
+import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
+import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 
 const SheetRow: React.VFC<{
   leaf: SequenceEditorTree_Sheet
-}> = ({leaf}) => {
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({leaf, layoutP}) => {
   return usePrism(() => {
     return (
       <AnyCompositeRow
@@ -33,6 +36,7 @@ const SheetRow: React.VFC<{
                 uniqueKeyForAnyObject(childLeaf.sheetObject)
               }
               leaf={childLeaf}
+              layoutP={layoutP}
             />
           ) : childLeaf.type === 'subSequence' ? (
             <SubSequenceRow key={childLeaf.sheetItemKey} leaf={childLeaf} />
@@ -40,7 +44,7 @@ const SheetRow: React.VFC<{
         )}
       </AnyCompositeRow>
     )
-  }, [leaf])
+  }, [leaf, layoutP])
 }
 
 export default SheetRow
