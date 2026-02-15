@@ -3,28 +3,31 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
 } from 'react'
 import styled from 'styled-components'
-import {usePrism} from '@tomorrowevening/theatre-react'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
-import {val} from '@tomorrowevening/theatre-dataverse'
+import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import {contentWidth} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/Right'
-import HorizontallyScrollableArea from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/HorizontallyScrollableArea'
+import type {$FixMe} from '@tomorrowevening/theatre-shared/utils/types'
+import getStudio from '@tomorrowevening/theatre-studio/getStudio'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 
-export type SVGDataPoint = {
+export type SequenceDataPoint = {
   time: number
   value: number
 }
 
-export type SVGDataset = {
+export type SequenceDataset = {
   id: string
-  data: SVGDataPoint[]
+  data: SequenceDataPoint[]
   color: string
   name?: string
 }
 
-export type SVGViewerProps = {
+export type SequenceDataViewerProps = {
   layoutP: Pointer<SequenceEditorPanelLayout>
   sheetAddress?: {projectId: string; sheetId: string}
   renderMode?: 'circles' | 'lines' | 'both'
@@ -34,10 +37,10 @@ export type SVGViewerProps = {
   height?: number // Optional override - defaults to dopeSheetDims.height
 }
 
-export type SVGViewerRef = {
+export type SequenceDataViewerRef = {
   clearData: () => void
-  addData: (data: SVGDataPoint[], color?: string) => void
-  loadData: (data: SVGDataPoint[], color?: string) => void // Keep for backward compatibility
+  addData: (data: SequenceDataPoint[], color?: string) => void
+  loadData: (data: SequenceDataPoint[], color?: string) => void // Keep for backward compatibility
   loadFromClipboard: () => Promise<void>
   show: () => void
   hide: () => void
@@ -53,22 +56,40 @@ const Container = styled.div<{isVisible: boolean}>`
   display: ${(props) => (props.isVisible ? 'block' : 'none')};
 `
 
-const SVGContainer = styled.svg`
-  position: absolute;
-  top: 0;
+const TheCanvas = styled.canvas`
+  position: relative;
   left: 0;
-  margin: 0;
-  pointer-events: none;
 `
 
-const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
+const getBackingStoreRatio = (ctx: CanvasRenderingContext2D): number => {
+  const _ctx = ctx as $FixMe
+  return (
+    _ctx.webkitBackingStorePixelRatio ||
+    _ctx.mozBackingStorePixelRatio ||
+    _ctx.msBackingStorePixelRatio ||
+    _ctx.oBackingStorePixelRatio ||
+    _ctx.backingStorePixelRatio ||
+    1
+  )
+}
+
+const getDevicePixelRatio = () => window.devicePixelRatio || 1
+
+const getRatio = (ctx: CanvasRenderingContext2D) => {
+  return getDevicePixelRatio() / getBackingStoreRatio(ctx)
+}
+
+const SequenceDataViewer = forwardRef<
+  SequenceDataViewerRef,
+  SequenceDataViewerProps
+>(
   (
     {
       layoutP,
       sheetAddress,
       renderMode = 'both',
-      color = '#4a9eff',
-      strokeWidth = 2,
+      color = randomColor(),
+      strokeWidth = 1,
       circleRadius = 3,
       height: customHeight,
     },
@@ -76,14 +97,14 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
   ) => {
     // Helper functions for localStorage
     const getStorageKey = (address?: {projectId: string; sheetId: string}) => {
-      if (!address) return 'svgViewer_default'
-      return `svgViewer_${address.projectId}_${address.sheetId}`
+      if (!address) return 'sequenceDataViewer_default'
+      return `sequenceDataViewer_${address.projectId}_${address.sheetId}`
     }
 
     const loadDataFromStorage = (address?: {
       projectId: string
       sheetId: string
-    }): SVGDataset[] => {
+    }): SequenceDataset[] => {
       try {
         const key = getStorageKey(address)
         const stored = localStorage.getItem(key)
@@ -101,7 +122,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
                 {
                   id: 'legacy',
                   data: parsed,
-                  color: '#4a9eff',
+                  color: randomColor(),
                   name: 'Legacy Data',
                 },
               ]
@@ -118,7 +139,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
         }
       } catch (error) {
         console.warn(
-          '⚠️ SVGViewer: Failed to load data from localStorage:',
+          '⚠️ SequenceDataViewer: Failed to load data from localStorage:',
           error,
         )
       }
@@ -126,7 +147,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
     }
 
     const saveDataToStorage = (
-      datasets: SVGDataset[],
+      datasets: SequenceDataset[],
       address?: {projectId: string; sheetId: string},
     ) => {
       try {
@@ -134,14 +155,14 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
         localStorage.setItem(key, JSON.stringify(datasets))
       } catch (error) {
         console.warn(
-          '⚠️ SVGViewer: Failed to save data to localStorage:',
+          '⚠️ SequenceDataViewer: Failed to save data to localStorage:',
           error,
         )
       }
     }
 
     // Initialize datasets from localStorage for the current sheet
-    const [datasets, setDatasets] = useState<SVGDataset[]>(() =>
+    const [datasets, setDatasets] = useState<SequenceDataset[]>(() =>
       loadDataFromStorage(sheetAddress),
     )
     const [isVisible, setIsVisible] = useState(true)
@@ -153,7 +174,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
     }, [sheetAddress?.projectId, sheetAddress?.sheetId])
 
     // Helper function to parse SVG data from clipboard
-    const parseSVGData = (text: string): SVGDataPoint[] => {
+    const parseData = (text: string): SequenceDataPoint[] => {
       try {
         // Try to parse as JSON first
         const parsed = JSON.parse(text)
@@ -168,7 +189,7 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       } catch {
         // If JSON parsing fails, try to parse as CSV or other formats
         const lines = text.trim().split('\n')
-        const data: SVGDataPoint[] = []
+        const data: SequenceDataPoint[] = []
 
         for (const line of lines) {
           // Skip empty lines and headers
@@ -212,18 +233,18 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
       ref,
       () => ({
         clearData: () => {
-          const newDatasets: SVGDataset[] = []
+          const newDatasets: SequenceDataset[] = []
           setDatasets(newDatasets)
           saveDataToStorage(newDatasets, sheetAddress)
         },
-        addData: (newData: SVGDataPoint[], newColor?: string) => {
+        addData: (newData: SequenceDataPoint[], newColor?: string) => {
           console.log(
-            '📊 SVGViewer: Adding dataset with',
+            '📊 SequenceDataViewer: Adding dataset with',
             newData.length,
             'points',
             newColor ? `and color ${newColor}` : '',
           )
-          const newDataset: SVGDataset = {
+          const newDataset: SequenceDataset = {
             id: `dataset-${Date.now()}-${Math.random()
               .toString(36)
               .substring(2, 11)}`,
@@ -235,10 +256,12 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
           setDatasets(updatedDatasets)
           saveDataToStorage(updatedDatasets, sheetAddress)
         },
-        loadData: (newData: SVGDataPoint[], newColor?: string) => {
+        loadData: (newData: SequenceDataPoint[], newColor?: string) => {
           // Keep for backward compatibility - now just calls addData
-          console.log('📊 SVGViewer: loadData called, redirecting to addData')
-          const newDataset: SVGDataset = {
+          console.log(
+            '📊 SequenceDataViewer: loadData called, redirecting to addData',
+          )
+          const newDataset: SequenceDataset = {
             id: `dataset-${Date.now()}-${Math.random()
               .toString(36)
               .substring(2, 11)}`,
@@ -253,14 +276,14 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
         loadFromClipboard: async () => {
           try {
             const clipboardText = await navigator.clipboard.readText()
-            const parsedData = parseSVGData(clipboardText)
+            const parsedData = parseData(clipboardText)
             if (parsedData.length > 0) {
               console.log(
-                '✅ SVGViewer: Successfully parsed',
+                '✅ SequenceDataViewer: Successfully parsed',
                 parsedData.length,
                 'data points from clipboard',
               )
-              const newDataset: SVGDataset = {
+              const newDataset: SequenceDataset = {
                 id: `clipboard-${Date.now()}-${Math.random()
                   .toString(36)
                   .substring(2, 11)}`,
@@ -272,142 +295,167 @@ const SVGViewer = forwardRef<SVGViewerRef, SVGViewerProps>(
               setDatasets(updatedDatasets)
               saveDataToStorage(updatedDatasets, sheetAddress)
             } else {
-              console.warn('⚠️ SVGViewer: No valid data found in clipboard')
+              console.warn(
+                '⚠️ SequenceDataViewer: No valid data found in clipboard',
+              )
             }
           } catch (error) {
-            console.error('❌ SVGViewer: Failed to read from clipboard:', error)
+            console.error(
+              '❌ SequenceDataViewer: Failed to read from clipboard:',
+              error,
+            )
             throw error
           }
         },
         show: () => {
-          console.log('👁️ SVGViewer: Showing component')
+          console.log('👁️ SequenceDataViewer: Showing component')
           setIsVisible(true)
         },
         hide: () => {
-          console.log('🙈 SVGViewer: Hiding component')
+          console.log('🙈 SequenceDataViewer: Hiding component')
           setIsVisible(false)
         },
       }),
       [sheetAddress, datasets, color],
     )
 
-    return usePrism(() => {
+    // Keep datasets in a ref so the prism draw callback always has the latest
+    const datasetsRef = useRef(datasets)
+    datasetsRef.current = datasets
+
+    const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+
+    const {ctx, ratio} = useMemo(() => {
+      if (!canvas) return {}
+      const ctx = canvas.getContext('2d')!
+      const ratio = getRatio(ctx)
+      return {ctx, ratio}
+    }, [canvas])
+
+    useLayoutEffect(() => {
+      if (!ctx) return
+
       const width = val(layoutP.rightDims.width)
       const height = customHeight || val(layoutP.dopeSheetDims.height) - 30
-      const unitSpaceToScaledSpaceMultiplier = val(
-        layoutP.scaledSpace.fromUnitSpace,
-      )(1)
-      const leftPadding = val(layoutP.scaledSpace.leftPadding)
 
-      // Use fixed 0-1 range for consistent scaling
-      // This ensures that value 0.25 appears at 25% height, not full height
-      const minValue = 0
-      const maxValue = 1
-      const valueRange = 1
+      canvas!.width = width * ratio!
+      canvas!.height = height * ratio!
 
-      return (
-        <Container
-          isVisible={isVisible}
-          style={{
-            width: width + 'px',
-            height: height + 'px',
-            // @ts-expect-error
-            '--unitSpaceToScaledSpaceMultiplier':
-              unitSpaceToScaledSpaceMultiplier,
-          }}
-        >
-          <HorizontallyScrollableArea layoutP={layoutP} height={height}>
-            <SVGContainer
-              width={contentWidth}
-              height={height}
-              viewBox={`0 0 ${contentWidth} ${height}`}
-            >
-              <g
-                style={{
-                  transform: `translate(${leftPadding}px, 0px)`,
-                }}
-              >
-                {/* Render each dataset */}
-                {datasets.map((dataset) => {
-                  // Convert data points to screen coordinates for this dataset
-                  const points = dataset.data.map((point, index) => {
-                    const x = point.time * unitSpaceToScaledSpaceMultiplier
-                    const normalizedValue =
-                      (point.value - minValue) / valueRange
-                    const y = height - normalizedValue * (height - 40) - 20 // 20px padding top/bottom
-                    return {
-                      x,
-                      y,
-                      originalValue: point.value,
-                      time: point.time,
-                      index,
-                    }
-                  })
-
-                  // Generate path for lines for this dataset
-                  const pathData =
-                    points.length > 0
-                      ? `M ${points[0].x} ${points[0].y} ` +
-                        points
-                          .slice(1)
-                          .map((p) => `L ${p.x} ${p.y}`)
-                          .join(' ')
-                      : ''
-
-                  return (
-                    <g key={dataset.id}>
-                      {/* Render lines for this dataset */}
-                      {(renderMode === 'lines' || renderMode === 'both') &&
-                        points.length > 1 && (
-                          <path
-                            d={pathData}
-                            fill="none"
-                            stroke={dataset.color}
-                            strokeWidth={strokeWidth}
-                            opacity={0.8}
-                          />
-                        )}
-
-                      {/* Render circles for this dataset */}
-                      {(renderMode === 'circles' || renderMode === 'both') &&
-                        points.map((point) => (
-                          <circle
-                            key={`${dataset.id}-point-${point.index}-${point.time}-${point.originalValue}`}
-                            cx={point.x}
-                            cy={point.y}
-                            r={circleRadius}
-                            fill={dataset.color}
-                            opacity={0.9}
-                          >
-                            <title>{`${
-                              dataset.name || 'Dataset'
-                            } - Time: ${point.time.toFixed(
-                              2,
-                            )}, Value: ${point.originalValue.toFixed(
-                              3,
-                            )}`}</title>
-                          </circle>
-                        ))}
-                    </g>
-                  )
-                })}
-              </g>
-            </SVGContainer>
-          </HorizontallyScrollableArea>
-        </Container>
+      const untap = prism(() => {
+        return {
+          clippedSpaceWidth: val(layoutP.clippedSpace.width),
+          unitSpaceToClippedSpace: val(layoutP.clippedSpace.fromUnitSpace),
+          height,
+        }
+      }).onChange(
+        getStudio().ticker,
+        (p) => {
+          ctx.save()
+          ctx.scale(ratio!, ratio!)
+          drawData(
+            ctx,
+            p.clippedSpaceWidth,
+            p.height,
+            p.unitSpaceToClippedSpace,
+            datasetsRef.current,
+            renderMode,
+            strokeWidth,
+            circleRadius,
+          )
+          ctx.restore()
+        },
+        true,
       )
+
+      return () => {
+        untap()
+      }
     }, [
+      ctx,
       layoutP,
+      customHeight,
       datasets,
       renderMode,
       strokeWidth,
       circleRadius,
-      customHeight,
-      isVisible,
     ])
+
+    const width = val(layoutP.rightDims.width)
+    const height = customHeight || val(layoutP.dopeSheetDims.height) - 30
+
+    return (
+      <Container
+        isVisible={isVisible}
+        style={{
+          width: width + 'px',
+          height: height + 'px',
+        }}
+      >
+        <TheCanvas
+          ref={setCanvas}
+          style={{
+            width: width + 'px',
+            height: height + 'px',
+          }}
+        />
+      </Container>
+    )
   },
 )
 
-SVGViewer.displayName = 'SVGViewer'
+SequenceDataViewer.displayName = 'SequenceDataViewer'
 
-export default SVGViewer
+export default SequenceDataViewer
+
+function drawData(
+  ctx: CanvasRenderingContext2D,
+  clippedSpaceWidth: number,
+  height: number,
+  unitSpaceToClippedSpace: (u: number) => number,
+  datasets: SequenceDataset[],
+  renderMode: 'circles' | 'lines' | 'both',
+  strokeWidth: number,
+  circleRadius: number,
+) {
+  ctx.clearRect(0, 0, clippedSpaceWidth, height)
+  const TWO_PI = Math.PI * 2
+
+  for (const dataset of datasets) {
+    const points = dataset.data.map((point) => {
+      const x = unitSpaceToClippedSpace(point.time)
+      const normalizedValue = point.value // fixed 0-1 range
+      const y = height - normalizedValue * (height - 60) - 20 // 20px padding top/bottom
+      return {x, y}
+    })
+
+    if (points.length === 0) continue
+
+    // Draw lines
+    if (
+      (renderMode === 'lines' || renderMode === 'both') &&
+      points.length > 1
+    ) {
+      ctx.beginPath()
+      ctx.moveTo(points[0].x, points[0].y)
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y)
+      }
+      ctx.strokeStyle = dataset.color
+      ctx.lineWidth = strokeWidth
+      ctx.stroke()
+    }
+
+    // Draw circles
+    if (renderMode === 'circles' || renderMode === 'both') {
+      ctx.fillStyle = dataset.color
+      ctx.globalAlpha = 0.5
+      for (const point of points) {
+        ctx.beginPath()
+        ctx.arc(point.x, point.y, circleRadius, 0, TWO_PI)
+        ctx.fill()
+      }
+    }
+
+    ctx.globalAlpha = 1
+  }
+}

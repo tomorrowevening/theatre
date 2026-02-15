@@ -13,10 +13,10 @@ type MenuItem = {
 
 type StartMenuProps = {
   layoutP: Pointer<SequenceEditorPanelLayout>
-  onSVGViewerClear?: () => void
-  onSVGViewerLoad?: () => void
-  onSVGViewerShow?: () => void
-  onSVGViewerHide?: () => void
+  onDataViewerClear?: () => void
+  onDataViewerLoad?: () => void
+  onDataViewerShow?: () => void
+  onDataViewerHide?: () => void
   onFileSave?: () => void
   onMarkersAdd?: () => void
   onMarkersClear?: () => void
@@ -206,10 +206,10 @@ function ToggleSVGIcon() {
 
 const StartMenu: React.FC<StartMenuProps> = ({
   layoutP,
-  onSVGViewerClear,
-  onSVGViewerLoad,
-  onSVGViewerShow,
-  onSVGViewerHide,
+  onDataViewerClear,
+  onDataViewerLoad,
+  onDataViewerShow,
+  onDataViewerHide,
   onFileSave,
   onMarkersAdd,
   onMarkersClear,
@@ -339,19 +339,19 @@ const StartMenu: React.FC<StartMenuProps> = ({
       submenu: [
         {
           label: 'Show',
-          action: onSVGViewerShow,
+          action: onDataViewerShow,
         },
         {
           label: 'Hide',
-          action: onSVGViewerHide,
+          action: onDataViewerHide,
         },
         {
           label: 'Load',
-          action: onSVGViewerLoad,
+          action: onDataViewerLoad,
         },
         {
           label: 'Clear',
-          action: onSVGViewerClear,
+          action: onDataViewerClear,
         },
       ],
     },

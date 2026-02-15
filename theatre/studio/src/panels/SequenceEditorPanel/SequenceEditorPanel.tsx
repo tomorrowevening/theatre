@@ -43,17 +43,19 @@ import {
 } from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
 import {usePresenceListenersOnRootElement} from '@tomorrowevening/theatre-studio/uiComponents/usePresence'
-import SVGViewer from './SVGViewer'
-import type {SVGViewerRef} from './SVGViewer'
+import SequenceDataViewer from './SequenceDataViewer'
+import type {SequenceDataViewerRef} from './SequenceDataViewer'
 import SVGLoadPopup from './SVGLoadPopup'
 import type {SVGDataPoint} from './SVGLoadPopup'
 import AttachAudioPopup from './AttachAudioPopup'
+import {analyzeAudioFile} from './audioAnalysis'
 import StartMenu from './StartMenu'
 import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
 import SheetObjectModal from './SheetObjectModal'
 import type {SheetObjectModalRef} from './SheetObjectModal'
 import {SearchProvider} from './SearchContext'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -95,7 +97,7 @@ const LeftBackground = styled.div`
 
 export const zIndexes = (() => {
   const s = {
-    svgViewer: 0,
+    sequenceDataViewer: 0,
     rightBackground: 0,
     scrollableArea: 0,
     rightOverlay: 0,
@@ -171,8 +173,8 @@ const Content: React.VFC<{}> = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchTrigger, setSearchTrigger] = useState(0)
 
-  // SVGViewer ref for controlling it from the Start Menu
-  const svgViewerRef = useRef<SVGViewerRef>(null)
+  // SequenceDataViewer ref for controlling it from the Start Menu
+  const sequenceDataViewerRef = useRef<SequenceDataViewerRef>(null)
 
   // SVG Load Popup state
   const [showSVGLoadPopup, setShowSVGLoadPopup] = useState(false)
@@ -195,25 +197,25 @@ const Content: React.VFC<{}> = () => {
   // Current sheet ref to access sheet info from handlers
   const currentSheetRef = useRef<any>(null)
 
-  const handleSVGViewerClear = useCallback(() => {
-    svgViewerRef.current?.clearData()
+  const handleDataViewerClear = useCallback(() => {
+    sequenceDataViewerRef.current?.clearData()
   }, [])
 
-  const handleSVGViewerLoad = useCallback(() => {
+  const handleDataViewerLoad = useCallback(() => {
     setShowSVGLoadPopup(true)
   }, [])
 
-  const handleSVGViewerShow = useCallback(() => {
-    svgViewerRef.current?.show()
+  const handleDataViewerShow = useCallback(() => {
+    sequenceDataViewerRef.current?.show()
   }, [])
 
-  const handleSVGViewerHide = useCallback(() => {
-    svgViewerRef.current?.hide()
+  const handleDataViewerHide = useCallback(() => {
+    sequenceDataViewerRef.current?.hide()
   }, [])
 
   const handleSVGLoadPopupLoad = useCallback(
     (data: SVGDataPoint[], color: string) => {
-      svgViewerRef.current?.addData(data, color)
+      sequenceDataViewerRef.current?.addData(data, color)
       setShowSVGLoadPopup(false)
     },
     [],
@@ -246,6 +248,38 @@ const Content: React.VFC<{}> = () => {
 
         await sequence.attachAudio({source: audioSource})
         console.log('✅ Audio attached successfully')
+
+        // Analyze the audio and add amplitude data to SequenceDataViewer
+        const internalSequence = currentSheet.getSequence()
+        const fps = internalSequence.subUnitsPerUnit || 30
+
+        try {
+          let fileToAnalyze: File
+          if (source instanceof File) {
+            fileToAnalyze = source
+          } else {
+            // Fetch the URL and convert to a File for analysis
+            const response = await fetch(source)
+            const blob = await response.blob()
+            fileToAnalyze = new File([blob], 'audio', {type: blob.type})
+          }
+
+          const results = await analyzeAudioFile(fileToAnalyze, {
+            sampleRate: fps,
+          })
+
+          const dataPoints = results.map((r) => ({
+            time: r.time,
+            value: r.amplitude,
+          }))
+
+          sequenceDataViewerRef.current?.addData(dataPoints, randomColor())
+        } catch (analysisError) {
+          console.warn(
+            '⚠️ Audio analysis for SequenceDataViewer failed:',
+            analysisError,
+          )
+        }
 
         // Clean up the object URL if we created one
         if (source instanceof File) {
@@ -861,10 +895,10 @@ const Content: React.VFC<{}> = () => {
         <LeftBackground style={{width: `${val(layoutP.leftDims.width)}px`}} />
         <StartMenu
           layoutP={layoutP}
-          onSVGViewerClear={handleSVGViewerClear}
-          onSVGViewerLoad={handleSVGViewerLoad}
-          onSVGViewerShow={handleSVGViewerShow}
-          onSVGViewerHide={handleSVGViewerHide}
+          onDataViewerClear={handleDataViewerClear}
+          onDataViewerLoad={handleDataViewerLoad}
+          onDataViewerShow={handleDataViewerShow}
+          onDataViewerHide={handleDataViewerHide}
           onFileSave={handleFileSave}
           onMarkersAdd={handleMarkersAdd}
           onMarkersClear={handleMarkersClear}
@@ -880,13 +914,11 @@ const Content: React.VFC<{}> = () => {
         />
         <FrameStampPositionProvider layoutP={layoutP}>
           <Header layoutP={layoutP} />
-          <SVGViewer
-            ref={svgViewerRef}
-            key={key + '-svgViewer'}
+          <SequenceDataViewer
+            ref={sequenceDataViewerRef}
+            key={key + '-sequenceDataViewer'}
             layoutP={layoutP}
             sheetAddress={sheet.address}
-            renderMode="both"
-            color="#4575e3"
           />
           <SearchProvider searchTerm={searchTerm} searchTrigger={searchTrigger}>
             <DopeSheet
