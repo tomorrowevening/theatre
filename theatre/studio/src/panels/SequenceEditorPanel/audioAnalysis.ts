@@ -1,3 +1,5 @@
+import {clamp} from '@tomorrowevening/theatre-studio/uiComponents/colorPicker/utils/clamp'
+
 export type AudioAnalysisResult = {
   time: number
   amplitude: number
@@ -5,7 +7,6 @@ export type AudioAnalysisResult = {
 
 export type AudioAnalysisOptions = {
   sampleRate?: number // How many samples per second to analyze (default: 100)
-  normalize?: boolean // Whether to normalize amplitude to 0-1 range (default: true)
 }
 
 /**
@@ -18,7 +19,9 @@ export async function analyzeAudioFile(
   file: File,
   options: AudioAnalysisOptions = {},
 ): Promise<AudioAnalysisResult[]> {
-  const {sampleRate = 100, normalize = true} = options
+  const {sampleRate = 30} = options
+
+  const normalize = true
 
   try {
     // Create audio context
@@ -72,11 +75,10 @@ export async function analyzeAudioFile(
         maxAmplitude = rmsAmplitude
       }
     }
-
     // Second pass: normalize if requested
     if (normalize && maxAmplitude > 0) {
       for (const result of results) {
-        result.amplitude = result.amplitude / maxAmplitude
+        result.amplitude = clamp(result.amplitude / maxAmplitude)
       }
     }
 
