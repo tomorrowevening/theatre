@@ -353,10 +353,7 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
     setAnalysisError('')
 
     try {
-      const results = await analyzeAudioFile(file, {
-        sampleRate,
-        normalize: true,
-      })
+      const results = await analyzeAudioFile(file, {sampleRate})
 
       // Convert audio analysis results to SVG data format
       const svgDataPoints = results.map((result) => ({
