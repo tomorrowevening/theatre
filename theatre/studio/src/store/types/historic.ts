@@ -24,24 +24,26 @@ import type {
   UIPanelId,
 } from '@tomorrowevening/theatre-shared/utils/ids'
 
+export type PanelPositionEdgeH = {
+  from: 'screenLeft' | 'screenRight'
+  distance: number
+  /** Unit for the distance value. '%' (default) is a 0-1 ratio of the window dimension; 'px' is absolute pixels. */
+  unit?: 'px' | '%'
+}
+
+export type PanelPositionEdgeV = {
+  from: 'screenTop' | 'screenBottom'
+  distance: number
+  /** Unit for the distance value. '%' (default) is a 0-1 ratio of the window dimension; 'px' is absolute pixels. */
+  unit?: 'px' | '%'
+}
+
 export type PanelPosition = {
   edges: {
-    left: {
-      from: 'screenLeft' | 'screenRight'
-      distance: number
-    }
-    right: {
-      from: 'screenLeft' | 'screenRight'
-      distance: number
-    }
-    top: {
-      from: 'screenTop' | 'screenBottom'
-      distance: number
-    }
-    bottom: {
-      from: 'screenTop' | 'screenBottom'
-      distance: number
-    }
+    left: PanelPositionEdgeH
+    right: PanelPositionEdgeH
+    top: PanelPositionEdgeV
+    bottom: PanelPositionEdgeV
   }
 }
 
