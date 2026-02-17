@@ -38,6 +38,8 @@ export type SequenceEditorTree_Row<TypeName extends string> = {
   depth: number
   /** A convenient studio sheet localized identifier for managing presence and ephemeral visual effects. */
   sheetItemKey: StudioSheetItemKey
+  /** Parent's sheetItemKey, for reordering (sheet has no parent) */
+  parentSheetItemKey?: StudioSheetItemKey
   /**
    * This is a part of the tree, but it is not rendered at all,
    * and it doesn't contribute to height.
@@ -131,9 +133,14 @@ export const calculateSequenceEditorTree = (
   let topSoFar = 30 + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
   let nSoFar = 0
 
+  const ahistoricSheetState = val(
+    studio.atomP.ahistoric.projects.stateByProjectId[sheet.address.projectId]
+      .stateBySheetId[sheet.address.sheetId].sequence,
+  )
   const collapsableItemSetP =
     studio.atomP.ahistoric.projects.stateByProjectId[sheet.address.projectId]
       .stateBySheetId[sheet.address.sheetId].sequence.collapsableItems
+  const sheetItemDisplayOrder = ahistoricSheetState?.sheetItemDisplayOrder
 
   // Since we no longer render the root sheet row, ignore its collapsed state.
   const isCollapsed = false
@@ -190,6 +197,7 @@ export const calculateSequenceEditorTree = (
           subSequence,
           sheet,
           sheetItemKey: createStudioSheetItemKey.forSubSequence(subSequence.id),
+          parentSheetItemKey: tree.sheetItemKey,
           shouldRender: true,
           top: topSoFar,
           depth: tree.depth + 1,
@@ -205,6 +213,79 @@ export const calculateSequenceEditorTree = (
   }
 
   tree.heightIncludingChildren = topSoFar - tree.top
+
+  // Apply display order if present, then recompute layout
+  if (sheetItemDisplayOrder) {
+    const orderByKey =
+      (order: StudioSheetItemKey[]) =>
+      (
+        a: {sheetItemKey: StudioSheetItemKey},
+        b: {sheetItemKey: StudioSheetItemKey},
+      ) => {
+        const ia = order.indexOf(a.sheetItemKey)
+        const ib = order.indexOf(b.sheetItemKey)
+        if (ia === -1 && ib === -1) return 0
+        if (ia === -1) return 1
+        if (ib === -1) return -1
+        return ia - ib
+      }
+    const applyOrderAndRelayout = (
+      node: SequenceEditorTree_AllRowTypes,
+      parentTop: number,
+      parentN: number,
+    ): {top: number; n: number} => {
+      let topSoFar = parentTop
+      let nSoFar = parentN
+      if (node.shouldRender) {
+        ;(node as SequenceEditorTree_Row<string>).top = topSoFar
+        ;(node as SequenceEditorTree_Row<string>).n = nSoFar
+        nSoFar += 1
+        topSoFar += (node as SequenceEditorTree_Row<string>).nodeHeight
+      }
+      if ('children' in node && Array.isArray(node.children)) {
+        const children = node.children as Array<{
+          sheetItemKey: StudioSheetItemKey
+          parentSheetItemKey?: StudioSheetItemKey
+        }>
+        const parentKey = (node as SequenceEditorTree_Row<string>).sheetItemKey
+        const childOrder =
+          parentKey === createStudioSheetItemKey.forSheet()
+            ? sheetItemDisplayOrder.sheetLevelOrder
+            : sheetItemDisplayOrder.childrenOrderByParentKey?.[parentKey]
+        if (childOrder && childOrder.length > 0) {
+          children.sort(orderByKey(childOrder))
+        }
+        const isCollapsed = 'isCollapsed' in node ? node.isCollapsed : false
+        const shouldRecurse = node.type === 'sheet' || !isCollapsed
+        if (shouldRecurse) {
+          for (const child of children) {
+            const result = applyOrderAndRelayout(
+              child as SequenceEditorTree_AllRowTypes,
+              topSoFar,
+              nSoFar,
+            )
+            topSoFar = result.top
+            nSoFar = result.n
+          }
+        }
+        if (node.type !== 'sheet') {
+          ;(node as SequenceEditorTree_Row<string>).heightIncludingChildren =
+            topSoFar - (node as SequenceEditorTree_Row<string>).top
+        }
+      }
+      return {top: topSoFar, n: nSoFar}
+    }
+    if (
+      sheetItemDisplayOrder.sheetLevelOrder &&
+      sheetItemDisplayOrder.sheetLevelOrder.length > 0
+    ) {
+      tree.children.sort(orderByKey(sheetItemDisplayOrder.sheetLevelOrder))
+    }
+    // Use same initial top as natural layout (30), not tree.top (60)
+    const initialTop = 30 + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
+    const {top: finalTop} = applyOrderAndRelayout(tree, initialTop, 0)
+    tree.heightIncludingChildren = finalTop - tree.top
+  }
 
   function addObject(
     sheetObject: SheetObject,
@@ -231,6 +312,7 @@ export const calculateSequenceEditorTree = (
       type: 'sheetObject',
       isCollapsed,
       sheetItemKey: createStudioSheetItemKey.forSheetObject(sheetObject),
+      parentSheetItemKey: tree.sheetItemKey,
       shouldRender,
       top: topSoFar,
       children: [],
@@ -258,6 +340,7 @@ export const calculateSequenceEditorTree = (
       row.children,
       level + 1,
       shouldRender && !isCollapsed,
+      row.sheetItemKey,
     )
 
     row.heightIncludingChildren = topSoFar - row.top
@@ -274,6 +357,7 @@ export const calculateSequenceEditorTree = (
     >,
     level: number,
     shouldRender: boolean,
+    parentSheetItemKey: StudioSheetItemKey,
   ) {
     for (const [propKey, propConfig] of Object.entries(propsConfig)) {
       const trackOrMapping = trackSetups[propKey]
@@ -285,6 +369,7 @@ export const calculateSequenceEditorTree = (
         arrayOfChildren,
         level,
         shouldRender,
+        parentSheetItemKey,
       )
     }
   }
@@ -299,6 +384,7 @@ export const calculateSequenceEditorTree = (
     >,
     level: number,
     shouldRender: boolean,
+    parentSheetItemKey: StudioSheetItemKey,
   ) {
     if (conf.type === 'compound') {
       const trackMapping =
@@ -312,6 +398,7 @@ export const calculateSequenceEditorTree = (
         arrayOfChildren,
         level,
         shouldRender,
+        parentSheetItemKey,
       )
     } else if (conf.type === 'enum') {
       logger.warn('Prop type enum is not yet supported in the sequence editor')
@@ -328,6 +415,7 @@ export const calculateSequenceEditorTree = (
         arrayOfChildren,
         level,
         shouldRender,
+        parentSheetItemKey,
       )
     }
   }
@@ -343,6 +431,7 @@ export const calculateSequenceEditorTree = (
     >,
     level: number,
     shouldRender: boolean,
+    parentSheetItemKey: StudioSheetItemKey,
   ) {
     const isCollapsed =
       val(
@@ -360,6 +449,7 @@ export const calculateSequenceEditorTree = (
         sheetObject,
         pathToProp,
       ),
+      parentSheetItemKey: parentSheetItemKey,
       sheetObject: sheetObject,
       shouldRender,
       top: topSoFar,
@@ -387,6 +477,7 @@ export const calculateSequenceEditorTree = (
       level + 1,
       // collapsed shouldn't render child props
       shouldRender && !isCollapsed,
+      row.sheetItemKey,
     )
     // }
     row.heightIncludingChildren = topSoFar - row.top
@@ -402,6 +493,7 @@ export const calculateSequenceEditorTree = (
     >,
     level: number,
     shouldRender: boolean,
+    parentSheetItemKey: StudioSheetItemKey,
   ) {
     const row: SequenceEditorTree_PrimitiveProp = {
       type: 'primitiveProp',
@@ -411,6 +503,7 @@ export const calculateSequenceEditorTree = (
         sheetObject,
         pathToProp,
       ),
+      parentSheetItemKey,
       sheetObject: sheetObject,
       pathToProp,
       shouldRender,

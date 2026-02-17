@@ -15,6 +15,8 @@ import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/B
 import {flattenSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/utils'
 import {useVerticalScrollState} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/VerticalScrollContainer'
 import {decideRowByPropType} from './PropWithChildrenRow'
+import ReorderableRow from './ReorderableRow'
+import {ReorderProvider} from './ReorderContext'
 import type {SequenceEditorTree_AllRowTypes} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 
 const Container = styled.div`
@@ -254,52 +256,70 @@ const Left: React.VFC<{
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          <ListContainer style={{height: totalHeight + 'px'}}>
-            {visibleItems.map((leaf) => {
-              let node: React.ReactNode = null
-              if (leaf.type === 'subSequence') {
-                node = (
-                  <SubSequenceRow
-                    key={createStudioSheetItemKey.forSubSequence(
-                      leaf.subSequence.id,
-                    )}
-                    leaf={leaf}
-                  />
-                )
-              } else if (leaf.type === 'sheetObject') {
-                node = (
-                  <LeftSheetObjectRow
-                    key={
-                      'sheetObject-' + uniqueKeyForAnyObject(leaf.sheetObject)
-                    }
-                    leaf={leaf}
-                    renderChildren={false}
+          <ReorderProvider>
+            <ListContainer style={{height: totalHeight + 'px'}}>
+              {visibleItems.map((leaf) => {
+                let node: React.ReactNode = null
+                if (leaf.type === 'subSequence') {
+                  node = (
+                    <SubSequenceRow
+                      key={createStudioSheetItemKey.forSubSequence(
+                        leaf.subSequence.id,
+                      )}
+                      leaf={leaf}
+                    />
+                  )
+                } else if (leaf.type === 'sheetObject') {
+                  node = (
+                    <LeftSheetObjectRow
+                      key={
+                        'sheetObject-' + uniqueKeyForAnyObject(leaf.sheetObject)
+                      }
+                      leaf={leaf}
+                      renderChildren={false}
+                      layoutP={layoutP}
+                    />
+                  )
+                } else if (
+                  leaf.type === 'propWithChildren' ||
+                  leaf.type === 'primitiveProp'
+                ) {
+                  node = decideRowByPropType(leaf, false)
+                }
+
+                if (!node) return null
+
+                const rowStyle = {
+                  position: 'absolute' as const,
+                  top: leaf.top + 'px',
+                  width: '100%',
+                }
+
+                if (searchTerm.trim()) {
+                  return (
+                    <div
+                      key={leaf.type + '-' + (leaf.sheetItemKey || leaf.top)}
+                      style={rowStyle}
+                    >
+                      {node}
+                    </div>
+                  )
+                }
+
+                return (
+                  <ReorderableRow
+                    key={leaf.type + '-' + (leaf.sheetItemKey || leaf.top)}
                     layoutP={layoutP}
-                  />
+                    flattenedList={flattenedList}
+                    leaf={leaf}
+                    style={rowStyle}
+                  >
+                    {node}
+                  </ReorderableRow>
                 )
-              } else if (
-                leaf.type === 'propWithChildren' ||
-                leaf.type === 'primitiveProp'
-              ) {
-                node = decideRowByPropType(leaf, false)
-              }
-
-              if (!node) return null
-
-              return (
-                <div
-                  key={leaf.type + '-' + (leaf.sheetItemKey || leaf.top)}
-                  style={{
-                    position: 'absolute',
-                    top: leaf.top + 'px',
-                    width: '100%',
-                  }}
-                >
-                  {node}
-                </div>
-              )
-            })}
-          </ListContainer>
+              })}
+            </ListContainer>
+          </ReorderProvider>
         </Container>
       </>
     )

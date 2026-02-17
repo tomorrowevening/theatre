@@ -1070,6 +1070,34 @@ namespace stateEditors {
                   )
                 }
               }
+              export namespace sheetItemDisplayOrder {
+                function _ensure(p: WithoutSheetInstance<SheetAddress>) {
+                  const seq =
+                    stateEditors.studio.ahistoric.projects.stateByProjectId.stateBySheetId.sequence._ensure(
+                      p,
+                    )
+                  seq.sheetItemDisplayOrder ??= {}
+                  return seq.sheetItemDisplayOrder!
+                }
+                export function reorderAtSheetLevel(
+                  p: WithoutSheetInstance<SheetAddress> & {
+                    newOrder: StudioSheetItemKey[]
+                  },
+                ) {
+                  const order = _ensure(p)
+                  order.sheetLevelOrder = p.newOrder
+                }
+                export function reorderChildren(
+                  p: WithoutSheetInstance<SheetAddress> & {
+                    parentKey: StudioSheetItemKey
+                    newOrder: StudioSheetItemKey[]
+                  },
+                ) {
+                  const order = _ensure(p)
+                  order.childrenOrderByParentKey ??= {}
+                  order.childrenOrderByParentKey[p.parentKey] = p.newOrder
+                }
+              }
             }
           }
         }

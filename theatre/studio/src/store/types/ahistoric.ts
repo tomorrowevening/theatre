@@ -1,7 +1,13 @@
 import type {ProjectState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
 import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/SheetState_Historic'
-import type {ProjectId, SheetId} from '@tomorrowevening/theatre-shared/utils/ids'
-import type {IRange, StrictRecord} from '@tomorrowevening/theatre-shared/utils/types'
+import type {
+  ProjectId,
+  SheetId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {
+  IRange,
+  StrictRecord,
+} from '@tomorrowevening/theatre-shared/utils/types'
 import type {PointableSet} from '@tomorrowevening/theatre-shared/utils/PointableSet'
 import type {StudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 
@@ -78,6 +84,16 @@ export type StudioAhistoricState = {
                   isCollapsed: boolean
                 }
               >
+              /**
+               * Display order overrides for the sequence editor dope sheet.
+               * When set, the tree builder uses this order instead of natural order.
+               * - sheetLevelOrder: order of sheet-level children (objects + subSequences)
+               * - childrenOrderByParentKey: for each parent sheetItemKey, order of its children
+               */
+              sheetItemDisplayOrder?: {
+                sheetLevelOrder?: StudioSheetItemKey[]
+                childrenOrderByParentKey?: Record<string, StudioSheetItemKey[]>
+              }
             }
           }
         >

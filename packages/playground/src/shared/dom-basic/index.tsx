@@ -21,8 +21,8 @@ const extensionConfig: IExtension = {
           svgSource: '🍕',
           onClick: () => {
             studio.createPane('example', {
-              x: {value: 150, unit: 'px'},
-              y: {value: 10, unit: 'px'},
+              x: {value: 10, unit: 'px'},
+              y: {value: 200, unit: 'px'},
               width: {value: 256, unit: 'px'},
               height: {value: 256, unit: 'px'},
             })
@@ -35,6 +35,30 @@ const extensionConfig: IExtension = {
           onClick: () => {
             studio.destroyPane('example')
           },
+        },
+        {
+          type: 'Flyout',
+          label: '🤍',
+          items: [
+            {
+              label: 'Item #1',
+              onClick: () => {
+                console.log('#1 clicked')
+              },
+            },
+            {
+              label: 'Item #2',
+              onClick: () => {
+                console.log('#2 clicked')
+              },
+            },
+            {
+              label: 'Item #3',
+              onClick: () => {
+                console.log('#3 clicked')
+              },
+            },
+          ],
         },
       ]
       set(toolsetConfig)
