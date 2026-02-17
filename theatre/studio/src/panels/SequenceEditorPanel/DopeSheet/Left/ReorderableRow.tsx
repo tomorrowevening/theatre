@@ -37,7 +37,6 @@ const ReorderableRow: React.VFC<{
       style={{
         ...style,
         position: 'absolute',
-        cursor: isDragging ? 'ns-resize' : 'grab',
         zIndex: isDragging ? 10 : undefined,
         ...(isActive && {
           border: '2px solid rgba(64, 170, 164, 0.9)',

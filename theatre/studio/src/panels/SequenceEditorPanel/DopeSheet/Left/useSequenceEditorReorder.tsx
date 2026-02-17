@@ -74,17 +74,27 @@ export function useSequenceEditorReorder(
             setReorderState({activeItemKey: null, swapTargetKey: null})
           },
           onDrag: (_x: number, totalDragDeltaY: number) => {
+            const deadZone = 3
             const activeCenter =
               item.top + item.nodeHeight / 2 + totalDragDeltaY
             const prevKey = lastOrder[activeIndex - 1]
             const nextKey = lastOrder[activeIndex + 1]
             const prev = prevKey ? itemByKey.get(prevKey) : undefined
             const next = nextKey ? itemByKey.get(nextKey) : undefined
-            setReorderState({swapTargetKey: null})
+
+            // Show swap target early based on movement direction
+            let previewTarget: StudioSheetItemKey | null = null
+            if (totalDragDeltaY > deadZone && next) {
+              previewTarget = nextKey
+            } else if (totalDragDeltaY < -deadZone && prev) {
+              previewTarget = prevKey
+            }
+            setReorderState({swapTargetKey: previewTarget})
+
+            // Perform the actual swap when centers cross
             if (next) {
               const nextCenter = next.top + next.nodeHeight / 2
               if (activeCenter > nextCenter) {
-                setReorderState({swapTargetKey: nextKey})
                 const newOrder = [...lastOrder]
                 ;[newOrder[activeIndex], newOrder[activeIndex + 1]] = [
                   newOrder[activeIndex + 1],
@@ -98,7 +108,6 @@ export function useSequenceEditorReorder(
             if (prev) {
               const prevCenter = prev.top + prev.nodeHeight / 2
               if (activeCenter < prevCenter) {
-                setReorderState({swapTargetKey: prevKey})
                 const newOrder = [...lastOrder]
                 ;[newOrder[activeIndex - 1], newOrder[activeIndex]] = [
                   newOrder[activeIndex],
