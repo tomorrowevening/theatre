@@ -38,7 +38,7 @@ const MARKER_HOVER_SIZE_H_PX = MARKER_SIZE_H_PX * 2
 const MarkerDotContainer = styled.div`
   position: absolute;
   // below the sequence ruler "top bar"
-  top: 30px;
+  top: 0px;
   z-index: ${() => zIndexes.marker};
 `
 
@@ -59,10 +59,7 @@ const MarkerVisualDot = React.memo(() => (
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M12 5H0V7H2.71973L5.96237 10.2426L9.20501 7H12V5Z"
-          fill="#40AAA4"
-        />
+        <path d="M12,5H0v2h3l3,5,3-5h3v-2Z" fill="#40AAA4" />
       </svg>
     }
   />

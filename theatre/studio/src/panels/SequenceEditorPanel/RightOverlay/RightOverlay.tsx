@@ -25,7 +25,8 @@ const Container = styled.div`
 `
 
 const TopBar = styled.div`
-  background: #222;
+  background: rgba(0, 0, 0, 0.33);
+  pointer-events: visible;
   position: absolute;
   top: 30px;
   width: 100%;

@@ -11,7 +11,10 @@ import {ErrorBoundary} from 'react-error-boundary'
 import {IoClose} from 'react-icons/all'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import {panelZIndexes} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
-import type {PaneInstanceId, UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {
+  PaneInstanceId,
+  UIPanelId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import {useVal} from '@tomorrowevening/theatre-react'
 
 const defaultPosition: PanelPosition = {
@@ -23,7 +26,7 @@ const defaultPosition: PanelPosition = {
   },
 }
 
-const minDims = {width: 300, height: 300}
+const minDims = {width: 100, height: 100}
 
 const ExtensionPaneWrapper: React.FC<{
   paneInstance: PaneInstance<$FixMe>
@@ -151,7 +154,7 @@ const Content: React.FC<{paneInstance: PaneInstance<$FixMe>}> = ({
   }, [mountingPoint, mount, paneInstance.instanceId])
 
   const closePane = useCallback(() => {
-    getStudio().paneManager.destroyPane(
+    getStudio().paneManager.destroyPaneById(
       paneInstance.instanceId as PaneInstanceId,
     )
   }, [paneInstance])

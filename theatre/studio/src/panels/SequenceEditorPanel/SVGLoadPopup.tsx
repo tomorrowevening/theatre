@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import BasicStringInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicStringInput'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {analyzeAudioFile, isAudioFile, formatFileSize} from './audioAnalysis'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -267,8 +268,9 @@ export type SVGLoadPopupProps = {
 }
 
 const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
-  const [color, setColor] = useState('#4a9eff')
-  const [hexValue, setHexValue] = useState('#4a9eff')
+  const firstColor = randomColor()
+  const [color, setColor] = useState(firstColor)
+  const [hexValue, setHexValue] = useState(firstColor)
   const [svgData, setSvgData] = useState('')
   const [audioFile, setAudioFile] = useState<File | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -351,10 +353,7 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
     setAnalysisError('')
 
     try {
-      const results = await analyzeAudioFile(file, {
-        sampleRate,
-        normalize: true,
-      })
+      const results = await analyzeAudioFile(file, {sampleRate})
 
       // Convert audio analysis results to SVG data format
       const svgDataPoints = results.map((result) => ({

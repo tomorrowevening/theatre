@@ -1,7 +1,10 @@
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import {usePrism} from '@tomorrowevening/theatre-react'
 import type {UIPanelId} from '@tomorrowevening/theatre-shared/utils/ids'
-import type {$IntentionalAny, VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {
+  $IntentionalAny,
+  VoidFn,
+} from '@tomorrowevening/theatre-shared/utils/types'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
 import useLockSet from '@tomorrowevening/theatre-studio/uiComponents/useLockSet'
@@ -27,7 +30,50 @@ type PanelStuff = {
 export const panelDimsToPanelPosition = (
   dims: PanelStuff['dims'],
   windowDims: {height: number; width: number},
+  /** When set to 'px', distances are stored as absolute pixels rather than 0-1 ratios. */
+  unit?: 'px' | '%',
 ): PanelPosition => {
+  if (unit === 'px') {
+    const rightPx = dims.left + dims.width
+    const bottomPx = dims.top + dims.height
+    return {
+      edges: {
+        left:
+          dims.left <= windowDims.width / 2
+            ? {from: 'screenLeft', distance: dims.left, unit: 'px'}
+            : {
+                from: 'screenRight',
+                distance: windowDims.width - dims.left,
+                unit: 'px',
+              },
+        right:
+          rightPx <= windowDims.width / 2
+            ? {from: 'screenLeft', distance: rightPx, unit: 'px'}
+            : {
+                from: 'screenRight',
+                distance: windowDims.width - rightPx,
+                unit: 'px',
+              },
+        top:
+          dims.top <= windowDims.height / 2
+            ? {from: 'screenTop', distance: dims.top, unit: 'px'}
+            : {
+                from: 'screenBottom',
+                distance: windowDims.height - dims.top,
+                unit: 'px',
+              },
+        bottom:
+          bottomPx <= windowDims.height / 2
+            ? {from: 'screenTop', distance: bottomPx, unit: 'px'}
+            : {
+                from: 'screenBottom',
+                distance: windowDims.height - bottomPx,
+                unit: 'px',
+              },
+      },
+    }
+  }
+
   const left = dims.left / windowDims.width
   const right = (dims.left + dims.width) / windowDims.width
   const top = dims.top / windowDims.height
@@ -78,33 +124,34 @@ const BasePanel: React.FC<{
       val(getStudio()!.atomP.historic.panelPositions[panelId]) ??
       defaultPosition
 
-    const left = Math.floor(
-      windowSize.width *
-        (edges.left.from === 'screenLeft'
-          ? edges.left.distance
-          : 1 - edges.left.distance),
-    )
+    const resolveH = (edge: typeof edges.left) =>
+      edge.unit === 'px'
+        ? Math.floor(
+            edge.from === 'screenLeft'
+              ? edge.distance
+              : windowSize.width - edge.distance,
+          )
+        : Math.floor(
+            windowSize.width *
+              (edge.from === 'screenLeft' ? edge.distance : 1 - edge.distance),
+          )
 
-    const right = Math.floor(
-      windowSize.width *
-        (edges.right.from === 'screenLeft'
-          ? edges.right.distance
-          : 1 - edges.right.distance),
-    )
+    const resolveV = (edge: typeof edges.top) =>
+      edge.unit === 'px'
+        ? Math.floor(
+            edge.from === 'screenTop'
+              ? edge.distance
+              : windowSize.height - edge.distance,
+          )
+        : Math.floor(
+            windowSize.height *
+              (edge.from === 'screenTop' ? edge.distance : 1 - edge.distance),
+          )
 
-    const top = Math.floor(
-      windowSize.height *
-        (edges.top.from === 'screenTop'
-          ? edges.top.distance
-          : 1 - edges.top.distance),
-    )
-
-    const bottom = Math.floor(
-      windowSize.height *
-        (edges.bottom.from === 'screenTop'
-          ? edges.bottom.distance
-          : 1 - edges.bottom.distance),
-    )
+    const left = resolveH(edges.left)
+    const right = resolveH(edges.right)
+    const top = resolveV(edges.top)
+    const bottom = resolveV(edges.bottom)
 
     const width = Math.max(right - left, minDims.width)
     const height = Math.max(bottom - top, minDims.height)

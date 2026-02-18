@@ -1,10 +1,19 @@
-import type {IProject, IRafDriver, ISheet, ISheetObject} from '@tomorrowevening/theatre-core'
+import type {
+  IProject,
+  IRafDriver,
+  ISheet,
+  ISheetObject,
+} from '@tomorrowevening/theatre-core'
 import type {Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism} from '@tomorrowevening/theatre-dataverse'
 import SimpleCache from '@tomorrowevening/theatre-shared/utils/SimpleCache'
-import type {$IntentionalAny, VoidFn} from '@tomorrowevening/theatre-shared/utils/types'
+import type {
+  $IntentionalAny,
+  VoidFn,
+} from '@tomorrowevening/theatre-shared/utils/types'
 import type {IScrub} from '@tomorrowevening/theatre-studio/Scrub'
 import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
+
 import {
   isSheetObjectPublicAPI,
   isSheetPublicAPI,
@@ -14,7 +23,10 @@ import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetOb
 import getStudio from './getStudio'
 import {debounce} from 'lodash-es'
 import type Sheet from '@tomorrowevening/theatre-core/sheets/Sheet'
-import type {PaneInstanceId, ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
+import type {
+  PaneInstanceId,
+  ProjectId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
 import {
   __experimental_disblePlayPauseKeyboardShortcut,
   __experimental_enablePlayPauseKeyboardShortcut,
@@ -102,6 +114,26 @@ export interface PaneClassDefinition {
   // }>
 
   mount: (opts: {paneId: string; node: HTMLElement}) => () => void
+
+  /**
+   * Maximum number of instances allowed for this pane class.
+   * When the limit is reached, `createPane()` returns the most recently
+   * focused existing instance instead of creating a new one.
+   */
+  maxInstances?: number
+}
+
+export type PaneDimension = {
+  value: number
+  /** 'px' for absolute pixels, '%' for a 0-1 ratio of the window dimension. Default: '%' */
+  unit?: 'px' | '%'
+}
+
+export type CreatePaneOpts = {
+  x?: PaneDimension
+  y?: PaneDimension
+  width?: PaneDimension
+  height?: PaneDimension
 }
 
 export type ToolConfigIcon = {
@@ -395,10 +427,19 @@ export interface IStudio {
    * Creates a new pane
    *
    * @param paneClass - The class name of the pane (provided by an extension)
+   * @param opts - Optional initial position/size
    */
   createPane<PaneClass extends string>(
     paneClass: PaneClass,
+    opts?: CreatePaneOpts,
   ): PaneInstance<PaneClass>
+
+  /**
+   * Destroys the most recently focused pane of the given class.
+   *
+   * @param paneClass - The class name of the pane to destroy
+   */
+  destroyPane(paneClass: string): void
 
   /**
    * Returns the Theatre.js project that contains the studio's sheets and objects.
@@ -647,12 +688,13 @@ export default class TheatreStudio implements IStudio {
 
   createPane<PaneClass extends string>(
     paneClass: PaneClass,
+    opts?: CreatePaneOpts,
   ): PaneInstance<PaneClass> {
-    return getStudio().paneManager.createPane(paneClass)
+    return getStudio().paneManager.createPane(paneClass, opts)
   }
 
-  destroyPane(paneId: string): void {
-    return getStudio().paneManager.destroyPane(paneId as PaneInstanceId)
+  destroyPane(paneClass: string): void {
+    return getStudio().paneManager.destroyPane(paneClass)
   }
 
   createContentOfSaveFile(projectId: string): Record<string, unknown> {

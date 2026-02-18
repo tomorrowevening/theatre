@@ -94,4 +94,7 @@ export type {
   ToolConfig,
   ToolConfigIcon,
   ToolConfigSwitch,
+  CreatePaneOpts,
+  PaneDimension,
 } from '@tomorrowevening/theatre-studio/TheatreStudio'
+export type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
