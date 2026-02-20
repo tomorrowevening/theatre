@@ -26,6 +26,7 @@ export default class AudioPlaybackController implements IPlaybackController {
     private readonly _decodedBuffer: AudioBuffer,
     private readonly _audioContext: AudioContext,
     private readonly _nodeDestination: AudioNode,
+    private readonly _startTime: number = 0,
   ) {
     this.statePointer = this._state.pointer
 
@@ -80,19 +81,26 @@ export default class AudioPlaybackController implements IPlaybackController {
     }
     startPos = this.getCurrentPosition()
 
-    const currentSource = this._audioContext.createBufferSource()
-    currentSource.buffer = this._decodedBuffer
-    currentSource.connect(this._mainGain)
-    currentSource.playbackRate.value = rate
-
-    currentSource.loop = true
-    currentSource.loopStart = range[0]
-    currentSource.loopEnd = range[1]
+    const startSource = (bufferOffset: number, delaySeconds: number) => {
+      const source = this._audioContext.createBufferSource()
+      source.buffer = this._decodedBuffer
+      source.connect(this._mainGain)
+      source.playbackRate.value = rate
+      source.start(
+        delaySeconds > 0 ? this._audioContext.currentTime + delaySeconds : 0,
+        bufferOffset,
+      )
+      return source
+    }
 
     const initialTickerTime = ticker.time
     let initialElapsedPos = startPos - range[0]
 
-    currentSource.start(0, startPos)
+    const audioBufferOffset = Math.max(0, startPos - this._startTime)
+    const audioStartDelay = Math.max(0, this._startTime - startPos)
+    let activeSource = startSource(audioBufferOffset, audioStartDelay)
+
+    let lastIteration = 0
 
     const tick = (currentTickerTime: number) => {
       const elapsedTickerTime = Math.max(
@@ -103,7 +111,17 @@ export default class AudioPlaybackController implements IPlaybackController {
 
       const elapsedPos = elapsedTickerTimeInSeconds * rate + initialElapsedPos
 
-      let currentIterationPos =
+      const currentIteration = Math.floor(elapsedPos / iterationLength)
+      if (currentIteration > lastIteration) {
+        lastIteration = currentIteration
+        activeSource.stop()
+        activeSource.disconnect()
+        const loopAudioOffset = Math.max(0, range[0] - this._startTime)
+        const loopAudioDelay = Math.max(0, this._startTime - range[0])
+        activeSource = startSource(loopAudioOffset, loopAudioDelay)
+      }
+
+      const currentIterationPos =
         ((elapsedPos / iterationLength) % 1) * iterationLength
 
       this._updatePositionInState(currentIterationPos + range[0])
@@ -114,8 +132,8 @@ export default class AudioPlaybackController implements IPlaybackController {
     ticker.onThisOrNextTick(tick)
 
     const stop = () => {
-      currentSource.stop()
-      currentSource.disconnect()
+      activeSource.stop()
+      activeSource.disconnect()
       ticker.offThisOrNextTick(tick)
       ticker.offNextTick(tick)
     }
@@ -213,15 +231,23 @@ To fix this, either set \`iterationCount\` to a lower value, or remove the audio
 
     if (iterationCount > 1) {
       currentSource.loop = true
-      currentSource.loopStart = range[0]
-      currentSource.loopEnd = range[1]
+      currentSource.loopStart = Math.max(0, range[0] - this._startTime)
+      currentSource.loopEnd = this._decodedBuffer.duration
     }
 
     const initialTickerTime = ticker.time
     let initialElapsedPos = startPos - range[0]
     const totalPlaybackLength = iterationLength * iterationCount
 
-    currentSource.start(0, startPos, totalPlaybackLength - initialElapsedPos)
+    const audioBufferOffset = Math.max(0, startPos - this._startTime)
+    const audioStartDelay = Math.max(0, this._startTime - startPos) / rate
+    currentSource.start(
+      audioStartDelay > 0
+        ? this._audioContext.currentTime + audioStartDelay
+        : 0,
+      audioBufferOffset,
+      totalPlaybackLength - initialElapsedPos,
+    )
 
     const tick = (currentTickerTime: number) => {
       const elapsedTickerTime = Math.max(

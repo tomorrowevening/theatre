@@ -182,6 +182,7 @@ const Content: React.VFC<{}> = () => {
   // Attach Audio Popup state
   const [showAttachAudioPopup, setShowAttachAudioPopup] = useState(false)
   const [currentSheet, setCurrentSheet] = useState<any>(null)
+  const [audioStartTime, setAudioStartTime] = useState<number>(0)
 
   // SheetModal ref for controlling it from the Start Menu
   const sheetModalRef = useRef<SheetModalRef>(null)
@@ -246,7 +247,10 @@ const Content: React.VFC<{}> = () => {
           audioSource = source
         }
 
-        await sequence.attachAudio({source: audioSource})
+        await sequence.attachAudio({
+          source: audioSource,
+          startTime: audioStartTime,
+        })
         console.log('✅ Audio attached successfully')
 
         // Analyze the audio and add amplitude data to SequenceDataViewer
@@ -299,6 +303,7 @@ const Content: React.VFC<{}> = () => {
   const handleAttachAudioPopupCancel = useCallback(() => {
     setShowAttachAudioPopup(false)
     setCurrentSheet(null)
+    setAudioStartTime(0)
   }, [])
 
   const handleSheetCreate = useCallback(() => {
@@ -352,8 +357,9 @@ const Content: React.VFC<{}> = () => {
   // Add event listener for attach audio custom event
   React.useEffect(() => {
     const handleAttachAudioEvent = (event: CustomEvent) => {
-      const {sheet} = event.detail
+      const {sheet, startTime} = event.detail
       setCurrentSheet(sheet)
+      setAudioStartTime(startTime ?? 0)
       setShowAttachAudioPopup(true)
     }
 

@@ -25,6 +25,17 @@ interface IAttachAudioArgs {
    * An AudioNode to feed the audio into. Will use audioContext.destination if not provided.
    */
   destinationNode?: AudioNode
+  /**
+   * The position in the sequence (in seconds) at which the audio should start playing.
+   * Defaults to 0. Use this to place the audio anywhere on the timeline.
+   *
+   * @example
+   * ```ts
+   * // Audio starts playing at second 5 of the sequence
+   * await sheet.sequence.attachAudio({source: '/audio.mp3', startTime: 5})
+   * ```
+   */
+  startTime?: number
 }
 
 export interface ISequence {
@@ -502,6 +513,7 @@ export default class TheatreSequence implements ISequence {
       decodedBuffer,
       audioContext,
       gainNode,
+      args.startTime ?? 0,
     )
 
     privateAPI(this).replacePlaybackController(playbackController)
