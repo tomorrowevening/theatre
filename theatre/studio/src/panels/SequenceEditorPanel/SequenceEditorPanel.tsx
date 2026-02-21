@@ -54,7 +54,12 @@ import type {SheetModalRef} from './SheetModal'
 import SheetObjectModal from './SheetObjectModal'
 import type {SheetObjectModalRef} from './SheetObjectModal'
 import {SearchProvider} from './SearchContext'
-import {setSheetAudio} from './audioStore'
+import {
+  addSheetAudio,
+  generateAudioId,
+  getSheetAudioEntries,
+} from './audioStore'
+import {MultiAudioPlaybackController} from './MultiAudioPlaybackController'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -259,18 +264,21 @@ const Content: React.VFC<{}> = () => {
         console.log('✅ Audio attached successfully')
 
         // Populate the audio store so the sequence editor can display the audio row
-        setSheetAudio(
-          currentSheet.address.projectId,
-          currentSheet.address.sheetId,
-          {
-            label: audioLabel,
-            startTime: audioStartTime,
-            duration: attachResult.decodedBuffer.duration,
-            decodedBuffer: attachResult.decodedBuffer,
-            audioContext: attachResult.audioContext,
-            gainNode: attachResult.gainNode,
-          },
-        )
+        const projectId = currentSheet.address.projectId
+        const sheetId = currentSheet.address.sheetId
+        addSheetAudio(projectId, sheetId, {
+          id: generateAudioId(),
+          label: audioLabel,
+          startTime: audioStartTime,
+          duration: attachResult.decodedBuffer.duration,
+          decodedBuffer: attachResult.decodedBuffer,
+          audioContext: attachResult.audioContext,
+          gainNode: attachResult.gainNode,
+        })
+        const entries = getSheetAudioEntries(projectId, sheetId)
+        currentSheet
+          .getSequence()
+          .replacePlaybackController(new MultiAudioPlaybackController(entries))
 
         // Clean up the object URL if we created one
         if (source instanceof File) {

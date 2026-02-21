@@ -9,10 +9,9 @@ import {useCssCursorLock} from '@tomorrowevening/theatre-studio/uiComponents/Poi
 import useDrag from '@tomorrowevening/theatre-studio/uiComponents/useDrag'
 import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
-import AudioPlaybackController from '@tomorrowevening/theatre-core/sequences/playbackControllers/AudioPlaybackController'
+import {MultiAudioPlaybackController} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/MultiAudioPlaybackController'
 import {
-  audioStore,
-  sheetAudioKey,
+  getSheetAudioEntries,
   updateSheetAudioStartTime,
 } from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
 
@@ -107,16 +106,16 @@ const AudioBar: React.FC<{
 
   const frameStampLock = useLockFrameStampPositionRef()
 
+  const {projectId, sheetId} = leaf.sheet.address
+  const {audioId} = leaf
+
   // Draw waveform whenever the canvas or audio data changes
   const redraw = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const key = sheetAudioKey(
-      leaf.sheet.address.projectId,
-      leaf.sheet.address.sheetId,
-    )
-    const entry = audioStore.get()[key]
+    const entries = getSheetAudioEntries(projectId, sheetId)
+    const entry = entries.find((e) => e.id === audioId)
     if (!entry) return
 
     // Size the canvas to its rendered CSS size × DPR for crisp rendering
@@ -130,7 +129,7 @@ const AudioBar: React.FC<{
     canvas.height = h
 
     drawWaveform(canvas, entry.decodedBuffer)
-  }, [leaf.sheet.address.projectId, leaf.sheet.address.sheetId])
+  }, [projectId, sheetId, audioId])
 
   // Redraw on mount and whenever the container resizes
   useEffect(() => {
@@ -168,35 +167,24 @@ const AudioBar: React.FC<{
               0,
               sequence.closestGridPosition(rawStartTime),
             )
-            updateSheetAudioStartTime(
-              leaf.sheet.address.projectId,
-              leaf.sheet.address.sheetId,
-              newStartTime,
-            )
+            updateSheetAudioStartTime(projectId, sheetId, audioId, newStartTime)
           },
           onDragEnd(dragHappened) {
             frameStampLock(false, 0)
 
             if (dragHappened) {
-              const key = sheetAudioKey(
-                leaf.sheet.address.projectId,
-                leaf.sheet.address.sheetId,
-              )
-              const entry = audioStore.get()[key]
-              if (entry) {
+              const entries = getSheetAudioEntries(projectId, sheetId)
+              if (entries.length > 0) {
                 const sequence = val(layoutP.sheet).getSequence()
-                const newController = new AudioPlaybackController(
-                  entry.decodedBuffer,
-                  entry.audioContext,
-                  entry.gainNode,
-                  entry.startTime,
+                sequence.replacePlaybackController(
+                  new MultiAudioPlaybackController(entries),
                 )
-                sequence.replacePlaybackController(newController)
               }
             } else {
               updateSheetAudioStartTime(
-                leaf.sheet.address.projectId,
-                leaf.sheet.address.sheetId,
+                projectId,
+                sheetId,
+                audioId,
                 initialStartTime,
               )
             }
@@ -204,7 +192,7 @@ const AudioBar: React.FC<{
         }
       },
     }
-  }, [leaf, layoutP, frameStampLock])
+  }, [leaf, layoutP, frameStampLock, projectId, sheetId, audioId])
 
   const [isDraggingD] = useDrag(containerNode, dragOpts)
   useCssCursorLock(isDraggingD, 'draggingPositionInSequenceEditor', 'ew-resize')

@@ -262,7 +262,13 @@ const Left: React.VFC<{
               {visibleItems.map((leaf) => {
                 let node: React.ReactNode = null
                 if (leaf.type === 'attachedAudio') {
-                  node = <AudioRow key="attachedAudio" leaf={leaf} />
+                  node = (
+                    <AudioRow
+                      key={leaf.audioId}
+                      leaf={leaf}
+                      layoutP={layoutP}
+                    />
+                  )
                 } else if (leaf.type === 'subSequence') {
                   node = (
                     <SubSequenceRow

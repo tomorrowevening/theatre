@@ -67,6 +67,7 @@ export type SequenceEditorTree = SequenceEditorTree_Sheet
 export type SequenceEditorTree_AttachedAudio =
   SequenceEditorTree_Row<'attachedAudio'> & {
     sheet: Sheet
+    audioId: string
     audio: {
       label: string
       startTime: number
@@ -180,20 +181,23 @@ export const calculateSequenceEditorTree = (
     nSoFar += 1
   }
 
-  // Add attached audio row first (top of the list) if audio is attached
+  // Add one row per attached audio (top of the list)
   const allAudio = val(audioStore.pointer)
-  const audioEntry =
-    allAudio[sheetAudioKey(sheet.address.projectId, sheet.address.sheetId)]
-  if (audioEntry) {
+  const audioEntries =
+    allAudio[sheetAudioKey(sheet.address.projectId, sheet.address.sheetId)] ??
+    []
+  for (const audioEntry of audioEntries) {
     const audioRow: SequenceEditorTree_AttachedAudio = {
       type: 'attachedAudio',
       sheet,
+      audioId: audioEntry.id,
       audio: {
         label: audioEntry.label,
         startTime: audioEntry.startTime,
         duration: audioEntry.duration,
       },
-      sheetItemKey: 'sheet/attachedAudio' as StudioSheetItemKey,
+      sheetItemKey:
+        `sheet/attachedAudio/${audioEntry.id}` as StudioSheetItemKey,
       parentSheetItemKey: tree.sheetItemKey,
       shouldRender: true,
       top: topSoFar,
@@ -297,12 +301,14 @@ export const calculateSequenceEditorTree = (
             ? sheetItemDisplayOrder.sheetLevelOrder
             : sheetItemDisplayOrder.childrenOrderByParentKey?.[parentKey]
         if (childOrder && childOrder.length > 0) {
-          const audioKey = 'sheet/attachedAudio' as StudioSheetItemKey
+          const isAudio = (k: StudioSheetItemKey) =>
+            k.startsWith('sheet/attachedAudio/')
           const baseSort = orderByKey(childOrder)
           children.sort((a, b) => {
-            // Audio row always stays at the top regardless of user ordering
-            if (a.sheetItemKey === audioKey) return -1
-            if (b.sheetItemKey === audioKey) return 1
+            const aAudio = isAudio(a.sheetItemKey)
+            const bAudio = isAudio(b.sheetItemKey)
+            if (aAudio && !bAudio) return -1
+            if (!aAudio && bAudio) return 1
             return baseSort(a, b)
           })
         }
@@ -330,11 +336,14 @@ export const calculateSequenceEditorTree = (
       sheetItemDisplayOrder.sheetLevelOrder &&
       sheetItemDisplayOrder.sheetLevelOrder.length > 0
     ) {
-      const audioKey = 'sheet/attachedAudio' as StudioSheetItemKey
+      const isAudio = (k: StudioSheetItemKey) =>
+        k.startsWith('sheet/attachedAudio/')
       const baseSort = orderByKey(sheetItemDisplayOrder.sheetLevelOrder)
       tree.children.sort((a, b) => {
-        if (a.sheetItemKey === audioKey) return -1
-        if (b.sheetItemKey === audioKey) return 1
+        const aAudio = isAudio(a.sheetItemKey)
+        const bAudio = isAudio(b.sheetItemKey)
+        if (aAudio && !bAudio) return -1
+        if (!aAudio && bAudio) return 1
         return baseSort(a, b)
       })
     }
