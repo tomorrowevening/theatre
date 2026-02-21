@@ -21,7 +21,10 @@ import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import logger from '@tomorrowevening/theatre-shared/logger'
 import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@tomorrowevening/theatre-core/propTypes/internals'
-import {audioStore, sheetAudioKey} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\audioStore'
+import {
+  audioStore,
+  sheetAudioKey,
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
 
 /**
  * Base "view model" for each row with common
