@@ -8,6 +8,7 @@ import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
 import RightSheetObjectRow from './SheetObjectRow'
 import SubSequenceRow from './SubSequenceRow'
+import AudioRow from './AudioRow'
 import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SearchContext'
 import {filterSequenceEditorTree} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/treeSearch'
 import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
@@ -86,7 +87,15 @@ const Right: React.FC<{
             <ListContainer style={{top: '0px'}}>
               {visibleItems.map((leaf) => {
                 let node: React.ReactNode = null
-                if (leaf.type === 'subSequence') {
+                if (leaf.type === 'attachedAudio') {
+                  node = (
+                    <AudioRow
+                      layoutP={layoutP}
+                      key="attachedAudio"
+                      leaf={leaf}
+                    />
+                  )
+                } else if (leaf.type === 'subSequence') {
                   node = (
                     <SubSequenceRow
                       layoutP={layoutP}

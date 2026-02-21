@@ -21,6 +21,7 @@ import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import logger from '@tomorrowevening/theatre-shared/logger'
 import type {Studio} from '@tomorrowevening/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@tomorrowevening/theatre-core/propTypes/internals'
+import {audioStore, sheetAudioKey} from '@tomorrowevening/theatre-studio\panels\SequenceEditorPanel\audioStore'
 
 /**
  * Base "view model" for each row with common
@@ -60,11 +61,23 @@ export type SequenceEditorTree_Row<TypeName extends string> = {
 
 export type SequenceEditorTree = SequenceEditorTree_Sheet
 
+export type SequenceEditorTree_AttachedAudio =
+  SequenceEditorTree_Row<'attachedAudio'> & {
+    sheet: Sheet
+    audio: {
+      label: string
+      startTime: number
+      duration: number
+    }
+  }
+
 export type SequenceEditorTree_Sheet = SequenceEditorTree_Row<'sheet'> & {
   sheet: Sheet
   isCollapsed: boolean
   children: Array<
-    SequenceEditorTree_SheetObject | SequenceEditorTree_SubSequence
+    | SequenceEditorTree_AttachedAudio
+    | SequenceEditorTree_SheetObject
+    | SequenceEditorTree_SubSequence
   >
 }
 
@@ -112,6 +125,7 @@ export type SequenceEditorTree_SubSequence =
 
 export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_Sheet
+  | SequenceEditorTree_AttachedAudio
   | SequenceEditorTree_SheetObject
   | SequenceEditorTree_PropWithChildren
   | SequenceEditorTree_PrimitiveProp
@@ -160,6 +174,33 @@ export const calculateSequenceEditorTree = (
   }
 
   if (rootShouldRender) {
+    nSoFar += 1
+  }
+
+  // Add attached audio row first (top of the list) if audio is attached
+  const allAudio = val(audioStore.pointer)
+  const audioEntry =
+    allAudio[sheetAudioKey(sheet.address.projectId, sheet.address.sheetId)]
+  if (audioEntry) {
+    const audioRow: SequenceEditorTree_AttachedAudio = {
+      type: 'attachedAudio',
+      sheet,
+      audio: {
+        label: audioEntry.label,
+        startTime: audioEntry.startTime,
+        duration: audioEntry.duration,
+      },
+      sheetItemKey: 'sheet/attachedAudio' as StudioSheetItemKey,
+      parentSheetItemKey: tree.sheetItemKey,
+      shouldRender: true,
+      top: topSoFar,
+      depth: tree.depth + 1,
+      n: nSoFar,
+      nodeHeight: HEIGHT_OF_ANY_TITLE,
+      heightIncludingChildren: HEIGHT_OF_ANY_TITLE,
+    }
+    tree.children.push(audioRow)
+    topSoFar += HEIGHT_OF_ANY_TITLE
     nSoFar += 1
   }
 
@@ -253,7 +294,14 @@ export const calculateSequenceEditorTree = (
             ? sheetItemDisplayOrder.sheetLevelOrder
             : sheetItemDisplayOrder.childrenOrderByParentKey?.[parentKey]
         if (childOrder && childOrder.length > 0) {
-          children.sort(orderByKey(childOrder))
+          const audioKey = 'sheet/attachedAudio' as StudioSheetItemKey
+          const baseSort = orderByKey(childOrder)
+          children.sort((a, b) => {
+            // Audio row always stays at the top regardless of user ordering
+            if (a.sheetItemKey === audioKey) return -1
+            if (b.sheetItemKey === audioKey) return 1
+            return baseSort(a, b)
+          })
         }
         const isCollapsed = 'isCollapsed' in node ? node.isCollapsed : false
         const shouldRecurse = node.type === 'sheet' || !isCollapsed
@@ -279,7 +327,13 @@ export const calculateSequenceEditorTree = (
       sheetItemDisplayOrder.sheetLevelOrder &&
       sheetItemDisplayOrder.sheetLevelOrder.length > 0
     ) {
-      tree.children.sort(orderByKey(sheetItemDisplayOrder.sheetLevelOrder))
+      const audioKey = 'sheet/attachedAudio' as StudioSheetItemKey
+      const baseSort = orderByKey(sheetItemDisplayOrder.sheetLevelOrder)
+      tree.children.sort((a, b) => {
+        if (a.sheetItemKey === audioKey) return -1
+        if (b.sheetItemKey === audioKey) return 1
+        return baseSort(a, b)
+      })
     }
     // Use same initial top as natural layout (30), not tree.top (60)
     const initialTop = 30 + (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
