@@ -9,14 +9,16 @@ import type {Keyframe} from '@tomorrowevening/theatre-core/projects/store/types/
 import AudioPlaybackController from './playbackControllers/AudioPlaybackController'
 import {getCoreTicker} from '@tomorrowevening/theatre-core/coreTicker'
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
+import {val} from '@tomorrowevening/theatre-dataverse'
 import {notify} from '@tomorrowevening/theatre-shared/notify'
 import type {IRafDriver} from '@tomorrowevening/theatre-core/rafDrivers'
 
 interface IAttachAudioArgs {
   /**
-   * Either a URL to the audio file (eg "http://localhost:3000/audio.mp3") or an instance of AudioBuffer
+   * Either a URL to the audio file (eg "http://localhost:3000/audio.mp3"),
+   * an instance of AudioBuffer, or an HTMLAudioElement with a valid src/currentSrc.
    */
-  source: string | AudioBuffer
+  source: string | AudioBuffer | HTMLAudioElement
   /**
    * An optional AudioContext. If not provided, one will be created.
    */
@@ -36,6 +38,11 @@ interface IAttachAudioArgs {
    * ```
    */
   startTime?: number
+  /**
+   * An optional human-readable label for this audio track, shown in the sequence editor.
+   * If not provided, it will be derived from the source URL or filename.
+   */
+  label?: string
 }
 
 export interface ISequence {
@@ -353,6 +360,10 @@ export interface ISequence {
    * await sheet.sequence.attachAudio({source: "http://localhost:3000/audio.mp3"})
    * sheet.sequence.play()
    *
+   * // Attach from an existing <audio> element
+   * const el = document.querySelector('audio#bgm')!
+   * await sheet.sequence.attachAudio({source: el})
+   *
    * // Providing your own AudioAPI Context, destination, etc
    * const audioContext: AudioContext = {...} // create an AudioContext using the Audio API
    * const audioBuffer: AudioBuffer = {...} // create an AudioBuffer
@@ -506,6 +517,32 @@ export default class TheatreSequence implements ISequence {
     destinationNode: AudioNode
     gainNode: GainNode
   }> {
+    const seqPrivate = privateAPI(this)
+
+    const decodeLabel = (url: string) =>
+      decodeURIComponent(url.split('/').pop()?.split('?')[0] ?? 'Audio')
+    const sourceURL =
+      typeof args.source === 'string'
+        ? args.source
+        : args.source instanceof HTMLAudioElement
+        ? args.source.currentSrc || args.source.src || null
+        : null
+    const label =
+      args.label ??
+      (typeof args.source === 'string'
+        ? decodeLabel(args.source)
+        : args.source instanceof HTMLAudioElement
+        ? decodeLabel(args.source.currentSrc || args.source.src)
+        : 'Audio')
+
+    const startTime =
+      args.startTime ??
+      findAudioAttachmentStartTime(seqPrivate, {
+        label,
+        sourceURL,
+      }) ??
+      0
+
     const {audioContext, destinationNode, decodedBuffer, gainNode} =
       await resolveAudioBuffer(args)
 
@@ -513,10 +550,29 @@ export default class TheatreSequence implements ISequence {
       decodedBuffer,
       audioContext,
       gainNode,
-      args.startTime ?? 0,
+      startTime,
     )
 
-    privateAPI(this).replacePlaybackController(playbackController)
+    seqPrivate.replacePlaybackController(playbackController)
+
+    // Notify the studio (if present) so it can populate its audio store and
+    // switch to MultiAudioPlaybackController for multi-audio support.
+    document.dispatchEvent(
+      new CustomEvent('theatre:audioAttached', {
+        detail: {
+          projectId: seqPrivate.address.projectId,
+          sheetId: seqPrivate.address.sheetId,
+          sourceURL,
+          label,
+          startTime,
+          duration: decodedBuffer.duration,
+          decodedBuffer,
+          audioContext,
+          gainNode,
+          sequence: seqPrivate,
+        },
+      }),
+    )
 
     return {audioContext, destinationNode, decodedBuffer, gainNode}
   }
@@ -610,12 +666,67 @@ export default class TheatreSequence implements ISequence {
   }
 }
 
+function findAudioAttachmentStartTime(
+  seq: Sequence,
+  opts: {label: string; sourceURL: string | null},
+): number | undefined {
+  const sheetState =
+    seq._project.pointers.historic.sheetsById[seq.address.sheetId]
+  const audioAttachments = val(sheetState.sequence.audioAttachments)
+
+  if (!audioAttachments || audioAttachments.length === 0) return undefined
+
+  const bySourceAndLabel =
+    opts.sourceURL === null
+      ? undefined
+      : audioAttachments.find(
+          (attachment) =>
+            attachment.sourceURL === opts.sourceURL &&
+            attachment.label === opts.label,
+        )
+
+  if (bySourceAndLabel) return bySourceAndLabel.startTime
+
+  const bySource =
+    opts.sourceURL === null
+      ? undefined
+      : audioAttachments.find(
+          (attachment) => attachment.sourceURL === opts.sourceURL,
+        )
+
+  if (bySource) return bySource.startTime
+
+  const byLabel = audioAttachments.find(
+    (attachment) => attachment.label === opts.label,
+  )
+
+  return byLabel?.startTime
+}
+
 async function resolveAudioBuffer(args: IAttachAudioArgs): Promise<{
   decodedBuffer: AudioBuffer
   audioContext: AudioContext
   destinationNode: AudioNode
   gainNode: GainNode
 }> {
+  const isHTMLAudioElement = (value: unknown): value is HTMLAudioElement => {
+    return (
+      typeof HTMLAudioElement !== 'undefined' &&
+      value instanceof HTMLAudioElement
+    )
+  }
+
+  const getAudioElementSource = (audioElement: HTMLAudioElement): string => {
+    const source = audioElement.currentSrc || audioElement.src
+    if (!source) {
+      throw new Error(
+        'Error validating arguments to sequence.attachAudio(). args.source is an HTMLAudioElement, but it has no src/currentSrc.',
+      )
+    }
+
+    return source
+  }
+
   function getAudioContext(): Promise<AudioContext> {
     if (args.audioContext) return Promise.resolve(args.audioContext)
     const ctx = new AudioContext()
@@ -663,20 +774,27 @@ async function resolveAudioBuffer(args: IAttachAudioArgs): Promise<{
     }
 
     const decodedBufferDeferred = defer<AudioBuffer>()
-    if (typeof args.source !== 'string') {
+    const sourceUrl =
+      typeof args.source === 'string'
+        ? args.source
+        : isHTMLAudioElement(args.source)
+        ? getAudioElementSource(args.source)
+        : null
+
+    if (sourceUrl === null) {
       throw new Error(
         `Error validating arguments to sequence.attachAudio(). ` +
-          `args.source must either be a string or an instance of AudioBuffer.`,
+          `args.source must either be a string, an HTMLAudioElement, or an instance of AudioBuffer.`,
       )
     }
 
     let fetchResponse
     try {
-      fetchResponse = await fetch(args.source)
+      fetchResponse = await fetch(sourceUrl)
     } catch (e) {
       console.error(e)
       throw new Error(
-        `Could not fetch '${args.source}'. Network error logged above.`,
+        `Could not fetch '${sourceUrl}'. Network error logged above.`,
       )
     }
 
@@ -685,7 +803,7 @@ async function resolveAudioBuffer(args: IAttachAudioArgs): Promise<{
       arrayBuffer = await fetchResponse.arrayBuffer()
     } catch (e) {
       console.error(e)
-      throw new Error(`Could not read '${args.source}' as an arrayBuffer.`)
+      throw new Error(`Could not read '${sourceUrl}' as an arrayBuffer.`)
     }
 
     const audioContext = await audioContextPromise
@@ -702,7 +820,7 @@ async function resolveAudioBuffer(args: IAttachAudioArgs): Promise<{
       decodedBuffer = await decodedBufferDeferred.promise
     } catch (e) {
       console.error(e)
-      throw new Error(`Could not decode ${args.source} as an audio file.`)
+      throw new Error(`Could not decode ${sourceUrl} as an audio file.`)
     }
 
     return decodedBuffer

@@ -63,6 +63,11 @@ export type HistoricPositionalSequence = {
    */
   subSequences?: SubSequence[]
 
+  /**
+   * Audio attachments for this sequence (studio-export metadata only).
+   */
+  audioAttachments?: SequenceAudioAttachment[]
+
   tracksByObject: StrictRecord<
     ObjectAddressKey,
     {
@@ -149,6 +154,13 @@ export type SequenceEvent = {
    * Optional value associated with the event
    */
   value?: any
+}
+
+export type SequenceAudioAttachment = {
+  id: string
+  sourceURL: string | null
+  startTime: number
+  label: string
 }
 
 /**

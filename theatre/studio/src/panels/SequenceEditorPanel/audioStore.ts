@@ -2,6 +2,7 @@ import {Atom} from '@tomorrowevening/theatre-dataverse'
 
 export type SheetAudioEntry = {
   id: string
+  sourceURL: string | null
   label: string
   color: string
   startTime: number

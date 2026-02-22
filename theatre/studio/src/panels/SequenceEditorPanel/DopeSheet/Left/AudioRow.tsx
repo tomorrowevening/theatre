@@ -11,6 +11,7 @@ import {
   getSheetAudioEntries,
   updateSheetAudioStartTime,
   updateSheetAudioColor,
+  updateSheetAudioLabel,
 } from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
 import {MultiAudioPlaybackController} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/MultiAudioPlaybackController'
 import DefaultPlaybackController from '@tomorrowevening/theatre-core/sequences/playbackControllers/DefaultPlaybackController'
@@ -219,8 +220,111 @@ const AudioRow: React.FC<{
     },
   )
 
+  const labelPopover = usePopover(
+    {debugName: 'AudioRow/label', closeOnClickOutside: true},
+    () => {
+      let newLabel = leaf.audio.label
+
+      return (
+        <BasicPopover>
+          <div style={{padding: '8px', minWidth: '180px'}}>
+            <div
+              style={{
+                marginBottom: '8px',
+                fontWeight: 'bold',
+                color: '#CCC',
+                fontSize: '12px',
+              }}
+            >
+              Label
+            </div>
+            <input
+              type="text"
+              defaultValue={leaf.audio.label}
+              onChange={(e) => {
+                newLabel = e.target.value
+              }}
+              style={{
+                width: '100%',
+                padding: '6px 8px',
+                marginBottom: '10px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '2px',
+                color: '#FFF',
+                fontSize: '11px',
+                boxSizing: 'border-box',
+              }}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  updateSheetAudioLabel(
+                    projectId,
+                    sheetId,
+                    audioId,
+                    (e.target as HTMLInputElement).value,
+                  )
+                  labelPopover.close('user action')
+                } else if (e.key === 'Escape') {
+                  labelPopover.close('user action')
+                }
+              }}
+            />
+            <div
+              style={{display: 'flex', justifyContent: 'flex-end', gap: '6px'}}
+            >
+              <button
+                onClick={() => labelPopover.close('user action')}
+                style={{
+                  padding: '4px 10px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#CCC',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '2px',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  updateSheetAudioLabel(projectId, sheetId, audioId, newLabel)
+                  labelPopover.close('user action')
+                }}
+                style={{
+                  padding: '4px 10px',
+                  background: '#40AAA4',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '2px',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </BasicPopover>
+      )
+    },
+  )
+
   const [contextMenu] = useContextMenu(rowHeaderRef.current, {
     menuItems: () => [
+      {
+        label: 'Edit Label',
+        callback: () => {
+          if (rowHeaderRef.current) {
+            const rect = rowHeaderRef.current.getBoundingClientRect()
+            labelPopover.open(
+              {clientX: rect.left, clientY: rect.bottom},
+              rowHeaderRef.current,
+            )
+          }
+        },
+      },
       {
         label: 'Custom Color',
         callback: () => {
@@ -254,6 +358,7 @@ const AudioRow: React.FC<{
   return leaf.shouldRender ? (
     <LeftRowContainer depth={leaf.depth}>
       {contextMenu}
+      {labelPopover.node}
       {startTimePopover.node}
       {showColorPicker && (
         <ColorPickerOverlay
@@ -307,7 +412,10 @@ const AudioRow: React.FC<{
         isEven={leaf.n % 2 === 0}
       >
         <LeftRowHead_Label title={leaf.audio.label}>
-          ♪ {leaf.audio.label}
+          ♪
+          {leaf.audio.label && leaf.audio.label.length > 1
+            ? ` ${leaf.audio.label}`
+            : ''}
         </LeftRowHead_Label>
       </LeftRowHeader>
     </LeftRowContainer>

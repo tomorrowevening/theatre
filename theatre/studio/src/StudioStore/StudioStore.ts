@@ -27,6 +27,7 @@ import {
 import type {OnDiskState} from '@tomorrowevening/theatre-core/projects/store/storeTypes'
 import {generateDiskStateRevision} from './generateDiskStateRevision'
 import cloneDeep from 'lodash-es/cloneDeep'
+import {getSheetAudioEntries} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
 
 import createTransactionPrivateApi from './createTransactionPrivateApi'
 import type {ProjectId} from '@tomorrowevening/theatre-shared/utils/ids'
@@ -293,6 +294,40 @@ export default class StudioStore {
             if (sheet?.sequence) {
               sheet.sequence.events = events
             }
+          }
+        }
+
+        // Copy audio attachments from studio audio store to the exported state
+        const audioEntries = getSheetAudioEntries(projectId, sheetId)
+        if (audioEntries.length > 0) {
+          // Ensure the sheet exists in the generated state
+          if (!generatedOnDiskState.sheetsById[sheetId]) {
+            generatedOnDiskState.sheetsById[sheetId] = {
+              staticOverrides: {byObject: {}},
+            }
+          }
+
+          const sheet = generatedOnDiskState.sheetsById[sheetId]
+
+          // Ensure the sequence exists
+          if (sheet && !sheet.sequence) {
+            sheet.sequence = {
+              type: 'PositionalSequence',
+              length: 10,
+              subUnitsPerUnit: 30,
+              tracksByObject: {},
+            }
+          }
+
+          if (sheet?.sequence) {
+            sheet.sequence.audioAttachments = audioEntries
+              .map((entry) => ({
+                id: entry.id,
+                sourceURL: entry.sourceURL,
+                startTime: entry.startTime,
+                label: entry.label,
+              }))
+              .sort((a, b) => a.startTime - b.startTime)
           }
         }
 

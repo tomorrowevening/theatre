@@ -60,6 +60,7 @@ import {
   getSheetAudioEntries,
 } from './audioStore'
 import {MultiAudioPlaybackController} from './MultiAudioPlaybackController'
+import {copyToClipboard} from '@tomorrowevening/theatre-studio/utils/copyToClipboard'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -251,35 +252,23 @@ const Content: React.VFC<{}> = () => {
           audioSource = source
         }
 
-        // Derive a human-readable label from the source
-        const audioLabel =
+        // Derive a human-readable label — must be done here because File is
+        // converted to a blob URL before being passed to attachAudio.
+        const label =
           source instanceof File
             ? source.name
-            : audioSource.split('/').pop()?.split('?')[0] ?? 'Audio'
+            : decodeURIComponent(
+                audioSource.split('/').pop()?.split('?')[0] ?? 'Audio',
+              )
 
-        const attachResult = await sequence.attachAudio({
+        await sequence.attachAudio({
           source: audioSource,
           startTime: audioStartTime,
+          label,
         })
+        // The theatre:audioAttached event (dispatched by sequence.attachAudio) handles
+        // populating the audioStore and installing MultiAudioPlaybackController.
         console.log('✅ Audio attached successfully')
-
-        // Populate the audio store so the sequence editor can display the audio row
-        const projectId = currentSheet.address.projectId
-        const sheetId = currentSheet.address.sheetId
-        addSheetAudio(projectId, sheetId, {
-          id: generateAudioId(),
-          label: audioLabel,
-          color: '#7ec8e3',
-          startTime: audioStartTime,
-          duration: attachResult.decodedBuffer.duration,
-          decodedBuffer: attachResult.decodedBuffer,
-          audioContext: attachResult.audioContext,
-          gainNode: attachResult.gainNode,
-        })
-        const entries = getSheetAudioEntries(projectId, sheetId)
-        currentSheet
-          .getSequence()
-          .replacePlaybackController(new MultiAudioPlaybackController(entries))
 
         // Clean up the object URL if we created one
         if (source instanceof File) {
@@ -300,6 +289,34 @@ const Content: React.VFC<{}> = () => {
     setShowAttachAudioPopup(false)
     setCurrentSheet(null)
     setAudioStartTime(0)
+  }, [])
+
+  const handleAudioAttach = useCallback(() => {
+    const sheet = currentSheetRef.current
+    if (sheet) {
+      setCurrentSheet(sheet)
+      setAudioStartTime(sheet.getSequence().position)
+      setShowAttachAudioPopup(true)
+    }
+  }, [])
+
+  const handleAudioLog = useCallback(() => {
+    const sheet = currentSheetRef.current
+    if (!sheet) {
+      console.warn('⚠️ No sheet selected for logging audio')
+      return
+    }
+    const {projectId, sheetId} = sheet.address
+    const entries = getSheetAudioEntries(projectId, sheetId)
+    console.group('🎵 Audio for sheet:', sheetId)
+    console.log('Total audio tracks:', entries.length)
+    const toCopy: string[] = []
+    entries.forEach((entry, index) => {
+      toCopy.push(`${entry.label} (${entry.startTime})`)
+      console.log(`${index + 1}. "${entry.label}" @ ${entry.startTime}s`)
+    })
+    void copyToClipboard(toCopy.join(', '))
+    console.groupEnd()
   }, [])
 
   const handleSheetCreate = useCallback(() => {
@@ -350,7 +367,7 @@ const Content: React.VFC<{}> = () => {
     setSearchTrigger(newTrigger)
   }, [])
 
-  // Add event listener for attach audio custom event
+  // Add event listener for attach audio custom event (opens the Attach Audio modal)
   React.useEffect(() => {
     const handleAttachAudioEvent = (event: CustomEvent) => {
       const {sheet, startTime} = event.detail
@@ -368,6 +385,55 @@ const Content: React.VFC<{}> = () => {
       document.removeEventListener(
         'theatre:attachAudio',
         handleAttachAudioEvent as EventListener,
+      )
+    }
+  }, [])
+
+  // Listen for audio attached programmatically (via sequence.attachAudio() in user code
+  // or from the studio modal). Populates the audioStore so AudioRows appear and installs
+  // MultiAudioPlaybackController so all attached audio files play together.
+  React.useEffect(() => {
+    const handleAudioAttachedEvent = (event: CustomEvent) => {
+      const {
+        projectId,
+        sheetId,
+        sourceURL,
+        label,
+        startTime,
+        duration,
+        decodedBuffer,
+        audioContext,
+        gainNode,
+        sequence,
+      } = event.detail
+
+      addSheetAudio(projectId, sheetId, {
+        id: generateAudioId(),
+        sourceURL,
+        label,
+        color: '#7ec8e3',
+        startTime,
+        duration,
+        decodedBuffer,
+        audioContext,
+        gainNode,
+      })
+
+      const entries = getSheetAudioEntries(projectId, sheetId)
+      sequence.replacePlaybackController(
+        new MultiAudioPlaybackController(entries),
+      )
+    }
+
+    document.addEventListener(
+      'theatre:audioAttached',
+      handleAudioAttachedEvent as EventListener,
+    )
+
+    return () => {
+      document.removeEventListener(
+        'theatre:audioAttached',
+        handleAudioAttachedEvent as EventListener,
       )
     }
   }, [])
@@ -668,13 +734,16 @@ const Content: React.VFC<{}> = () => {
 
         console.group('📍 Markers for sheet:', sheet.address.sheetId)
         console.log('Total markers:', coreMarkers.length)
+        const toCopy: string[] = []
         coreMarkers.forEach((marker, index) => {
+          toCopy.push(`${marker.label} (${marker.position})`)
           console.log(
             `${index + 1}. "${marker.label || 'Unnamed'}" at ${
               marker.position
             }s (ID: ${marker.id})`,
           )
         })
+        void copyToClipboard(toCopy.join(', '))
         console.groupEnd()
       } else {
         console.warn('⚠️ No sheet selected for logging markers')
@@ -749,7 +818,13 @@ const Content: React.VFC<{}> = () => {
 
         console.group('🎯 Events for sheet:', sheet.address.sheetId)
         console.log('Total events:', coreEvents.length)
+        const toCopy: string[] = []
         coreEvents.forEach((event, index) => {
+          toCopy.push(
+            `${event.name} (${event.position}) (${JSON.stringify(
+              event.value,
+            )})`,
+          )
           console.log(
             `${index + 1}. "${event.name}" at ${event.position}s${
               event.value !== undefined
@@ -758,6 +833,7 @@ const Content: React.VFC<{}> = () => {
             } (ID: ${event.id})`,
           )
         })
+        void copyToClipboard(toCopy.join(', '))
         console.groupEnd()
       } else {
         console.warn('⚠️ No sheet selected for logging events')
@@ -911,6 +987,8 @@ const Content: React.VFC<{}> = () => {
           onSheetCreate={handleSheetCreate}
           onSheetDuplicate={handleSheetDuplicate}
           onSheetObjectCreate={handleSheetObjectCreate}
+          onAudioAttach={handleAudioAttach}
+          onAudioLog={handleAudioLog}
           onSearchChange={handleSearchChange}
           onSearchTrigger={handleSearchTrigger}
         />

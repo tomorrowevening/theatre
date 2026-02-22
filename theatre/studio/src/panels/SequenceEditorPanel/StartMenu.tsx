@@ -27,6 +27,8 @@ type StartMenuProps = {
   onSheetCreate?: () => void
   onSheetDuplicate?: () => void
   onSheetObjectCreate?: () => void
+  onAudioAttach?: () => void
+  onAudioLog?: () => void
   onSearchChange?: (searchTerm: string) => void
   onSearchTrigger?: (trigger: number) => void
 }
@@ -220,6 +222,8 @@ const StartMenu: React.FC<StartMenuProps> = ({
   onSheetCreate,
   onSheetDuplicate,
   onSheetObjectCreate,
+  onAudioAttach,
+  onAudioLog,
   onSearchChange,
   onSearchTrigger,
 }) => {
@@ -331,6 +335,19 @@ const StartMenu: React.FC<StartMenuProps> = ({
         {
           label: 'Clear',
           action: onEventsClear,
+        },
+      ],
+    },
+    {
+      label: 'Audio',
+      submenu: [
+        {
+          label: 'Attach Audio',
+          action: onAudioAttach,
+        },
+        {
+          label: 'Log',
+          action: onAudioLog,
         },
       ],
     },
