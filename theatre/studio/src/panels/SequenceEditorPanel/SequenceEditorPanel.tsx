@@ -269,6 +269,7 @@ const Content: React.VFC<{}> = () => {
         addSheetAudio(projectId, sheetId, {
           id: generateAudioId(),
           label: audioLabel,
+          color: '#7ec8e3',
           startTime: audioStartTime,
           duration: attachResult.decodedBuffer.duration,
           decodedBuffer: attachResult.decodedBuffer,

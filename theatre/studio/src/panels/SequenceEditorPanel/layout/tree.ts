@@ -70,6 +70,7 @@ export type SequenceEditorTree_AttachedAudio =
     audioId: string
     audio: {
       label: string
+      color: string
       startTime: number
       duration: number
     }
@@ -193,6 +194,7 @@ export const calculateSequenceEditorTree = (
       audioId: audioEntry.id,
       audio: {
         label: audioEntry.label,
+        color: audioEntry.color,
         startTime: audioEntry.startTime,
         duration: audioEntry.duration,
       },
@@ -305,10 +307,10 @@ export const calculateSequenceEditorTree = (
             k.startsWith('sheet/attachedAudio/')
           const baseSort = orderByKey(childOrder)
           children.sort((a, b) => {
-            const aAudio = isAudio(a.sheetItemKey)
-            const bAudio = isAudio(b.sheetItemKey)
-            if (aAudio && !bAudio) return -1
-            if (!aAudio && bAudio) return 1
+            // const aAudio = isAudio(a.sheetItemKey)
+            // const bAudio = isAudio(b.sheetItemKey)
+            // if (aAudio && !bAudio) return -1
+            // if (!aAudio && bAudio) return 1
             return baseSort(a, b)
           })
         }

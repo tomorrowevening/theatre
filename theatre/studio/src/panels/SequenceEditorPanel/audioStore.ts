@@ -3,6 +3,7 @@ import {Atom} from '@tomorrowevening/theatre-dataverse'
 export type SheetAudioEntry = {
   id: string
   label: string
+  color: string
   startTime: number
   duration: number
   decodedBuffer: AudioBuffer
@@ -57,6 +58,36 @@ export function updateSheetAudioStartTime(
     ...state,
     [key]: (state[key] ?? []).map((e) =>
       e.id === audioId ? {...e, startTime} : e,
+    ),
+  }))
+}
+
+export function updateSheetAudioColor(
+  projectId: string,
+  sheetId: string,
+  audioId: string,
+  color: string,
+): void {
+  const key = sheetAudioKey(projectId, sheetId)
+  audioStore.reduce((state) => ({
+    ...state,
+    [key]: (state[key] ?? []).map((e) =>
+      e.id === audioId ? {...e, color} : e,
+    ),
+  }))
+}
+
+export function updateSheetAudioLabel(
+  projectId: string,
+  sheetId: string,
+  audioId: string,
+  label: string,
+): void {
+  const key = sheetAudioKey(projectId, sheetId)
+  audioStore.reduce((state) => ({
+    ...state,
+    [key]: (state[key] ?? []).map((e) =>
+      e.id === audioId ? {...e, label} : e,
     ),
   }))
 }

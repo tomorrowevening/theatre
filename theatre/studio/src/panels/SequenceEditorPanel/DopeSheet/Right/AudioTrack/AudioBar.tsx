@@ -37,9 +37,17 @@ const WaveCanvas = styled.canvas`
   display: block;
 `
 
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
 function drawWaveform(
   canvas: HTMLCanvasElement,
   decodedBuffer: AudioBuffer,
+  color: string,
 ): void {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -50,13 +58,13 @@ function drawWaveform(
   ctx.clearRect(0, 0, width, height)
 
   // Background
-  ctx.fillStyle = 'rgba(126, 200, 227, 0.25)'
+  ctx.fillStyle = hexToRgba(color, 0.25)
   ctx.beginPath()
   ctx.roundRect(0, 0, width, height, 2)
   ctx.fill()
 
   // Border
-  ctx.strokeStyle = 'rgba(126, 200, 227, 0.65)'
+  ctx.strokeStyle = hexToRgba(color, 0.65)
   ctx.lineWidth = 1
   ctx.beginPath()
   ctx.roundRect(0.5, 0.5, width - 1, height - 1, 2)
@@ -73,7 +81,7 @@ function drawWaveform(
   const mid = height / 2
   const samplesPerPixel = totalSamples / width
 
-  ctx.fillStyle = 'rgba(126, 200, 227, 0.85)'
+  ctx.fillStyle = hexToRgba(color, 0.85)
 
   for (let x = 0; x < width; x++) {
     const start = Math.floor(x * samplesPerPixel)
@@ -128,8 +136,8 @@ const AudioBar: React.FC<{
     canvas.width = w
     canvas.height = h
 
-    drawWaveform(canvas, entry.decodedBuffer)
-  }, [projectId, sheetId, audioId])
+    drawWaveform(canvas, entry.decodedBuffer, entry.color)
+  }, [projectId, sheetId, audioId, leaf.audio.color])
 
   // Redraw on mount and whenever the container resizes
   useEffect(() => {

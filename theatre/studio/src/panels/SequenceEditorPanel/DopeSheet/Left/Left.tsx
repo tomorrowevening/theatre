@@ -304,7 +304,7 @@ const Left: React.VFC<{
                   width: '100%',
                 }
 
-                if (searchTerm.trim() || leaf.type === 'attachedAudio') {
+                if (searchTerm.trim()) {
                   return (
                     <div
                       key={leaf.type + '-' + (leaf.sheetItemKey || leaf.top)}
