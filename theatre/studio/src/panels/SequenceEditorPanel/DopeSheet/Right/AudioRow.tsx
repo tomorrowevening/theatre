@@ -11,7 +11,7 @@ import {
   updateSheetAudioColor,
 } from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
 import {MultiAudioPlaybackController} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/MultiAudioPlaybackController'
-import DefaultPlaybackController from '@tomorrowevening/theatre-core/sequences/playbackControllers/DefaultPlaybackController'
+import {DefaultPlaybackController} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/playbackControllers'
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'

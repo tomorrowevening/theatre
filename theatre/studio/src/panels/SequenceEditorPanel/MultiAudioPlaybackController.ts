@@ -1,11 +1,9 @@
 import type {
   IPlaybackController,
-  IPlaybackState,
-} from '@tomorrowevening/theatre-core/sequences/playbackControllers/DefaultPlaybackController'
-import type {
   IPlaybackDirection,
   IPlaybackRange,
-} from '@tomorrowevening/theatre-core/sequences/Sequence'
+  IPlaybackState,
+} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/playbackControllers'
 import {defer} from '@tomorrowevening/theatre-shared/utils/defer'
 import noop from '@tomorrowevening/theatre-shared/utils/noop'
 import type {Prism, Pointer, Ticker} from '@tomorrowevening/theatre-dataverse'
