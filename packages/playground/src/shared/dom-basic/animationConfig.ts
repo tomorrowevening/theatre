@@ -218,6 +218,41 @@ export default {
             label: 'mid',
           },
         ],
+        events: [
+          {
+            id: 'BuL1XyRm03',
+            name: 'test',
+            position: 0.5,
+            value: 'Hello World!',
+          },
+        ],
+        audioAttachments: [
+          {
+            id: 'audio_1771794515260_1',
+            sourceURL: 'http://localhost:8082/shared/dom-basic/Tap%20Pong.wav',
+            startTime: 0,
+            label: 'Pong A',
+          },
+          {
+            id: 'audio_1771794515261_2',
+            sourceURL: 'http://localhost:8082/shared/dom-basic/Tap%20Pong.wav',
+            startTime: 0.25,
+            label: 'Pong B',
+          },
+          {
+            id: 'audio_1771794515265_3',
+            sourceURL:
+              'http://localhost:8082/shared/dom-basic/Tap%20Simple.wav',
+            startTime: 0.5,
+            label: 'Simple',
+          },
+          {
+            id: 'audio_1771794515269_4',
+            sourceURL: 'http://localhost:8082/shared/dom-basic/Tap%20Snap.wav',
+            startTime: 0.75,
+            label: 'Snap',
+          },
+        ],
       },
     },
     Simple: {
@@ -263,5 +298,11 @@ export default {
     },
   },
   definitionVersion: '0.4.0',
-  revisionHistory: ['HyAZRk_ubFve8Nm2', 'qnfoTbsOxWEu3Y53', 'tuRjUa-qdS1HoL-_'],
+  revisionHistory: [
+    'eyfvMvXOwnFuCZpv',
+    'CBxcKiJb_5VI-7yr',
+    'HyAZRk_ubFve8Nm2',
+    'qnfoTbsOxWEu3Y53',
+    'tuRjUa-qdS1HoL-_',
+  ],
 }

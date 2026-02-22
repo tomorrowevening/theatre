@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import type {CSSProperties} from 'react'
 import type {IProject} from '@tomorrowevening/theatre-core'
 import {Box3D, BoxSize} from './Box3D'
+import Preloader from './preloader'
 
 // Scene
 
@@ -13,6 +14,8 @@ const SceneCSS: CSSProperties = {
   top: '0',
   bottom: '0',
 }
+
+const preloader = new Preloader()
 
 export const Scene: React.FC<{project: IProject}> = ({project}) => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -37,6 +40,26 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
       console.log(evt.name, evt.value)
     }
     domSheet.sequence.listen('test', onEvent)
+
+    void domSheet.sequence.attachAudio({
+      source: preloader.getResources()['./Tap Pong.wav'],
+      label: 'Pong A',
+    })
+
+    void domSheet.sequence.attachAudio({
+      source: preloader.getResources()['./Tap Pong.wav'],
+      label: 'Pong B',
+    })
+
+    void domSheet.sequence.attachAudio({
+      source: preloader.getResources()['./Tap Simple.wav'],
+      label: 'Simple',
+    })
+
+    void domSheet.sequence.attachAudio({
+      source: preloader.getResources()['./Tap Snap.wav'],
+      label: 'Snap',
+    })
 
     // Subsequence
 
@@ -72,9 +95,19 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
 
   // Sets Project Ready
   useEffect(() => {
-    void project.ready.then(() => {
-      setProjectReady(true)
-    })
+    preloader.onComplete = () => {
+      console.log(preloader.getResources())
+      void project.ready.then(() => {
+        setProjectReady(true)
+      })
+    }
+
+    // Begin load
+    preloader.loadItems([
+      {type: 'audio', url: './Tap Pong.wav'},
+      {type: 'audio', url: './Tap Simple.wav'},
+      {type: 'audio', url: './Tap Snap.wav'},
+    ])
   }, [])
 
   const padding = 100
