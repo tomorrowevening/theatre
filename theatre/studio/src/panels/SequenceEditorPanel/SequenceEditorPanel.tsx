@@ -61,6 +61,7 @@ import {
 } from './audioStore'
 import {MultiAudioPlaybackController} from './MultiAudioPlaybackController'
 import {copyToClipboard} from '@tomorrowevening/theatre-studio/utils/copyToClipboard'
+import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -411,7 +412,7 @@ const Content: React.VFC<{}> = () => {
         id: generateAudioId(),
         sourceURL,
         label,
-        color: '#7ec8e3',
+        color: randomColor(),
         startTime,
         duration,
         decodedBuffer,
