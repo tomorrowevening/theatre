@@ -48,14 +48,18 @@ import type {SequenceDataViewerRef} from './SequenceDataViewer'
 import SVGLoadPopup from './SVGLoadPopup'
 import type {SVGDataPoint} from './SVGLoadPopup'
 import AttachAudioPopup from './AttachAudioPopup'
-import {analyzeAudioFile} from './audioAnalysis'
 import StartMenu from './StartMenu'
 import SheetModal from './SheetModal'
 import type {SheetModalRef} from './SheetModal'
 import SheetObjectModal from './SheetObjectModal'
 import type {SheetObjectModalRef} from './SheetObjectModal'
 import {SearchProvider} from './SearchContext'
-import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
+import {
+  addSheetAudio,
+  generateAudioId,
+  getSheetAudioEntries,
+} from './audioStore'
+import {MultiAudioPlaybackController} from './MultiAudioPlaybackController'
 
 /**
  * Initiates a file download for the provided data with the provided file name
@@ -182,6 +186,7 @@ const Content: React.VFC<{}> = () => {
   // Attach Audio Popup state
   const [showAttachAudioPopup, setShowAttachAudioPopup] = useState(false)
   const [currentSheet, setCurrentSheet] = useState<any>(null)
+  const [audioStartTime, setAudioStartTime] = useState<number>(0)
 
   // SheetModal ref for controlling it from the Start Menu
   const sheetModalRef = useRef<SheetModalRef>(null)
@@ -246,40 +251,35 @@ const Content: React.VFC<{}> = () => {
           audioSource = source
         }
 
-        await sequence.attachAudio({source: audioSource})
+        // Derive a human-readable label from the source
+        const audioLabel =
+          source instanceof File
+            ? source.name
+            : audioSource.split('/').pop()?.split('?')[0] ?? 'Audio'
+
+        const attachResult = await sequence.attachAudio({
+          source: audioSource,
+          startTime: audioStartTime,
+        })
         console.log('✅ Audio attached successfully')
 
-        // Analyze the audio and add amplitude data to SequenceDataViewer
-        const internalSequence = currentSheet.getSequence()
-        const fps = internalSequence.subUnitsPerUnit || 30
-
-        try {
-          let fileToAnalyze: File
-          if (source instanceof File) {
-            fileToAnalyze = source
-          } else {
-            // Fetch the URL and convert to a File for analysis
-            const response = await fetch(source)
-            const blob = await response.blob()
-            fileToAnalyze = new File([blob], 'audio', {type: blob.type})
-          }
-
-          const results = await analyzeAudioFile(fileToAnalyze, {
-            sampleRate: fps,
-          })
-
-          const dataPoints = results.map((r) => ({
-            time: r.time,
-            value: r.amplitude,
-          }))
-
-          sequenceDataViewerRef.current?.addData(dataPoints, randomColor())
-        } catch (analysisError) {
-          console.warn(
-            '⚠️ Audio analysis for SequenceDataViewer failed:',
-            analysisError,
-          )
-        }
+        // Populate the audio store so the sequence editor can display the audio row
+        const projectId = currentSheet.address.projectId
+        const sheetId = currentSheet.address.sheetId
+        addSheetAudio(projectId, sheetId, {
+          id: generateAudioId(),
+          label: audioLabel,
+          color: '#7ec8e3',
+          startTime: audioStartTime,
+          duration: attachResult.decodedBuffer.duration,
+          decodedBuffer: attachResult.decodedBuffer,
+          audioContext: attachResult.audioContext,
+          gainNode: attachResult.gainNode,
+        })
+        const entries = getSheetAudioEntries(projectId, sheetId)
+        currentSheet
+          .getSequence()
+          .replacePlaybackController(new MultiAudioPlaybackController(entries))
 
         // Clean up the object URL if we created one
         if (source instanceof File) {
@@ -299,6 +299,7 @@ const Content: React.VFC<{}> = () => {
   const handleAttachAudioPopupCancel = useCallback(() => {
     setShowAttachAudioPopup(false)
     setCurrentSheet(null)
+    setAudioStartTime(0)
   }, [])
 
   const handleSheetCreate = useCallback(() => {
@@ -352,8 +353,9 @@ const Content: React.VFC<{}> = () => {
   // Add event listener for attach audio custom event
   React.useEffect(() => {
     const handleAttachAudioEvent = (event: CustomEvent) => {
-      const {sheet} = event.detail
+      const {sheet, startTime} = event.detail
       setCurrentSheet(sheet)
+      setAudioStartTime(startTime ?? 0)
       setShowAttachAudioPopup(true)
     }
 

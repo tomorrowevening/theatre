@@ -6,6 +6,7 @@ import React, {useCallback, useLayoutEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import LeftSheetObjectRow from './SheetObjectRow'
 import SubSequenceRow from './SubSequenceRow'
+import AudioRow from './AudioRow'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
 import {createStudioSheetItemKey} from '@tomorrowevening/theatre-shared/utils/ids'
 import {useSearch} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/SearchContext'
@@ -260,7 +261,15 @@ const Left: React.VFC<{
             <ListContainer style={{height: totalHeight + 'px'}}>
               {visibleItems.map((leaf) => {
                 let node: React.ReactNode = null
-                if (leaf.type === 'subSequence') {
+                if (leaf.type === 'attachedAudio') {
+                  node = (
+                    <AudioRow
+                      key={leaf.audioId}
+                      leaf={leaf}
+                      layoutP={layoutP}
+                    />
+                  )
+                } else if (leaf.type === 'subSequence') {
                   node = (
                     <SubSequenceRow
                       key={createStudioSheetItemKey.forSubSequence(
