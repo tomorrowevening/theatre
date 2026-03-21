@@ -107,16 +107,18 @@ export function SingleRowPropEditor<T>({
     menuItems: editingTools.contextMenuItems,
   })
 
+  const propHighlighted = usePrism(
+    () => isPropHighlightedD.getValue(),
+    [isPropHighlightedD],
+  )
+
   return (
     <Container>
       {contextMenu}
       <Left>
         <ControlsContainer>{editingTools.controlIndicators}</ControlsContainer>
         <PropNameContainer
-          data-highlighted={usePrism(
-            () => isPropHighlightedD.getValue(),
-            [isPropHighlightedD],
-          )}
+          data-highlighted={propHighlighted}
           ref={propNameContainerRef}
           title={['obj', 'props', ...getPointerParts(pointerToProp).path].join(
             '.',

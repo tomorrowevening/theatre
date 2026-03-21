@@ -223,6 +223,11 @@ function DetailCompoundPropEditor<
     return box ? val(box.pointer) : isVector
   }, [box])
 
+  const propHighlighted = usePrism(
+    () => isPropHighlightedD.getValue(),
+    [isPropHighlightedD],
+  )
+
   return (
     <Container>
       {contextMenu}
@@ -234,10 +239,7 @@ function DetailCompoundPropEditor<
           <ControlIndicators>{tools.controlIndicators}</ControlIndicators>
 
           <PropName
-            data-highlighted={usePrism(
-              () => isPropHighlightedD.getValue(),
-              [isPropHighlightedD],
-            )}
+            data-highlighted={propHighlighted}
             ref={propNameContainerRef}
           >
             <span>{propName || 'Props'}</span>
