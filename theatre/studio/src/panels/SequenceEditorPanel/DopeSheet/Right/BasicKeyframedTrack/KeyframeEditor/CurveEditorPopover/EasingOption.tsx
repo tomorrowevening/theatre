@@ -67,7 +67,11 @@ const EasingOption: React.FC<IProps> = React.forwardRef((props, ref) => {
   )
 
   return (
-    <Wrapper ref={mergeRefs([tooltipHostRef, ref])} {...props}>
+    <Wrapper
+      ref={mergeRefs([tooltipHostRef, ref])}
+      {...props}
+      isSelected={props.isSelected}
+    >
       {tooltip}
       <SVGCurveSegment
         easing={handlesFromCssCubicBezierArgs(props.easing.value)}

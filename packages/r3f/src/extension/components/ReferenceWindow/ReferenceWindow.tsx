@@ -48,7 +48,7 @@ const Static = styled.div`
   height: 120px;
   padding: 18px;
 
-  ::before {
+  &::before {
     content: '';
     position: absolute;
     z-index: -1;

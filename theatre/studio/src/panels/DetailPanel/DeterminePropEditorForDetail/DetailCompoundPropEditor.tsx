@@ -19,9 +19,7 @@ import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetOb
 
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {useEditingToolsForCompoundProp} from '@tomorrowevening/theatre-studio/propEditors/useEditingToolsForCompoundProp'
-import type {PropHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
 import {whatPropIsHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
-import {deriver} from '@tomorrowevening/theatre-studio/utils/derive-utils'
 import NumberPropEditor from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/NumberPropEditor'
 import type {IDetailSimplePropEditorProps} from './DetailSimplePropEditor'
 import {useEditingToolsForSimplePropInDetailsPanel} from '@tomorrowevening/theatre-studio/propEditors/useEditingToolsForSimpleProp'
@@ -37,7 +35,7 @@ const Container = styled.div`
   --right-width: 60%;
 `
 
-const Header = styled.div<{isHighlighted: PropHighlighted}>`
+const Header = styled.div`
   height: 30px;
   display: flex;
   align-items: stretch;
@@ -57,7 +55,7 @@ const ControlIndicators = styled.div`
   flexshrink: 0;
 `
 
-const PropName = deriver(styled.div<{isHighlighted: PropHighlighted}>`
+const PropName = styled.div`
   margin-left: 4px;
   cursor: default;
   height: 100%;
@@ -70,8 +68,8 @@ const PropName = deriver(styled.div<{isHighlighted: PropHighlighted}>`
   }
   overflow: hidden;
 
-  ${() => propNameTextCSS};
-`)
+  ${propNameTextCSS};
+`
 
 const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
   width: 28px;
@@ -236,7 +234,10 @@ function DetailCompoundPropEditor<
           <ControlIndicators>{tools.controlIndicators}</ControlIndicators>
 
           <PropName
-            isHighlighted={isPropHighlightedD}
+            data-highlighted={usePrism(
+              () => isPropHighlightedD.getValue(),
+              [isPropHighlightedD],
+            )}
             ref={propNameContainerRef}
           >
             <span>{propName || 'Props'}</span>

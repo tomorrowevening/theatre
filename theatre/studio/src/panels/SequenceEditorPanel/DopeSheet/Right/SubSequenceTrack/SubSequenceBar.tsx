@@ -56,11 +56,11 @@ const BarContainer = styled.div`
   min-width: 20px;
 `
 
-const Bar = styled.div.attrs((props: {$color: string}) => ({
+const Bar = styled.div.attrs<{$color: string}>((props) => ({
   style: {
     background: props.$color,
   },
-}))<{$color: string}>`
+}))`
   position: absolute;
   height: 20px;
   line-height: 20px;
@@ -137,20 +137,20 @@ const Handle = styled.div<{$position: 'left' | 'right'}>`
   }
 `
 
-const LeftHandle = styled(Handle).attrs((props: {$color: string}) => ({
+const LeftHandle = styled(Handle).attrs<{$color: string}>((props) => ({
   style: {
     background: props.$color,
   },
-}))<{$color: string}>`
+}))`
   border-right: 1px solid rgba(0, 0, 0, 0.25);
   left: -7px;
 `
 
-const RightHandle = styled(Handle).attrs((props: {$color: string}) => ({
+const RightHandle = styled(Handle).attrs<{$color: string}>((props) => ({
   style: {
     background: props.$color,
   },
-}))<{$color: string}>`
+}))`
   border-left: 1px solid rgba(0, 0, 0, 0.25);
   right: -7px;
 `

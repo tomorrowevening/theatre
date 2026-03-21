@@ -31,7 +31,7 @@ export const PlaygroundPage = ({
   groups: {[groupName: string]: string[]}
 }) => {
   return (
-    <StyleSheetManager disableVendorPrefixes>
+    <StyleSheetManager>
       <HomeContainer>
         <PlaygroundHeader
           version={{

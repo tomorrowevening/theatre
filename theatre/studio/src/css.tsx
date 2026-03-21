@@ -1,6 +1,7 @@
 import {lighten} from 'polished'
 import {css} from 'styled-components'
 import styled, {createGlobalStyle, StyleSheetManager} from 'styled-components'
+import isPropValid from '@emotion/is-prop-valid'
 import React, {useLayoutEffect, useState} from 'react'
 import ReactDOM from 'react-dom'
 import type {$IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
@@ -81,12 +82,22 @@ export const PortalLayer = styled.div`
   pointer-events: none;
 `
 
+function shouldForwardProp(propName: string, target: unknown) {
+  if (typeof target === 'string') {
+    return isPropValid(propName)
+  }
+  return true
+}
+
 export const ProvideStyles: React.FC<{
   target: undefined | HTMLElement
   children: React.ReactNode
 }> = (props) => {
   return (
-    <StyleSheetManager disableVendorPrefixes target={props.target}>
+    <StyleSheetManager
+      shouldForwardProp={shouldForwardProp}
+      target={props.target}
+    >
       <>
         <GlobalStyle />
         {props.children}

@@ -187,7 +187,7 @@ const IndicatorDot = styled.div<{type: NotificationType}>`
   margin-left: 12px;
   padding-top: 21px;
 
-  ::before {
+  &::before {
     content: '';
     width: 8px;
     height: 8px;
@@ -288,13 +288,13 @@ const Button = styled.button<{danger?: boolean}>`
   color: #fff;
   overflow: hidden;
 
-  ::before {
+  &::before {
     content: '';
     position: absolute;
     inset: 0;
   }
 
-  :hover::before {
+  &:hover::before {
     background: ${({danger}) =>
       danger ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
   }
