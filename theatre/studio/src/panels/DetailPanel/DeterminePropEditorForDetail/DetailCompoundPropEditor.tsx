@@ -42,13 +42,13 @@ const Header = styled.div`
   position: relative;
 `
 
-const Padding = styled.div<{isVectorProp: boolean}>`
+const Padding = styled.div<{$isVectorProp: boolean}>`
   padding-left: ${rowIndentationFormulaCSS};
   display: flex;
   align-items: center;
   overflow: hidden;
-  ${({isVectorProp}) =>
-    isVectorProp ? 'width: calc(100% - var(--right-width))' : ''};
+  ${({$isVectorProp}) =>
+    $isVectorProp ? 'width: calc(100% - var(--right-width))' : ''};
 `
 
 const ControlIndicators = styled.div`
@@ -71,7 +71,7 @@ const PropName = styled.div`
   ${propNameTextCSS};
 `
 
-const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
+const CollapseIcon = styled.span<{$isCollapsed: boolean; $isVector: boolean}>`
   width: 28px;
   height: 28px;
   font-size: 9px;
@@ -80,14 +80,14 @@ const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
   justify-content: center;
 
   transition: transform 0.05s ease-out, color 0.1s ease-out;
-  transform: rotateZ(${(props) => (props.isCollapsed ? 0 : 90)}deg);
+  transform: rotateZ(${(props) => (props.$isCollapsed ? 0 : 90)}deg);
   color: #66686a;
 
   visibility: ${(props) =>
     // If it's a vector, show the collapse icon only when it's expanded
-    (!props.isVector && props.isCollapsed) ||
+    (!props.$isVector && props.$isCollapsed) ||
     // If it's a regular compond prop, show the collapse icon only when it's collapsed
-    (props.isVector && !props.isCollapsed)
+    (props.$isVector && !props.$isCollapsed)
       ? 'visible'
       : 'hidden'};
 
@@ -96,16 +96,16 @@ const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
   }
 
   &:hover {
-    transform: rotateZ(${(props) => (props.isCollapsed ? 15 : 75)}deg);
+    transform: rotateZ(${(props) => (props.$isCollapsed ? 15 : 75)}deg);
     color: #c0c4c9;
   }
 `
 
 const color = transparentize(0.05, `#282b2f`)
 
-const SubProps = styled.div<{depth: number; lastSubIsComposite: boolean}>`
-  /* background: ${({depth}) => darken(depth * 0.03, color)}; */
-  /* padding: ${(props) => (props.lastSubIsComposite ? 0 : '4px')} 0; */
+const SubProps = styled.div<{$depth: number; $lastSubIsComposite: boolean}>`
+  /* background: ${({$depth}) => darken($depth * 0.03, color)}; */
+  /* padding: ${(props) => (props.$lastSubIsComposite ? 0 : '4px')} 0; */
 `
 
 const isVectorProp = memoizeFn((propConfig: PropTypeConfig_Compound<any>) => {
@@ -230,7 +230,7 @@ function DetailCompoundPropEditor<
         // @ts-ignore
         style={{'--depth': visualIndentation - 1}}
       >
-        <Padding isVectorProp={isVector}>
+        <Padding $isVectorProp={isVector}>
           <ControlIndicators>{tools.controlIndicators}</ControlIndicators>
 
           <PropName
@@ -243,8 +243,8 @@ function DetailCompoundPropEditor<
             <span>{propName || 'Props'}</span>
           </PropName>
           <CollapseIcon
-            isCollapsed={isCollapsed}
-            isVector={isVector}
+            $isCollapsed={isCollapsed}
+            $isVector={isVector}
             onClick={() => {
               box?.set(!box.get())
             }}
@@ -273,8 +273,8 @@ function DetailCompoundPropEditor<
         <SubProps
           // @ts-ignore
           style={{'--depth': visualIndentation}}
-          depth={visualIndentation}
-          lastSubIsComposite={lastSubPropIsComposite}
+          $depth={visualIndentation}
+          $lastSubIsComposite={lastSubPropIsComposite}
         >
           {[...nonCompositeSubs, ...compositeSubs].map(
             ([subPropKey, subPropConfig]) => {

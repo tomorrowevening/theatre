@@ -7,7 +7,7 @@ import {mergeRefs} from 'react-merge-refs'
 import {COLOR_BASE} from './colors'
 import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'
 
-const Wrapper = styled.div<{isSelected: boolean}>`
+const Wrapper = styled.div<{$isSelected: boolean}>`
   position: relative;
   display: flex;
   align-items: center;
@@ -21,8 +21,8 @@ const Wrapper = styled.div<{isSelected: boolean}>`
   cursor: pointer;
   outline: none;
 
-  ${({isSelected}) =>
-    isSelected &&
+  ${({$isSelected}) =>
+    $isSelected &&
     css`
       background-color: #383d42;
     `}
@@ -54,7 +54,7 @@ type IProps = {
   }
   tooltipPlacement: 'top' | 'bottom'
   isSelected: boolean
-} & Parameters<typeof Wrapper>[0]
+} & Omit<Parameters<typeof Wrapper>[0], '$isSelected'>
 
 const EasingOption: React.FC<IProps> = React.forwardRef((props, ref) => {
   const [tooltip, tooltipHostRef] = useTooltip(
@@ -70,7 +70,7 @@ const EasingOption: React.FC<IProps> = React.forwardRef((props, ref) => {
     <Wrapper
       ref={mergeRefs([tooltipHostRef, ref])}
       {...props}
-      isSelected={props.isSelected}
+      $isSelected={props.isSelected}
     >
       {tooltip}
       <SVGCurveSegment

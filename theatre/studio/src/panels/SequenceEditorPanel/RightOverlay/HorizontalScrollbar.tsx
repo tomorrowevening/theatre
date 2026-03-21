@@ -93,8 +93,8 @@ const RangeEndHandle = styled(RangeHandle)`
   left: 0px;
 `
 
-const Tooltip = styled.div<{active: boolean}>`
-  display: ${(props) => (props.active ? 'block' : 'none')};
+const Tooltip = styled.div<{$active: boolean}>`
+  display: ${(props) => (props.$active ? 'block' : 'none')};
   position: absolute;
   top: -20px;
   left: 4px;
@@ -403,7 +403,7 @@ const HorizontalScrollbar: React.FC<{
           style={{transform: `translate3d(${rangeStartX}px, 0, 0)`}}
         >
           <Tooltip
-            active={
+            $active={
               beingDragged === 'both' ||
               beingDragged === 'start' ||
               editingStart
@@ -429,7 +429,7 @@ const HorizontalScrollbar: React.FC<{
           style={{transform: `translate3d(${rangeEndX}px, 0, 0)`}}
         >
           <Tooltip
-            active={
+            $active={
               beingDragged === 'both' || beingDragged === 'end' || editingEnd
             }
           >

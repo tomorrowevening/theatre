@@ -22,14 +22,14 @@ import FocusRangeStrip, {focusRangeStripTheme} from './FocusRangeStrip'
 import FocusRangeThumb from './FocusRangeThumb'
 import {minVisibleSize} from '@tomorrowevening/theatre-studio/panels/BasePanel/common'
 
-const Container = styled.div<{isShiftDown: boolean}>`
+const Container = styled.div<{$isShiftDown: boolean}>`
   position: absolute;
   height: ${() => topStripHeight}px;
   left: 0;
   right: 0;
   box-sizing: border-box;
   /* Use the "grab" cursor if the shift key is up, which is the one used on the top strip of the sequence editor */
-  cursor: ${(props) => (props.isShiftDown ? 'ew-resize' : 'move')};
+  cursor: ${(props) => (props.$isShiftDown ? 'ew-resize' : 'move')};
 `
 
 const FocusRangeZone: React.FC<{
@@ -73,7 +73,7 @@ const FocusRangeZone: React.FC<{
     return (
       <Container
         ref={containerRef as $IntentionalAny}
-        isShiftDown={isShiftDown}
+        $isShiftDown={isShiftDown}
       >
         <FocusRangeStrip layoutP={layoutP} />
         <FocusRangeThumb thumbType="start" layoutP={layoutP} />

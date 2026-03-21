@@ -1219,7 +1219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/is-prop-valid@npm:1.4.0, @emotion/is-prop-valid@npm:^1.3.1":
+"@emotion/is-prop-valid@npm:1.4.0":
   version: 1.4.0
   resolution: "@emotion/is-prop-valid@npm:1.4.0"
   dependencies:
@@ -2997,7 +2997,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tomorrowevening/theatre-r3f@workspace:packages/r3f"
   dependencies:
-    "@emotion/is-prop-valid": ^1.3.1
     "@react-three/drei": ^9.80.1
     "@react-three/fiber": ^8.13.6
     "@tomorrowevening/theatre-dataverse": "workspace:*"
@@ -13016,7 +13015,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "theatre@workspace:theatre"
   dependencies:
-    "@emotion/is-prop-valid": ^1.3.1
     "@microsoft/api-extractor": ^7.18.11
     "@rollup/plugin-alias": ^3.1.5
     "@rollup/plugin-multi-entry": ^4.1.0

@@ -38,11 +38,11 @@ export const focusRangeStripTheme = {
 
 const stripWidth = 1000
 
-export const RangeStrip = styled.div<{enabled: boolean}>`
+export const RangeStrip = styled.div<{$enabled: boolean}>`
   position: absolute;
   height: ${() => topStripHeight - 1}px;
   background-color: ${(props) =>
-    props.enabled
+    props.$enabled
       ? focusRangeStripTheme.enabled.backgroundColor
       : focusRangeStripTheme.disabled.backgroundColor};
   cursor: grab;
@@ -283,7 +283,7 @@ const FocusRangeStrip: React.FC<{
         {contextMenu}
         <RangeStrip
           id="range-strip"
-          enabled={existingRange.enabled}
+          $enabled={existingRange.enabled}
           className={`${isDragging ? 'dragging' : ''} ${
             existingRange.enabled ? 'enabled' : ''
           }`}

@@ -1,10 +1,10 @@
 import React from 'react'
 import styled, {css} from 'styled-components'
 
-const Container = styled.div<{sizing: Sizing}>`
-  width: ${(props) => (props.sizing === 'em' ? '1em' : '100%')};
+const Container = styled.div<{$sizing: Sizing}>`
+  width: ${(props) => (props.$sizing === 'em' ? '1em' : '100%')};
   ${(props) =>
-    props.sizing === 'absoluteFill' &&
+    props.$sizing === 'absoluteFill' &&
     css`
       & > svg {
         position: absolute;
@@ -24,7 +24,7 @@ const SvgIcon: React.FC<{
 }> = (props) => {
   return (
     <Container
-      sizing={props.sizing || 'em'}
+      $sizing={props.sizing || 'em'}
       dangerouslySetInnerHTML={{__html: props.src}}
     />
   )

@@ -16,14 +16,14 @@ export type SheetModalRef = {
   close: () => void
 }
 
-const Overlay = styled.div<{isOpen: boolean}>`
+const Overlay = styled.div<{$isOpen: boolean}>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   z-index: 10000;
@@ -76,12 +76,12 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `
 
-const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
+const Button = styled.button<{$variant?: 'primary' | 'secondary'}>`
   background: ${(props) =>
-    props.variant === 'primary' ? '#0078d4' : 'transparent'};
-  color: ${(props) => (props.variant === 'primary' ? '#ffffff' : '#cccccc')};
+    props.$variant === 'primary' ? '#0078d4' : 'transparent'};
+  color: ${(props) => (props.$variant === 'primary' ? '#ffffff' : '#cccccc')};
   border: 1px solid
-    ${(props) => (props.variant === 'primary' ? '#0078d4' : '#3e3e42')};
+    ${(props) => (props.$variant === 'primary' ? '#0078d4' : '#3e3e42')};
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 14px;
@@ -91,12 +91,12 @@ const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
 
   &:hover {
     background: ${(props) =>
-      props.variant === 'primary' ? '#106ebe' : '#3e3e42'};
+      props.$variant === 'primary' ? '#106ebe' : '#3e3e42'};
   }
 
   &:active {
     background: ${(props) =>
-      props.variant === 'primary' ? '#005a9e' : '#4a4a4a'};
+      props.$variant === 'primary' ? '#005a9e' : '#4a4a4a'};
   }
 
   &:disabled {
@@ -166,7 +166,7 @@ const SheetModal = forwardRef<SheetModalRef, SheetModalProps>(
     )
 
     return (
-      <Overlay isOpen={isOpen} onClick={handleOverlayClick}>
+      <Overlay $isOpen={isOpen} onClick={handleOverlayClick}>
         <Modal>
           <Title>{title}</Title>
           <Input
@@ -178,11 +178,11 @@ const SheetModal = forwardRef<SheetModalRef, SheetModalProps>(
             autoFocus
           />
           <ButtonContainer>
-            <Button variant="secondary" onClick={handleCancel}>
+            <Button $variant="secondary" onClick={handleCancel}>
               Cancel
             </Button>
             <Button
-              variant="primary"
+              $variant="primary"
               onClick={handleConfirm}
               disabled={!sheetName.trim()}
             >

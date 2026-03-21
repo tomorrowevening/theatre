@@ -35,7 +35,7 @@ import {
   snapToNone,
 } from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 
-const Container = styled.div<{isVisible: boolean}>`
+const Container = styled.div<{$isVisible: boolean}>`
   --thumbColor: #00e0ff;
   position: absolute;
   top: 0;
@@ -45,7 +45,7 @@ const Container = styled.div<{isVisible: boolean}>`
   z-index: ${() => zIndexes.playhead};
   pointer-events: none;
 
-  display: ${(props) => (props.isVisible ? 'block' : 'none')};
+  display: ${(props) => (props.$isVisible ? 'block' : 'none')};
 `
 
 const Rod = styled.div`
@@ -282,7 +282,7 @@ const Playhead: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
         {contextMenu}
         {popoverNode}
         <Container
-          isVisible={isVisible}
+          $isVisible={isVisible}
           style={{transform: `translate3d(${posInClippedSpace}px, 0, 0)`}}
           className={`${isSeeking && 'seeking'} ${
             isPlayheadAttachedToFocusRange && 'playheadattachedtofocusrange'

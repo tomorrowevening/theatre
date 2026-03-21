@@ -33,14 +33,14 @@ export type SheetObjectModalRef = {
   close: () => void
 }
 
-const Overlay = styled.div<{isOpen: boolean}>`
+const Overlay = styled.div<{$isOpen: boolean}>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   z-index: 10000;
@@ -141,12 +141,12 @@ const ColorGroup = styled.div`
   align-items: flex-end;
 `
 
-const ColorPreview = styled.div<{color: string}>`
+const ColorPreview = styled.div<{$color: string}>`
   width: 40px;
   height: 32px;
   border-radius: 4px;
   border: 1px solid #3e3e42;
-  background: ${(props) => props.color};
+  background: ${(props) => props.$color};
   cursor: pointer;
   position: relative;
 
@@ -177,38 +177,38 @@ const ToggleContainer = styled.div`
   gap: 12px;
 `
 
-const ToggleSwitch = styled.div<{isOn: boolean}>`
+const ToggleSwitch = styled.div<{$isOn: boolean}>`
   width: 48px;
   height: 24px;
   border-radius: 12px;
-  background: ${(props) => (props.isOn ? '#0078d4' : '#3e3e42')};
-  border: 1px solid ${(props) => (props.isOn ? '#0078d4' : '#5a5a5a')};
+  background: ${(props) => (props.$isOn ? '#0078d4' : '#3e3e42')};
+  border: 1px solid ${(props) => (props.$isOn ? '#0078d4' : '#5a5a5a')};
   position: relative;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${(props) => (props.isOn ? '#106ebe' : '#4a4a4a')};
+    background: ${(props) => (props.$isOn ? '#106ebe' : '#4a4a4a')};
   }
 `
 
-const ToggleKnob = styled.div<{isOn: boolean}>`
+const ToggleKnob = styled.div<{$isOn: boolean}>`
   width: 18px;
   height: 18px;
   border-radius: 50%;
   background: #ffffff;
   position: absolute;
   top: 2px;
-  left: ${(props) => (props.isOn ? '26px' : '2px')};
+  left: ${(props) => (props.$isOn ? '26px' : '2px')};
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `
 
-const ToggleLabel = styled.span<{isOn: boolean}>`
-  color: ${(props) => (props.isOn ? '#ffffff' : '#cccccc')};
+const ToggleLabel = styled.span<{$isOn: boolean}>`
+  color: ${(props) => (props.$isOn ? '#ffffff' : '#cccccc')};
   font-size: 14px;
   font-family: inherit;
-  font-weight: ${(props) => (props.isOn ? '500' : 'normal')};
+  font-weight: ${(props) => (props.$isOn ? '500' : 'normal')};
 `
 
 const ButtonContainer = styled.div`
@@ -218,12 +218,12 @@ const ButtonContainer = styled.div`
   margin-top: 24px;
 `
 
-const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
+const Button = styled.button<{$variant?: 'primary' | 'secondary'}>`
   background: ${(props) =>
-    props.variant === 'primary' ? '#0078d4' : 'transparent'};
-  color: ${(props) => (props.variant === 'primary' ? '#ffffff' : '#cccccc')};
+    props.$variant === 'primary' ? '#0078d4' : 'transparent'};
+  color: ${(props) => (props.$variant === 'primary' ? '#ffffff' : '#cccccc')};
   border: 1px solid
-    ${(props) => (props.variant === 'primary' ? '#0078d4' : '#3e3e42')};
+    ${(props) => (props.$variant === 'primary' ? '#0078d4' : '#3e3e42')};
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 14px;
@@ -233,12 +233,12 @@ const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
 
   &:hover {
     background: ${(props) =>
-      props.variant === 'primary' ? '#106ebe' : '#3e3e42'};
+      props.$variant === 'primary' ? '#106ebe' : '#3e3e42'};
   }
 
   &:active {
     background: ${(props) =>
-      props.variant === 'primary' ? '#005a9e' : '#4a4a4a'};
+      props.$variant === 'primary' ? '#005a9e' : '#4a4a4a'};
   }
 
   &:disabled {
@@ -481,7 +481,7 @@ const SheetObjectModal = forwardRef<SheetObjectModalRef, SheetObjectModalProps>(
     const canSubmit = name.trim() !== '' && key.trim() !== ''
 
     return (
-      <Overlay isOpen={isOpen} onClick={handleOverlayClick}>
+      <Overlay $isOpen={isOpen} onClick={handleOverlayClick}>
         <Modal>
           <Title>Create Sheet Object</Title>
 
@@ -526,7 +526,7 @@ const SheetObjectModal = forwardRef<SheetObjectModalRef, SheetObjectModalProps>(
             <Label>Default Value</Label>
             {isRgbaType ? (
               <ColorGroup>
-                <ColorPreview color={hexColor}>
+                <ColorPreview $color={hexColor}>
                   <ColorPicker
                     type="color"
                     value={hexColor}
@@ -543,10 +543,13 @@ const SheetObjectModal = forwardRef<SheetObjectModalRef, SheetObjectModalProps>(
               </ColorGroup>
             ) : isBooleanType ? (
               <ToggleContainer>
-                <ToggleSwitch isOn={booleanValue} onClick={handleBooleanToggle}>
-                  <ToggleKnob isOn={booleanValue} />
+                <ToggleSwitch
+                  $isOn={booleanValue}
+                  onClick={handleBooleanToggle}
+                >
+                  <ToggleKnob $isOn={booleanValue} />
                 </ToggleSwitch>
-                <ToggleLabel isOn={booleanValue}>
+                <ToggleLabel $isOn={booleanValue}>
                   {booleanValue ? 'True' : 'False'}
                 </ToggleLabel>
               </ToggleContainer>
@@ -606,11 +609,11 @@ const SheetObjectModal = forwardRef<SheetObjectModalRef, SheetObjectModalProps>(
           )}
 
           <ButtonContainer>
-            <Button variant="secondary" onClick={handleCancel}>
+            <Button $variant="secondary" onClick={handleCancel}>
               Cancel
             </Button>
             <Button
-              variant="primary"
+              $variant="primary"
               onClick={handleConfirm}
               disabled={!canSubmit}
             >

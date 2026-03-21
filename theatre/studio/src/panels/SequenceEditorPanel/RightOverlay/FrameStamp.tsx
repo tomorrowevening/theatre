@@ -33,7 +33,7 @@ const Label = styled.div`
   z-index: ${() => zIndexes.currentFrameStamp};
 `
 
-const Line = styled.div<{posType: FrameStampPositionType}>`
+const Line = styled.div<{$posType: FrameStampPositionType}>`
   position: absolute;
   top: 5px;
   left: -0px;
@@ -80,7 +80,7 @@ const FrameStamp: React.FC<{
           {formatter.formatForPlayhead(snappedPosInUnitSpace)}
         </Label>
         <Line
-          posType={posType}
+          $posType={posType}
           style={{
             opacity: isVisible ? 1 : 0,
             transform: `translate3d(${posInClippedSpace}px, 0, 0)`,

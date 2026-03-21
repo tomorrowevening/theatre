@@ -23,7 +23,7 @@ const theme = {
 }
 
 const Container = styled.div<{
-  hasStaticOverride: boolean
+  $hasStaticOverride: boolean
 }>`
   width: 16px;
   margin: 0 0px 0 2px;
@@ -33,13 +33,13 @@ const Container = styled.div<{
   cursor: pointer;
 
   color: ${(props) =>
-    props.hasStaticOverride
+    props.$hasStaticOverride
       ? theme.withStaticOverride.color
       : theme.defaultState.color};
 
   &:hover {
     color: ${(props) =>
-      props.hasStaticOverride
+      props.$hasStaticOverride
         ? theme.withStaticOverride.hoverColor
         : theme.defaultState.hoverColor};
   }
@@ -84,7 +84,7 @@ const DefaultOrStaticValueIndicator: React.FC<{
   }
   return (
     <Container
-      hasStaticOverride={hasStaticOverride}
+      $hasStaticOverride={hasStaticOverride}
       onClick={sequenceCb}
       title="Sequence this prop"
     >

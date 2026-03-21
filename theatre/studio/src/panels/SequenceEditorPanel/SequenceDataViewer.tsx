@@ -46,14 +46,14 @@ export type SequenceDataViewerRef = {
   hide: () => void
 }
 
-const Container = styled.div<{isVisible: boolean}>`
+const Container = styled.div<{$isVisible: boolean}>`
   position: absolute;
   right: 0;
   bottom: 0;
   padding-bottom: 10px;
   pointer-events: none;
   z-index: 1;
-  display: ${(props) => (props.isVisible ? 'block' : 'none')};
+  display: ${(props) => (props.$isVisible ? 'block' : 'none')};
 `
 
 const TheCanvas = styled.canvas`
@@ -385,7 +385,7 @@ const SequenceDataViewer = forwardRef<
 
     return (
       <Container
-        isVisible={isVisible}
+        $isVisible={isVisible}
         style={{
           width: width + 'px',
           height: height + 'px',

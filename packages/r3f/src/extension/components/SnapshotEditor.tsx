@@ -10,7 +10,6 @@ import ProxyManager from './ProxyManager'
 import studio from '@tomorrowevening/theatre-studio'
 import {useVal} from '@tomorrowevening/theatre-react'
 import styled, {createGlobalStyle, StyleSheetManager} from 'styled-components'
-import isPropValid from '@emotion/is-prop-valid'
 import type {ISheet} from '@tomorrowevening/theatre-core'
 import useSnapshotEditorCamera from './useSnapshotEditorCamera'
 import {getEditorSheet, getEditorSheetObject} from '../editorStuff'
@@ -117,7 +116,7 @@ const ReferenceWindowContainer = styled.div`
   justify-content: center;
 `
 
-const WaitForSceneInitMessage = styled.div<{active?: boolean}>`
+const WaitForSceneInitMessage = styled.div<{$active?: boolean}>`
   position: absolute;
   margin: auto;
   left: 0;
@@ -182,11 +181,7 @@ const SnapshotEditor: React.FC<{paneId: string}> = (props) => {
 
   return (
     <root.div style={{overflow: 'hidden'}}>
-      <StyleSheetManager
-        shouldForwardProp={(propName: string, target: unknown) =>
-          typeof target === 'string' ? isPropValid(propName) : true
-        }
-      >
+      <StyleSheetManager>
         <>
           <GlobalStyle />
           <Wrapper>
