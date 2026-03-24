@@ -90,6 +90,7 @@ const ProxyManager: FC<ProxyManagerProps> = ({orbitControlsRef}) => {
     })
 
     setEditableProxies(editableProxies)
+    invalidate()
   }, [orbitControlsRef, sceneProxy])
 
   const selected = useSelected()
