@@ -30,6 +30,10 @@
       "prettier --write"
     ]
   },
+  "resolutions": {
+    "deasync": "^0.1.29",
+    "node-gyp": "^10.0.0"
+  },
   "devDependencies": {
     "@cspotcode/zx": "^6.1.2",
     "@microsoft/api-documenter": "^7.19.0",
@@ -53,7 +57,7 @@
     "jest-esbuild": "^0.3.0",
     "jsonc-parser": "^3.1.0",
     "lint-staged": "^13.0.3",
-    "node-gyp": "^9.1.0",
+    "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "sade": "^1.8.1",
     "typescript": "5.1.6",
