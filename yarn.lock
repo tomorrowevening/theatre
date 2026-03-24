@@ -14090,13 +14090,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deasync@npm:^0.1.14":
-  version: 0.1.21
-  resolution: "deasync@npm:0.1.21"
+"deasync@npm:^0.1.29":
+  version: 0.1.31
+  resolution: "deasync@npm:0.1.31"
   dependencies:
     bindings: ^1.5.0
     node-addon-api: ^1.7.1
-  checksum: dd54c8af51c993e838113245fd430479ac56f23988d281449ec383cb62ba5cd8861bc0a59105a994805cfcd9ad59a69869afde9330dd8645f076327734a3dd1d
+  checksum: c01a7e4303337cf90d735d6fe60672ddd00a72a1970d0058b48052ac6f0c80bd5789238396066a3151e384450b156d37ff8b4a843216121f2f10dbcb6ea87bb4
   languageName: node
   linkType: hard
 

@@ -30,6 +30,9 @@
       "prettier --write"
     ]
   },
+  "resolutions": {
+    "deasync": "^0.1.29"
+  },
   "devDependencies": {
     "@cspotcode/zx": "^6.1.2",
     "@microsoft/api-documenter": "^7.19.0",
