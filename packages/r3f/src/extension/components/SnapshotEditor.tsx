@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react'
 import React from 'react'
 import {Canvas, useThree} from '@react-three/fiber'
+import {PCFShadowMap} from 'three'
 import type {BaseSheetObjectType} from '../../main/store'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {__private_allRegisteredObjects as allRegisteredObjects} from '@tomorrowevening/theatre-r3f'
@@ -220,7 +221,7 @@ const SnapshotEditor: React.FC<{paneId: string}> = (props) => {
                 onCreated={({gl}) => {
                   gl.setClearColor('white')
                 }}
-                shadows
+                shadows={{type: PCFShadowMap}}
                 dpr={[1, 2]}
                 frameloop="demand"
                 onPointerMissed={onPointerMissed}
