@@ -82,12 +82,12 @@ function saveFile(content: string | Blob, fileName: string) {
   }, 40000)
 }
 
-const Container = styled(PanelWrapper)<{collapsedWidth?: number}>`
+const Container = styled(PanelWrapper)<{$collapsedWidth?: number}>`
   z-index: ${panelZIndexes.sequenceEditorPanel};
   box-shadow: 2px 2px 0 rgb(0 0 0 / 11%);
   ${(props) =>
-    props.collapsedWidth
-      ? `width: ${props.collapsedWidth}px !important; max-width: ${props.collapsedWidth}px !important;`
+    props.$collapsedWidth
+      ? `width: ${props.$collapsedWidth}px !important; max-width: ${props.$collapsedWidth}px !important;`
       : ''}
 `
 
@@ -963,7 +963,7 @@ const Content: React.VFC<{}> = () => {
 
     return (
       <Container
-        collapsedWidth={collapsedWidth}
+        $collapsedWidth={collapsedWidth}
         ref={(elt) => {
           containerRef(elt as HTMLDivElement)
           if (elt !== containerNode) {

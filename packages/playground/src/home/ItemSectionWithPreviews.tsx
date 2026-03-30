@@ -8,7 +8,6 @@ export const ItemSectionWithPreviews = (props: {
   collapsible: boolean
 }) => {
   const {groupName, modules, collapsedByDefault, collapsible} = props
-  console.log(groupName)
 
   const [collapsed, setCollapsed] = React.useState(
     collapsible && collapsedByDefault,
@@ -21,7 +20,7 @@ export const ItemSectionWithPreviews = (props: {
 
   return (
     <section>
-      <SectionHeader collapsible={collapsible} onClick={toggleCollapse}>
+      <SectionHeader $collapsible={collapsible} onClick={toggleCollapse}>
         {groupName}
       </SectionHeader>
 
@@ -46,7 +45,7 @@ export const ItemSectionWithPreviews = (props: {
   )
 }
 
-const SectionHeader = styled.h3<{collapsible: boolean}>`
+const SectionHeader = styled.h3<{$collapsible: boolean}>`
   font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -58,8 +57,8 @@ const SectionHeader = styled.h3<{collapsible: boolean}>`
   /* White/White50 */
   color: rgba(255, 255, 255, 0.5);
 
-  text-decoration: ${({collapsible}) => (collapsible ? 'underline' : 'none')};
-  cursor: ${({collapsible}) => (collapsible ? 'pointer' : 'default')};
+  text-decoration: ${({$collapsible}) => ($collapsible ? 'underline' : 'none')};
+  cursor: ${({$collapsible}) => ($collapsible ? 'pointer' : 'default')};
   user-select: none;
 `
 
