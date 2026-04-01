@@ -1,4 +1,4 @@
-type ICallback = (t: number) => void
+export type ICallback = (t: number) => void
 
 /**
  * The number of ticks that can pass without any scheduled callbacks before the Ticker goes dormant. This is to prevent
