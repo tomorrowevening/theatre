@@ -20,7 +20,7 @@ export type UnindexableTypesForPointer =
   | Function // eslint-disable-line @typescript-eslint/ban-types
 
 export type UnindexablePointer = {
-  [K in $IntentionalAny]: Pointer<undefined>
+  [K in string]: Pointer<undefined>
 }
 
 const pointerMetaWeakMap = new WeakMap<WeakPointerKey, PointerMeta>()
@@ -69,7 +69,7 @@ export type Pointer<O> = PointerType<O> &
 // By separating the `O` (non-undefined) from the `undefined` or `never`, we
 // can properly use `O extends ...` to determine the kind of potential value
 // without actually discarding optionality information.
-type PointerInner<O, Optional> = O extends UnindexableTypesForPointer
+export type PointerInner<O, Optional> = O extends UnindexableTypesForPointer
   ? UnindexablePointer
   : unknown extends O
   ? UnindexablePointer
@@ -184,6 +184,6 @@ export default pointer
 /**
  * Returns whether `p` is a pointer.
  */
-export const isPointer = (p: $IntentionalAny): p is Pointer<unknown> => {
-  return p && !!getPointerMeta(p)
+export const isPointer = (p: unknown): p is Pointer<unknown> => {
+  return p != null && !!getPointerMeta(p as PointerType<unknown>)
 }
