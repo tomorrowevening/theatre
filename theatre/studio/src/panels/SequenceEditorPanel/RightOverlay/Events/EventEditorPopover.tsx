@@ -9,6 +9,7 @@ import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils
 import type {StudioHistoricStateSequenceEditorEvent} from '@tomorrowevening/theatre-studio/store/types/historic'
 import BasicStringInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicStringInput'
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const Container = styled.div`
 const Row = styled.div`
   display: flex;
   gap: 8px;
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
   align-items: center;
 `
 

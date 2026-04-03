@@ -18,6 +18,10 @@ import {DefaultPlaybackController} from '@tomorrowevening/theatre-studio/panels/
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'
+import {
+  CONTROL_HEIGHT,
+  HEX_INPUT_WIDTH,
+} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const LeftRowHeader = styled(BaseHeader)`
   padding-left: calc(var(--depth) * 10px);
@@ -37,8 +41,9 @@ const LeftRowHead_Label = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 4px;
-  padding-left: 20px;
-  line-height: 26px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
   flex-wrap: nowrap;
   flex: 1;
   color: #7ec8e3;
@@ -83,8 +88,8 @@ const HexColorInput = styled.input`
   background: #222;
   border: 1px solid #666;
   color: #fff;
-  width: 70px;
-  height: 28px;
+  width: ${HEX_INPUT_WIDTH}px;
+  height: ${CONTROL_HEIGHT}px;
   padding: 4px;
   border-radius: 2px;
   font-family: monospace;
@@ -399,7 +404,7 @@ const AudioRow: React.FC<{
               borderRadius: '2px',
               background: '#222',
               color: '#FFF',
-              height: '28px',
+              height: `${CONTROL_HEIGHT}px`,
             }}
           >
             Done

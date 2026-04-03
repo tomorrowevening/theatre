@@ -35,7 +35,8 @@ const LeftRowHead_Label = styled.span`
   white-space: nowrap;
   padding-right: 4px;
   padding-left: 20px;
-  line-height: 26px;
+  display: flex;
+  align-items: center;
   flex-wrap: nowrap;
   color: #ccc;
 

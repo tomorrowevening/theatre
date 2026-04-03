@@ -4,6 +4,7 @@ import {usePrism} from '@tomorrowevening/theatre-react'
 import type {BasicNumberInputNudgeFn} from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 import {useLayoutEffect, useMemo, useRef} from 'react'
 import React from 'react'
 import {val} from '@tomorrowevening/theatre-dataverse'
@@ -16,7 +17,7 @@ const Container = styled.div`
   display: flex;
   gap: 8px;
   padding: 4px 8px;
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
   align-items: center;
 `
 
