@@ -1,11 +1,14 @@
 import type {PropTypeConfig_File} from '@tomorrowevening/theatre-core/propTypes'
-import {Package, Trash} from '@tomorrowevening/theatre-studio/uiComponents/icons'
+import {
+  Package,
+  Trash,
+} from '@tomorrowevening/theatre-studio/uiComponents/icons'
 import React, {useCallback, useEffect} from 'react'
 import styled, {css} from 'styled-components'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
 import type {$FixMe} from '@tomorrowevening/theatre-shared/utils/types'
 
-const Container = styled.div<{empty: boolean}>`
+const Container = styled.div<{$empty: boolean}>`
   display: flex;
   align-items: center;
   height: 100%;
@@ -33,7 +36,7 @@ const AddFile = styled.div`
   background-size: 5px 5px;
 `
 
-const InputLabel = styled.label<{empty: boolean}>`
+const InputLabel = styled.label<{$empty: boolean}>`
   position: relative;
   cursor: default;
   box-sizing: border-box;
@@ -57,7 +60,7 @@ const InputLabel = styled.label<{empty: boolean}>`
     border-color: hwb(220deg 45% 52%);
   }
 
-  ${(props) => (props.empty ? css`` : css``)}
+  ${(props) => (props.$empty ? css`` : css``)}
 `
 
 // file input
@@ -127,9 +130,9 @@ function FilePropEditor({
   const empty = !value?.id
 
   return (
-    <Container empty={empty}>
+    <Container $empty={empty}>
       <InputLabel
-        empty={empty}
+        $empty={empty}
         title={
           empty ? 'Upload file' : `"${value.id}" (Click to upload new file)`
         }

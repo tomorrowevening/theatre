@@ -9,8 +9,8 @@ import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleC
 import type {$IntentionalAny} from '@tomorrowevening/theatre-dataverse/src/types'
 import {val} from '@tomorrowevening/theatre-dataverse'
 
-const LeftRowContainer = styled.li<{depth: number}>`
-  --depth: ${(props) => props.depth - 1};
+const LeftRowContainer = styled.li<{$depth: number}>`
+  --depth: ${(props) => props.$depth - 1};
   margin: 0;
   padding: 0;
   list-style: none;
@@ -162,14 +162,13 @@ const SubSequenceRow: React.FC<{
   })
 
   return leaf.shouldRender ? (
-    <LeftRowContainer depth={leaf.depth}>
+    <LeftRowContainer $depth={leaf.depth}>
       {contextMenu}
       <LeftRowHeader
         ref={rowHeaderRef}
         style={{
           height: leaf.nodeHeight + 'px',
         }}
-        isEven={leaf.n % 2 === 0}
       >
         <LeftRowHead_Label>{subSequenceLabel}</LeftRowHead_Label>
       </LeftRowHeader>

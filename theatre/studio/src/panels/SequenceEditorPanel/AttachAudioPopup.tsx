@@ -62,21 +62,21 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `
 
-const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
+const Button = styled.button<{$variant?: 'primary' | 'secondary'}>`
   padding: 8px 16px;
   border: 1px solid
-    ${(props) => (props.variant === 'primary' ? '#4a9eff' : '#3a3a3a')};
+    ${(props) => (props.$variant === 'primary' ? '#4a9eff' : '#3a3a3a')};
   border-radius: 4px;
   background: ${(props) =>
-    props.variant === 'primary' ? '#4a9eff' : 'transparent'};
-  color: ${(props) => (props.variant === 'primary' ? '#fff' : '#ccc')};
+    props.$variant === 'primary' ? '#4a9eff' : 'transparent'};
+  color: ${(props) => (props.$variant === 'primary' ? '#fff' : '#ccc')};
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
     background: ${(props) =>
-      props.variant === 'primary' ? '#3a8eef' : '#3a3a3a'};
+      props.$variant === 'primary' ? '#3a8eef' : '#3a3a3a'};
   }
 
   &:disabled {
@@ -91,18 +91,18 @@ const FileUploadContainer = styled.div`
   gap: 8px;
 `
 
-const FileUploadArea = styled.div<{isDragOver: boolean; hasFile: boolean}>`
-  border: 2px dashed ${(props) => (props.isDragOver ? '#4a9eff' : '#3a3a3a')};
+const FileUploadArea = styled.div<{$isDragOver: boolean; $hasFile: boolean}>`
+  border: 2px dashed ${(props) => (props.$isDragOver ? '#4a9eff' : '#3a3a3a')};
   border-radius: 4px;
   padding: 16px;
   text-align: center;
   background: ${(props) =>
-    props.isDragOver ? 'rgba(74, 158, 255, 0.1)' : 'transparent'};
+    props.$isDragOver ? 'rgba(74, 158, 255, 0.1)' : 'transparent'};
   cursor: pointer;
   transition: all 0.2s;
 
   ${(props) =>
-    props.hasFile &&
+    props.$hasFile &&
     `
     border-color: #4a9eff;
     background: rgba(74, 158, 255, 0.05);
@@ -153,15 +153,15 @@ const TabContainer = styled.div`
   margin-bottom: 16px;
 `
 
-const Tab = styled.button<{active: boolean}>`
+const Tab = styled.button<{$active: boolean}>`
   padding: 8px 16px;
   border: none;
-  background: ${(props) => (props.active ? '#3a3a3a' : 'transparent')};
-  color: ${(props) => (props.active ? '#ccc' : '#999')};
+  background: ${(props) => (props.$active ? '#3a3a3a' : 'transparent')};
+  color: ${(props) => (props.$active ? '#ccc' : '#999')};
   font-size: 12px;
   cursor: pointer;
   border-bottom: 2px solid
-    ${(props) => (props.active ? '#4a9eff' : 'transparent')};
+    ${(props) => (props.$active ? '#4a9eff' : 'transparent')};
   transition: all 0.2s;
 
   &:hover {
@@ -320,12 +320,15 @@ const AttachAudioPopup: React.FC<AttachAudioPopupProps> = ({
 
         <TabContainer>
           <Tab
-            active={activeTab === 'file'}
+            $active={activeTab === 'file'}
             onClick={() => setActiveTab('file')}
           >
             Upload File
           </Tab>
-          <Tab active={activeTab === 'url'} onClick={() => setActiveTab('url')}>
+          <Tab
+            $active={activeTab === 'url'}
+            onClick={() => setActiveTab('url')}
+          >
             From URL
           </Tab>
         </TabContainer>
@@ -335,8 +338,8 @@ const AttachAudioPopup: React.FC<AttachAudioPopupProps> = ({
             <Label>Audio File</Label>
             <FileUploadContainer>
               <FileUploadArea
-                isDragOver={isDragOver}
-                hasFile={audioFile !== null}
+                $isDragOver={isDragOver}
+                $hasFile={audioFile !== null}
                 onClick={handleUploadAreaClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -400,7 +403,7 @@ const AttachAudioPopup: React.FC<AttachAudioPopupProps> = ({
             Cancel
           </Button>
           <Button
-            variant="primary"
+            $variant="primary"
             onClick={handleAttach}
             disabled={!isDataValid() || isAttaching}
           >

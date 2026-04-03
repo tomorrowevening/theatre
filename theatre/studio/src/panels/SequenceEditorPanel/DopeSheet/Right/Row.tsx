@@ -10,7 +10,7 @@ const RightRowContainer = styled.li<{}>`
   position: relative;
 `
 
-const RightRowNodeWrapper = styled.div<{isEven: boolean}>`
+const RightRowNodeWrapper = styled.div<{$isEven: boolean}>`
   box-sizing: border-box;
   width: 100%;
   position: relative;
@@ -25,7 +25,7 @@ const RightRowNodeWrapper = styled.div<{isEven: boolean}>`
     right: 0;
     box-sizing: border-box;
     border-bottom: 1px solid #252b3869;
-    background: ${(props) => (props.isEven ? 'transparent' : '#6b8fb505')};
+    background: ${(props) => (props.$isEven ? 'transparent' : '#6b8fb505')};
   }
 `
 
@@ -59,7 +59,7 @@ const RightRow: React.FC<{
     <RightRowContainer>
       <RightRowNodeWrapper
         style={{height: leaf.nodeHeight + 'px'}}
-        isEven={leaf.n % 2 === 0}
+        $isEven={leaf.n % 2 === 0}
       >
         {node}
       </RightRowNodeWrapper>

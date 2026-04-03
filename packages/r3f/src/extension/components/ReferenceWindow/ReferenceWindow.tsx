@@ -9,7 +9,7 @@ import {TiWarningOutline} from 'react-icons/ti'
 import noiseImageUrl from './noise-transparent.png'
 import useExtensionStore from '../../useExtensionStore'
 
-const Container = styled.div<{minimized: boolean}>`
+const Container = styled.div<{$minimized: boolean}>`
   position: relative;
   display: flex;
   justify-content: center;
@@ -17,7 +17,7 @@ const Container = styled.div<{minimized: boolean}>`
   pointer-events: auto;
   cursor: pointer;
   overflow: hidden;
-  border-radius: ${({minimized}) => (minimized ? '2px' : '4px')};
+  border-radius: ${({$minimized}) => ($minimized ? '2px' : '4px')};
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
 `
 
@@ -48,7 +48,7 @@ const Static = styled.div`
   height: 120px;
   padding: 18px;
 
-  ::before {
+  &::before {
     content: '';
     position: absolute;
     z-index: -1;
@@ -140,7 +140,7 @@ const ReferenceWindow: VFC<ReferenceWindowProps> = ({
 
   return (
     <Container
-      minimized={minimized}
+      $minimized={minimized}
       onClick={onToggleMinified}
       style={{
         width: minimized ? 32 : preserveDrawingBuffer ? `${width}px` : 'auto',

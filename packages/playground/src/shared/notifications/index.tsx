@@ -13,7 +13,7 @@ void getProject('Sample project').sheet('Scene').sequence.play()
 notify.info(
   'Welcome to the notifications playground!',
   'This is a basic example of a notification! You can see the code for this notification ' +
-    '(and all others) at the start of index.tsx. You can also see examples of success and warnign notifications.',
+    '(and all others) at the start of index.tsx. You can also see examples of success and warning notifications.',
 )
 
 void getProject('Sample project').ready.then(() => {

@@ -1,7 +1,10 @@
 import type {Pointer} from '@tomorrowevening/theatre-dataverse'
 import {prism, val} from '@tomorrowevening/theatre-dataverse'
 import {usePrism, useVal} from '@tomorrowevening/theatre-react'
-import type {$IntentionalAny, IRange} from '@tomorrowevening/theatre-shared/utils/types'
+import type {
+  $IntentionalAny,
+  IRange,
+} from '@tomorrowevening/theatre-shared/utils/types'
 import getStudio from '@tomorrowevening/theatre-studio/getStudio'
 import type {SequenceEditorPanelLayout} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import {
@@ -24,26 +27,26 @@ import {
 import {focusRangeStripTheme, RangeStrip} from './FocusRangeStrip'
 import DopeSnap from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 
-const TheDiv = styled.div<{enabled: boolean; type: 'start' | 'end'}>`
+const TheDiv = styled.div<{$enabled: boolean; $type: 'start' | 'end'}>`
   position: absolute;
   top: 0;
   // the right handle has to be pulled back by its width since its right side indicates its position, not its left side
   left: ${(props) =>
-    props.type === 'start' ? 0 : -focusRangeStripTheme.thumbWidth}px;
+    props.$type === 'start' ? 0 : -focusRangeStripTheme.thumbWidth}px;
   transform-origin: left top;
   width: ${focusRangeStripTheme.thumbWidth}px;
   height: ${() => topStripHeight - 1}px;
   z-index: 3;
 
-  --bg: ${({enabled}) =>
-    enabled
+  --bg: ${({$enabled}) =>
+    $enabled
       ? focusRangeStripTheme.enabled.backgroundColor
       : focusRangeStripTheme.disabled.backgroundColor};
 
   stroke: ${focusRangeStripTheme.enabled.stroke};
   user-select: none;
 
-  cursor: ${(props) => (props.type === 'start' ? 'w-resize' : 'e-resize')};
+  cursor: ${(props) => (props.$type === 'start' ? 'w-resize' : 'e-resize')};
 
   // no pointer events unless pointer-root is in normal mode _and_ the
   // focus range is enabled
@@ -99,21 +102,21 @@ const TheDiv = styled.div<{enabled: boolean; type: 'start' | 'end'}>`
  * This acts as a bit of a horizontal shadow that covers the frame numbers that show up
  * right next to the thumb, making the appearance of the focus range more tidy.
  */
-const ColoredMargin = styled.div<{type: 'start' | 'end'; enabled: boolean}>`
+const ColoredMargin = styled.div<{$type: 'start' | 'end'; $enabled: boolean}>`
   position: absolute;
   top: 0;
   bottom: 0;
   pointer-events: none;
 
   background: linear-gradient(
-    ${(props) => (props.type === 'start' ? 90 : -90)}deg,
+    ${(props) => (props.$type === 'start' ? 90 : -90)}deg,
     var(--bg) 0%,
     #ffffff00 100%
   );
 
   width: 12px;
   left: ${(props) =>
-    props.type === 'start'
+    props.$type === 'start'
       ? focusRangeStripTheme.thumbWidth
       : // pushing the right-side thumb's margin 1px to the right to make sure there is no space
         // between it and the thumb
@@ -121,7 +124,7 @@ const ColoredMargin = styled.div<{type: 'start' | 'end'; enabled: boolean}>`
 `
 
 const OuterColoredMargin = styled.div<{
-  type: 'start' | 'end'
+  $type: 'start' | 'end'
 }>`
   position: absolute;
   top: 0;
@@ -129,14 +132,14 @@ const OuterColoredMargin = styled.div<{
   pointer-events: none;
 
   background: linear-gradient(
-    ${(props) => (props.type === 'start' ? -90 : 90)}deg,
+    ${(props) => (props.$type === 'start' ? -90 : 90)}deg,
     ${() => topStripTheme.backgroundColor} 0%,
     #ffffff00 100%
   );
 
   width: 12px;
   left: ${(props) =>
-    props.type === 'start' ? -12 : focusRangeStripTheme.thumbWidth}px;
+    props.$type === 'start' ? -12 : focusRangeStripTheme.thumbWidth}px;
 `
 
 const FocusRangeThumb: React.FC<{
@@ -275,14 +278,14 @@ const FocusRangeThumb: React.FC<{
         {...DopeSnap.includePositionSnapAttrs(position)}
         {...includeLockFrameStampAttrs(position)}
         className={`${isDragging && 'dragging'} ${enabled && 'enabled'}`}
-        enabled={enabled}
-        type={thumbType}
+        $enabled={enabled}
+        $type={thumbType}
         style={{
           transform: `translate3d(${posInClippedSpace}px, 0, 0)`,
         }}
       >
-        <ColoredMargin type={thumbType} enabled={enabled} />
-        <OuterColoredMargin type={thumbType} />
+        <ColoredMargin $type={thumbType} $enabled={enabled} />
+        <OuterColoredMargin $type={thumbType} />
         <svg viewBox="0 0 9 18" xmlns="http://www.w3.org/2000/svg">
           <line x1="4" y1="6" x2="4" y2="12" />
           <line x1="6" y1="6" x2="6" y2="12" />

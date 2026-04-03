@@ -10,8 +10,8 @@ const Head = styled.div`
   display: flex;
 `
 
-const Container = styled.li<{isSelected: boolean}>`
-  color: ${(props) => (props.isSelected ? 'white' : 'hsl(1, 1%, 80%)')};
+const Container = styled.li<{$isSelected: boolean}>`
+  color: ${(props) => (props.$isSelected ? 'white' : 'hsl(1, 1%, 80%)')};
 `
 
 const Body = styled.div``

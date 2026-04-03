@@ -3,12 +3,12 @@ import type {ComponentPropsWithRef, ReactNode} from 'react'
 import React, {forwardRef, useState} from 'react'
 import ToolbarIconButton from '@tomorrowevening/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
 
-const Container = styled(ToolbarIconButton)<{pinned?: boolean}>`
-  color: ${({pinned}) => (pinned ? 'rgba(255, 255, 255, 0.8)' : '#A8A8A9')};
+const Container = styled(ToolbarIconButton)<{$pinned?: boolean}>`
+  color: ${({$pinned}) => ($pinned ? 'rgba(255, 255, 255, 0.8)' : '#A8A8A9')};
 
   border-bottom: 1px solid
-    ${({pinned}) =>
-      pinned ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.08)'};
+    ${({$pinned}) =>
+      $pinned ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.08)'};
 `
 
 interface PinButtonProps extends ComponentPropsWithRef<'button'> {
@@ -31,7 +31,7 @@ const PinButton = forwardRef<HTMLButtonElement, PinButtonProps>(
     return (
       <Container
         {...props}
-        pinned={pinned}
+        $pinned={pinned}
         ref={ref}
         onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}

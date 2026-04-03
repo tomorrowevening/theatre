@@ -45,7 +45,7 @@ export default function App() {
           />
           <e.pointLight theatreKey="PointLight" />
           <e.mesh theatreKey="Box">
-            <boxBufferGeometry />
+            <boxGeometry />
             <meshStandardMaterial color="orange" />
           </e.mesh>
       </SheetProvider>

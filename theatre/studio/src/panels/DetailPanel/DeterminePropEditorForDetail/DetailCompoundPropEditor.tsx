@@ -20,9 +20,7 @@ import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetOb
 
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {useEditingToolsForCompoundProp} from '@tomorrowevening/theatre-studio/propEditors/useEditingToolsForCompoundProp'
-import type {PropHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
 import {whatPropIsHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
-import {deriver} from '@tomorrowevening/theatre-studio/utils/derive-utils'
 import NumberPropEditor from '@tomorrowevening/theatre-studio/propEditors/simpleEditors/NumberPropEditor'
 import type {IDetailSimplePropEditorProps} from './DetailSimplePropEditor'
 import {useEditingToolsForSimplePropInDetailsPanel} from '@tomorrowevening/theatre-studio/propEditors/useEditingToolsForSimpleProp'
@@ -38,27 +36,27 @@ const Container = styled.div`
   --right-width: 60%;
 `
 
-const Header = styled.div<{isHighlighted: PropHighlighted}>`
+const Header = styled.div`
   height: 30px;
   display: flex;
   align-items: stretch;
   position: relative;
 `
 
-const Padding = styled.div<{isVectorProp: boolean}>`
+const Padding = styled.div<{$isVectorProp: boolean}>`
   padding-left: ${rowIndentationFormulaCSS};
   display: flex;
   align-items: center;
   overflow: hidden;
-  ${({isVectorProp}) =>
-    isVectorProp ? 'width: calc(100% - var(--right-width))' : ''};
+  ${({$isVectorProp}) =>
+    $isVectorProp ? 'width: calc(100% - var(--right-width))' : ''};
 `
 
 const ControlIndicators = styled.div`
   flexshrink: 0;
 `
 
-const PropName = deriver(styled.div<{isHighlighted: PropHighlighted}>`
+const PropName = styled.div`
   margin-left: 4px;
   cursor: default;
   height: 100%;
@@ -71,10 +69,10 @@ const PropName = deriver(styled.div<{isHighlighted: PropHighlighted}>`
   }
   overflow: hidden;
 
-  ${() => propNameTextCSS};
-`)
+  ${propNameTextCSS};
+`
 
-const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
+const CollapseIcon = styled.span<{$isCollapsed: boolean; $isVector: boolean}>`
   width: ${CONTROL_HEIGHT}px;
   height: ${CONTROL_HEIGHT}px;
   font-size: 9px;
@@ -83,14 +81,14 @@ const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
   justify-content: center;
 
   transition: transform 0.05s ease-out, color 0.1s ease-out;
-  transform: rotateZ(${(props) => (props.isCollapsed ? 0 : 90)}deg);
+  transform: rotateZ(${(props) => (props.$isCollapsed ? 0 : 90)}deg);
   color: #66686a;
 
   visibility: ${(props) =>
     // If it's a vector, show the collapse icon only when it's expanded
-    (!props.isVector && props.isCollapsed) ||
+    (!props.$isVector && props.$isCollapsed) ||
     // If it's a regular compond prop, show the collapse icon only when it's collapsed
-    (props.isVector && !props.isCollapsed)
+    (props.$isVector && !props.$isCollapsed)
       ? 'visible'
       : 'hidden'};
 
@@ -99,16 +97,16 @@ const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
   }
 
   &:hover {
-    transform: rotateZ(${(props) => (props.isCollapsed ? 15 : 75)}deg);
+    transform: rotateZ(${(props) => (props.$isCollapsed ? 15 : 75)}deg);
     color: #c0c4c9;
   }
 `
 
 const color = transparentize(0.05, `#282b2f`)
 
-const SubProps = styled.div<{depth: number; lastSubIsComposite: boolean}>`
-  /* background: ${({depth}) => darken(depth * 0.03, color)}; */
-  /* padding: ${(props) => (props.lastSubIsComposite ? 0 : '4px')} 0; */
+const SubProps = styled.div<{$depth: number; $lastSubIsComposite: boolean}>`
+  /* background: ${({$depth}) => darken($depth * 0.03, color)}; */
+  /* padding: ${(props) => (props.$lastSubIsComposite ? 0 : '4px')} 0; */
 `
 
 const isVectorProp = memoizeFn((propConfig: PropTypeConfig_Compound<any>) => {
@@ -226,6 +224,11 @@ function DetailCompoundPropEditor<
     return box ? val(box.pointer) : isVector
   }, [box])
 
+  const propHighlighted = usePrism(
+    () => isPropHighlightedD.getValue(),
+    [isPropHighlightedD],
+  )
+
   return (
     <Container>
       {contextMenu}
@@ -233,18 +236,18 @@ function DetailCompoundPropEditor<
         // @ts-ignore
         style={{'--depth': visualIndentation - 1}}
       >
-        <Padding isVectorProp={isVector}>
+        <Padding $isVectorProp={isVector}>
           <ControlIndicators>{tools.controlIndicators}</ControlIndicators>
 
           <PropName
-            isHighlighted={isPropHighlightedD}
+            data-highlighted={propHighlighted}
             ref={propNameContainerRef}
           >
             <span>{propName || 'Props'}</span>
           </PropName>
           <CollapseIcon
-            isCollapsed={isCollapsed}
-            isVector={isVector}
+            $isCollapsed={isCollapsed}
+            $isVector={isVector}
             onClick={() => {
               box?.set(!box.get())
             }}
@@ -273,8 +276,8 @@ function DetailCompoundPropEditor<
         <SubProps
           // @ts-ignore
           style={{'--depth': visualIndentation}}
-          depth={visualIndentation}
-          lastSubIsComposite={lastSubPropIsComposite}
+          $depth={visualIndentation}
+          $lastSubIsComposite={lastSubPropIsComposite}
         >
           {[...nonCompositeSubs, ...compositeSubs].map(
             ([subPropKey, subPropConfig]) => {

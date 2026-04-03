@@ -10,7 +10,7 @@ import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css
 
 const headerHeight = `44px`
 
-const Container = styled.div<{pin: boolean}>`
+const Container = styled.div<{$pin: boolean}>`
   ${pointerEventsAutoInNormalMode};
   background-color: transparent;
   position: absolute;
@@ -31,7 +31,7 @@ const Container = styled.div<{pin: boolean}>`
 
   scrollbar-width: none;
 
-  display: ${({pin}) => (pin ? 'block' : 'none')};
+  display: ${({$pin}) => ($pin ? 'block' : 'none')};
 
   &:hover {
     display: block;
@@ -64,7 +64,7 @@ const OutlinePanel: React.FC<{}> = () => {
 
   return (
     <Container
-      pin={pin || show}
+      $pin={pin || show}
       onMouseEnter={() => {
         isOutlinePanelHoveredB.set(true)
       }}

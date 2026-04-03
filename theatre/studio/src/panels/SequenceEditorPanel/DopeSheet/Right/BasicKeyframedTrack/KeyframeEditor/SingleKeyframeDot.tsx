@@ -39,14 +39,14 @@ const dotTheme = {
 }
 
 const selectBackgroundForDiamond = ({
-  isSelected,
-  isInlineEditorPopoverOpen,
+  $isSelected,
+  $isInlineEditorPopoverOpen,
 }: IDiamond) => {
-  if (isSelected && isInlineEditorPopoverOpen) {
+  if ($isSelected && $isInlineEditorPopoverOpen) {
     return dotTheme.inlineEditorOpenColor
-  } else if (isSelected) {
+  } else if ($isSelected) {
     return dotTheme.selectedColor
-  } else if (isInlineEditorPopoverOpen) {
+  } else if ($isInlineEditorPopoverOpen) {
     return dotTheme.selectedAndInlineEditorOpenColor
   } else {
     return dotTheme.normalColor
@@ -54,9 +54,9 @@ const selectBackgroundForDiamond = ({
 }
 
 type IDiamond = {
-  isSelected: boolean
-  isInlineEditorPopoverOpen: boolean
-  flag: PresenceFlag | undefined
+  $isSelected: boolean
+  $isInlineEditorPopoverOpen: boolean
+  $flag: PresenceFlag | undefined
 }
 
 /** The keyframe diamond ◆ */
@@ -68,7 +68,7 @@ const Diamond = styled.div<IDiamond>`
   transform: rotateZ(45deg);
 
   ${(props) =>
-    props.flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
+    props.$flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
 
   z-index: 1;
   pointer-events: none;
@@ -81,13 +81,13 @@ const Square = styled.div<IDiamond>`
   background: ${(props) => selectBackgroundForDiamond(props)};
 
   ${(props) =>
-    props.flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
+    props.$flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
 
   z-index: 1;
   pointer-events: none;
 `
 
-const HitZone = styled.div<{isInlineEditorPopoverOpen: boolean}>`
+const HitZone = styled.div<{$isInlineEditorPopoverOpen: boolean}>`
   z-index: 1;
   cursor: ew-resize;
 
@@ -97,7 +97,7 @@ const HitZone = styled.div<{isInlineEditorPopoverOpen: boolean}>`
 
   & + ${Diamond} {
     ${(props) =>
-      props.isInlineEditorPopoverOpen ? absoluteDims(DOT_HOVER_SIZE_PX) : ''}
+      props.$isInlineEditorPopoverOpen ? absoluteDims(DOT_HOVER_SIZE_PX) : ''}
   }
 
   &:hover + ${Diamond} {
@@ -140,20 +140,20 @@ const SingleKeyframeDot: React.VFC<ISingleKeyframeDotProps> = (props) => {
     <>
       <HitZone
         ref={ref}
-        isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
+        $isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
         {...presence.attrs}
       />
       {showDiamond ? (
         <Diamond
-          isSelected={!!props.selection}
-          isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
-          flag={presence.flag}
+          $isSelected={!!props.selection}
+          $isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
+          $flag={presence.flag}
         />
       ) : (
         <Square
-          isSelected={!!props.selection}
-          isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
-          flag={presence.flag}
+          $isSelected={!!props.selection}
+          $isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
+          $flag={presence.flag}
         />
       )}
       {inlineEditorPopover}

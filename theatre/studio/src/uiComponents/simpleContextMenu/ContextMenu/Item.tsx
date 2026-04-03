@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 export const height = 26
 
-const ItemContainer = styled.li<{enabled: boolean}>`
+const ItemContainer = styled.li<{$enabled: boolean}>`
   height: ${height}px;
   padding: 0 12px;
   margin: 0;
@@ -14,8 +14,8 @@ const ItemContainer = styled.li<{enabled: boolean}>`
   font-size: 11px;
   font-weight: 400;
   position: relative;
-  color: ${(props) => (props.enabled ? 'white' : '#8f8f8f')};
-  cursor: ${(props) => (props.enabled ? 'normal' : 'not-allowed')};
+  color: ${(props) => (props.$enabled ? 'white' : '#8f8f8f')};
+  cursor: ${(props) => (props.$enabled ? 'normal' : 'not-allowed')};
 
   &:after {
     position: absolute;
@@ -29,7 +29,7 @@ const ItemContainer = styled.li<{enabled: boolean}>`
 
   &:hover:after {
     background-color: ${(props) =>
-      props.enabled ? 'rgba(63, 174, 191, 0.75)' : 'initial'};
+      props.$enabled ? 'rgba(63, 174, 191, 0.75)' : 'initial'};
   }
 `
 
@@ -43,7 +43,7 @@ const Item: React.FC<{
   return (
     <ItemContainer
       onClick={props.enabled ? props.onClick : noop}
-      enabled={props.enabled}
+      $enabled={props.enabled}
       title={props.enabled ? undefined : 'Disabled'}
     >
       <ItemLabel>

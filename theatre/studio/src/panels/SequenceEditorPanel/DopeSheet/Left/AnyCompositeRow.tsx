@@ -14,20 +14,20 @@ import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 
-export const LeftRowContainer = styled.li<{depth: number}>`
-  --depth: ${(props) => props.depth - 1};
+export const LeftRowContainer = styled.li<{$depth: number}>`
+  --depth: ${(props) => props.$depth - 1};
   margin: 0;
   padding: 0;
   list-style: none;
 `
 
-export const BaseHeader = styled.div<{isEven: boolean}>`
+export const BaseHeader = styled.div`
   border-bottom: 1px solid #7695b705;
 `
 
 const LeftRowHeader = styled(BaseHeader)<{
-  isSelectable: boolean
-  isSelected: boolean
+  $isSelectable: boolean
+  $isSelected: boolean
 }>`
   padding-left: calc(var(--depth) * 10px);
 
@@ -37,7 +37,7 @@ const LeftRowHeader = styled(BaseHeader)<{
 
   box-sizing: border-box;
 
-  ${(props) => props.isSelected && `background: blue`};
+  ${(props) => props.$isSelected && `background: blue`};
 `
 
 const LeftRowHead_Label = styled.span`
@@ -69,7 +69,7 @@ const LeftRowHead_Value = styled.span`
   white-space: nowrap;
 `
 
-const LeftRowHead_Icon = styled.span<{isCollapsed: boolean}>`
+const LeftRowHead_Icon = styled.span<{$isCollapsed: boolean}>`
   width: 12px;
   padding: 8px;
   font-size: 9px;
@@ -77,11 +77,11 @@ const LeftRowHead_Icon = styled.span<{isCollapsed: boolean}>`
   align-items: center;
 
   transition: transform 0.05s ease-out, color 0.1s ease-out;
-  transform: rotateZ(${(props) => (props.isCollapsed ? 0 : 90)}deg);
+  transform: rotateZ(${(props) => (props.$isCollapsed ? 0 : 90)}deg);
   color: #66686a;
 
   &:hover {
-    transform: rotateZ(${(props) => (props.isCollapsed ? 15 : 75)}deg);
+    transform: rotateZ(${(props) => (props.$isCollapsed ? 15 : 75)}deg);
     color: #c0c4c9;
   }
 `
@@ -130,19 +130,18 @@ const AnyCompositeRow: React.FC<{
   })
 
   return leaf.shouldRender ? (
-    <LeftRowContainer depth={leaf.depth}>
+    <LeftRowContainer $depth={leaf.depth}>
       {contextMenu}
       <LeftRowHeader
         ref={rowHeaderRef}
         style={{
           height: leaf.nodeHeight + 'px',
         }}
-        isSelectable={isSelectable === true}
-        isSelected={isSelected === true}
+        $isSelectable={isSelectable === true}
+        $isSelected={isSelected === true}
         onClick={toggleSelect}
-        isEven={leaf.n % 2 === 0}
       >
-        <LeftRowHead_Icon isCollapsed={isCollapsed} onClick={toggleCollapsed}>
+        <LeftRowHead_Icon $isCollapsed={isCollapsed} onClick={toggleCollapsed}>
           <HiOutlineChevronRight />
         </LeftRowHead_Icon>
         <LeftRowHead_Label onClick={toggleCollapsed}>{label}</LeftRowHead_Label>

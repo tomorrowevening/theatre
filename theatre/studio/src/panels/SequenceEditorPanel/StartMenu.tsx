@@ -33,7 +33,7 @@ type StartMenuProps = {
   onSearchTrigger?: (trigger: number) => void
 }
 
-const MenuContainer = styled.div<{width: number}>`
+const MenuContainer = styled.div<{$width: number}>`
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -41,14 +41,14 @@ const MenuContainer = styled.div<{width: number}>`
   display: flex;
   align-items: center;
   gap: 8px;
-  width: ${(props) => props.width - 20}px; /* Subtract left/right margins */
+  width: ${(props) => props.$width - 20}px; /* Subtract left/right margins */
   box-sizing: border-box;
 `
 
-const SearchInput = styled.input<{hasValue: boolean}>`
-  background: ${(props) => (props.hasValue ? '#1e1e1e' : '#2d2d30')};
+const SearchInput = styled.input<{$hasValue: boolean}>`
+  background: ${(props) => (props.$hasValue ? '#1e1e1e' : '#2d2d30')};
   color: #cccccc;
-  border: 1px solid ${(props) => (props.hasValue ? '#0078d4' : '#3e3e42')};
+  border: 1px solid ${(props) => (props.$hasValue ? '#0078d4' : '#3e3e42')};
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 12px;
@@ -68,7 +68,7 @@ const SearchInput = styled.input<{hasValue: boolean}>`
   }
 `
 
-const ToggleButton = styled.button<{isActive: boolean}>`
+const ToggleButton = styled.button<{$isActive: boolean}>`
   background: #2d2d30;
   color: white;
   border: 1px solid #3e3e42;
@@ -90,8 +90,8 @@ const ToggleButton = styled.button<{isActive: boolean}>`
   }
 `
 
-const MenuButton = styled.button<{isOpen: boolean}>`
-  background: ${(props) => (props.isOpen ? '#0078d4' : '#2d2d30')};
+const MenuButton = styled.button<{$isOpen: boolean}>`
+  background: ${(props) => (props.$isOpen ? '#0078d4' : '#2d2d30')};
   color: white;
   border: 1px solid #3e3e42;
   padding: 8px 10px;
@@ -104,7 +104,7 @@ const MenuButton = styled.button<{isOpen: boolean}>`
   gap: 6px;
 
   &:hover {
-    background: ${(props) => (props.isOpen ? '#106ebe' : '#3e3e42')};
+    background: ${(props) => (props.$isOpen ? '#106ebe' : '#3e3e42')};
   }
 
   &:active {
@@ -112,7 +112,7 @@ const MenuButton = styled.button<{isOpen: boolean}>`
   }
 `
 
-const MenuPanel = styled.div<{isOpen: boolean}>`
+const MenuPanel = styled.div<{$isOpen: boolean}>`
   position: absolute;
   bottom: 100%;
   left: 0;
@@ -121,10 +121,10 @@ const MenuPanel = styled.div<{isOpen: boolean}>`
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   min-width: 200px;
-  opacity: ${(props) => (props.isOpen ? 1 : 0)};
-  visibility: ${(props) => (props.isOpen ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.$isOpen ? 1 : 0)};
+  visibility: ${(props) => (props.$isOpen ? 'visible' : 'hidden')};
   transform: ${(props) =>
-    props.isOpen ? 'translateY(0)' : 'translateY(10px)'};
+    props.$isOpen ? 'translateY(0)' : 'translateY(10px)'};
   transition: all 0.15s ease-out;
   z-index: 1000;
 `
@@ -138,18 +138,18 @@ const MenuSection = styled.div`
 `
 
 const MenuItemContainer = styled.div<{
-  hasSubmenu?: boolean
-  isActive?: boolean
+  $hasSubmenu?: boolean
+  $isActive?: boolean
 }>`
   position: relative;
 
   &:hover > div:last-child {
-    opacity: ${(props) => (props.hasSubmenu ? 1 : 0)};
-    visibility: ${(props) => (props.hasSubmenu ? 'visible' : 'hidden')};
+    opacity: ${(props) => (props.$hasSubmenu ? 1 : 0)};
+    visibility: ${(props) => (props.$hasSubmenu ? 'visible' : 'hidden')};
   }
 `
 
-const MenuItemButton = styled.button<{hasSubmenu?: boolean}>`
+const MenuItemButton = styled.button<{$hasSubmenu?: boolean}>`
   width: 100%;
   background: transparent;
   color: #cccccc;
@@ -375,9 +375,9 @@ const StartMenu: React.FC<StartMenuProps> = ({
   ]
 
   const renderMenuItem = (item: MenuItem, index: number) => (
-    <MenuItemContainer key={index} hasSubmenu={!!item.submenu}>
+    <MenuItemContainer key={index} $hasSubmenu={!!item.submenu}>
       <MenuItemButton
-        hasSubmenu={!!item.submenu}
+        $hasSubmenu={!!item.submenu}
         onClick={() => !item.submenu && handleMenuItemClick(item.action)}
       >
         {item.label}
@@ -404,12 +404,12 @@ const StartMenu: React.FC<StartMenuProps> = ({
     const leftWidth = layout.leftDims.width
 
     return (
-      <MenuContainer width={leftWidth}>
-        <MenuButton isOpen={isOpen} onClick={toggleMenu}>
+      <MenuContainer $width={leftWidth}>
+        <MenuButton $isOpen={isOpen} onClick={toggleMenu}>
           <span>☰</span>
         </MenuButton>
 
-        <MenuPanel isOpen={isOpen}>
+        <MenuPanel $isOpen={isOpen}>
           <MenuSection>{menuItems.map(renderMenuItem)}</MenuSection>
         </MenuPanel>
 
@@ -419,11 +419,11 @@ const StartMenu: React.FC<StartMenuProps> = ({
           value={searchTerm}
           onChange={handleSearchChange}
           onKeyDown={handleSearchKeyDown}
-          hasValue={searchTerm.length > 0}
+          $hasValue={searchTerm.length > 0}
         />
 
         <ToggleButton
-          isActive={rightPanelOpen}
+          $isActive={rightPanelOpen}
           onClick={() => {
             layout.setRightPanelOpen(!rightPanelOpen)
           }}

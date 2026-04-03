@@ -115,21 +115,21 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `
 
-const Button = styled.button<{variant?: 'primary' | 'secondary'}>`
+const Button = styled.button<{$variant?: 'primary' | 'secondary'}>`
   padding: 8px 16px;
   border: 1px solid
-    ${(props) => (props.variant === 'primary' ? '#4a9eff' : '#3a3a3a')};
+    ${(props) => (props.$variant === 'primary' ? '#4a9eff' : '#3a3a3a')};
   border-radius: 4px;
   background: ${(props) =>
-    props.variant === 'primary' ? '#4a9eff' : 'transparent'};
-  color: ${(props) => (props.variant === 'primary' ? '#fff' : '#ccc')};
+    props.$variant === 'primary' ? '#4a9eff' : 'transparent'};
+  color: ${(props) => (props.$variant === 'primary' ? '#fff' : '#ccc')};
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
     background: ${(props) =>
-      props.variant === 'primary' ? '#3a8eef' : '#3a3a3a'};
+      props.$variant === 'primary' ? '#3a8eef' : '#3a3a3a'};
   }
 
   &:disabled {
@@ -150,18 +150,18 @@ const FileUploadContainer = styled.div`
   gap: 8px;
 `
 
-const FileUploadArea = styled.div<{isDragOver: boolean; hasFile: boolean}>`
-  border: 2px dashed ${(props) => (props.isDragOver ? '#4a9eff' : '#3a3a3a')};
+const FileUploadArea = styled.div<{$isDragOver: boolean; $hasFile: boolean}>`
+  border: 2px dashed ${(props) => (props.$isDragOver ? '#4a9eff' : '#3a3a3a')};
   border-radius: 4px;
   padding: 16px;
   text-align: center;
   background: ${(props) =>
-    props.isDragOver ? 'rgba(74, 158, 255, 0.1)' : 'transparent'};
+    props.$isDragOver ? 'rgba(74, 158, 255, 0.1)' : 'transparent'};
   cursor: pointer;
   transition: all 0.2s;
 
   ${(props) =>
-    props.hasFile &&
+    props.$hasFile &&
     `
     border-color: #4a9eff;
     background: rgba(74, 158, 255, 0.05);
@@ -220,12 +220,12 @@ const NumberInput = styled.input`
 `
 
 const AnalysisStatus = styled.div<{
-  status: 'idle' | 'analyzing' | 'complete' | 'error'
+  $status: 'idle' | 'analyzing' | 'complete' | 'error'
 }>`
   font-size: 11px;
   margin-top: 8px;
   color: ${(props) => {
-    switch (props.status) {
+    switch (props.$status) {
       case 'analyzing':
         return '#4a9eff'
       case 'complete':
@@ -519,8 +519,8 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
           <Label>Or Analyze Audio File</Label>
           <FileUploadContainer>
             <FileUploadArea
-              isDragOver={isDragOver}
-              hasFile={audioFile !== null}
+              $isDragOver={isDragOver}
+              $hasFile={audioFile !== null}
               onClick={handleUploadAreaClick}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -565,7 +565,7 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
             </AudioOptions>
 
             {analysisStatus !== 'idle' && (
-              <AnalysisStatus status={analysisStatus}>
+              <AnalysisStatus $status={analysisStatus}>
                 {analysisStatus === 'analyzing' && '🎵 Analyzing audio...'}
                 {analysisStatus === 'complete' &&
                   '✅ Audio analysis complete! Data loaded above.'}
@@ -578,7 +578,7 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
         <ButtonContainer>
           <Button onClick={handleCancel}>Cancel</Button>
           <Button
-            variant="primary"
+            $variant="primary"
             onClick={handleCreate}
             disabled={!isDataValid}
           >

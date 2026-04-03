@@ -66,9 +66,9 @@ const SubContainer = styled.div`
   gap: 8px;
 `
 
-const HasUpdatesBadge = styled.div<{type: 'info' | 'warning'}>`
+const HasUpdatesBadge = styled.div<{$type: 'info' | 'warning'}>`
   position: absolute;
-  background: ${({type}) => (type === 'info' ? '#40aaa4' : '#f59e0b')};
+  background: ${({$type}) => ($type === 'info' ? '#40aaa4' : '#f59e0b')};
   width: 6px;
   height: 6px;
   border-radius: 50%;

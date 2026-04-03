@@ -100,7 +100,7 @@ function App() {
             position={[0, 0, 0]}
             visible="editor"
           >
-            <boxBufferGeometry attach="geometry" />
+            <boxGeometry attach="geometry" />
             <meshPhongMaterial attach="material" color="red" />
           </e.mesh>
           <Suspense fallback={null}>

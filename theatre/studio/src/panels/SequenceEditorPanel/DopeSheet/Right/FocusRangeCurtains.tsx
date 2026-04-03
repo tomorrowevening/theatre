@@ -9,7 +9,7 @@ import styled from 'styled-components'
 
 const divWidth = 1000
 
-const Curtain = styled.div<{enabled: boolean}>`
+const Curtain = styled.div<{$enabled: boolean}>`
   position: absolute;
   top: ${topStripHeight}px;
   left: 0;
@@ -17,7 +17,7 @@ const Curtain = styled.div<{enabled: boolean}>`
   width: ${divWidth}px;
   transform-origin: top left;
   pointer-events: none;
-  background-color: ${(props) => (props.enabled ? '#000000' : 'transparent')};
+  background-color: ${(props) => (props.$enabled ? '#000000' : 'transparent')};
 `
 
 const FocusRangeCurtains: React.FC<{
@@ -106,7 +106,7 @@ const FocusRangeCurtains: React.FC<{
         {els.map(({translateX, scaleX}, i) => (
           <Curtain
             key={`curtain-${i}`}
-            enabled={true}
+            $enabled={true}
             style={{
               height: `${height}px`,
               transform: `translateX(${translateX}px) scaleX(${scaleX})`,

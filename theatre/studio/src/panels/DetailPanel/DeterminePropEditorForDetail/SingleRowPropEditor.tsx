@@ -10,13 +10,10 @@ import styled from 'styled-components'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import type {PropHighlighted} from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
-import {deriver} from '@tomorrowevening/theatre-studio/utils/derive-utils'
+import {usePrism} from '@tomorrowevening/theatre-react'
 import {rowIndentationFormulaCSS} from './rowIndentationFormulaCSS'
-import {getDetailRowHighlightBackground} from './getDetailRowHighlightBackground'
 
-const Container = deriver(styled.div<{
-  isHighlighted: PropHighlighted
-}>`
+const Container = styled.div`
   display: flex;
   height: 30px;
   justify-content: flex-start;
@@ -32,9 +29,7 @@ const Container = deriver(styled.div<{
   --right-width: 60%;
   position: relative;
   ${pointerEventsAutoInNormalMode};
-
-  /* background-color: ${getDetailRowHighlightBackground}; */
-`)
+`
 
 const Left = styled.div`
   box-sizing: border-box;
@@ -50,9 +45,7 @@ const Left = styled.div`
   width: calc(100% - var(--right-width));
 `
 
-const PropNameContainer = deriver(styled.div<{
-  isHighlighted: PropHighlighted
-}>`
+const PropNameContainer = styled.div`
   text-align: left;
   flex: 1 0;
   white-space: nowrap;
@@ -67,7 +60,7 @@ const PropNameContainer = deriver(styled.div<{
   &:hover {
     color: white;
   }
-`)
+`
 
 const ControlsContainer = styled.div`
   flex-basis: 8px;
@@ -114,13 +107,18 @@ export function SingleRowPropEditor<T>({
     menuItems: editingTools.contextMenuItems,
   })
 
+  const propHighlighted = usePrism(
+    () => isPropHighlightedD.getValue(),
+    [isPropHighlightedD],
+  )
+
   return (
-    <Container isHighlighted={isPropHighlightedD}>
+    <Container>
       {contextMenu}
       <Left>
         <ControlsContainer>{editingTools.controlIndicators}</ControlsContainer>
         <PropNameContainer
-          isHighlighted={isPropHighlightedD}
+          data-highlighted={propHighlighted}
           ref={propNameContainerRef}
           title={['obj', 'props', ...getPointerParts(pointerToProp).path].join(
             '.',

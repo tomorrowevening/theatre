@@ -116,7 +116,7 @@ const ReferenceWindowContainer = styled.div`
   justify-content: center;
 `
 
-const WaitForSceneInitMessage = styled.div<{active?: boolean}>`
+const WaitForSceneInitMessage = styled.div<{$active?: boolean}>`
   position: absolute;
   margin: auto;
   left: 0;
@@ -181,7 +181,7 @@ const SnapshotEditor: React.FC<{paneId: string}> = (props) => {
 
   return (
     <root.div style={{overflow: 'hidden'}}>
-      <StyleSheetManager disableVendorPrefixes>
+      <StyleSheetManager>
         <>
           <GlobalStyle />
           <Wrapper>

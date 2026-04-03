@@ -82,17 +82,17 @@ export const nextPrevCursorsTheme = {
 }
 
 const CurButton = styled(Button)<{
-  isOn: boolean
-  presence: PresenceFlag | undefined
+  $isOn: boolean
+  $presence: PresenceFlag | undefined
 }>`
   &:hover {
     color: #e0c917;
   }
 
   color: ${(props) =>
-    props.presence === PresenceFlag.Primary
+    props.$presence === PresenceFlag.Primary
       ? 'white'
-      : props.isOn
+      : props.$isOn
       ? nextPrevCursorsTheme.onColor
       : nextPrevCursorsTheme.offColor};
 `
@@ -102,33 +102,27 @@ const pointerEventsNone = css`
 `
 
 const PrevOrNextButton = styled(Button)<{
-  available: boolean
-  flag: PresenceFlag | undefined
+  $available: boolean
+  $flag: PresenceFlag | undefined
 }>`
   color: ${(props) =>
-    props.flag === PresenceFlag.Primary
+    props.$flag === PresenceFlag.Primary
       ? 'white'
-      : props.available
+      : props.$available
       ? nextPrevCursorsTheme.onColor
       : nextPrevCursorsTheme.offColor};
 
   ${(props) =>
-    props.available ? pointerEventsAutoInNormalMode : pointerEventsNone};
+    props.$available ? pointerEventsAutoInNormalMode : pointerEventsNone};
 `
 
-const Prev = styled(PrevOrNextButton)<{
-  available: boolean
-  flag: PresenceFlag | undefined
-}>`
+const Prev = styled(PrevOrNextButton)`
   transform: translateX(2px);
   ${Container}:hover & {
     transform: translateX(-7px);
   }
 `
-const Next = styled(PrevOrNextButton)<{
-  available: boolean
-  flag: PresenceFlag | undefined
-}>`
+const Next = styled(PrevOrNextButton)`
   transform: translateX(-2px);
   ${Container}:hover & {
     transform: translateX(7px);
@@ -204,25 +198,25 @@ const NextPrevKeyframeCursors: React.VFC<NearbyKeyframesControls> = (props) => {
   return (
     <Container>
       <Prev
-        available={!!props.prev}
+        $available={!!props.prev}
         onClick={props.prev?.jump}
-        flag={prevPresence.flag}
+        $flag={prevPresence.flag}
         {...prevPresence.attrs}
       >
         <Icons.Prev />
       </Prev>
       <CurButton
-        isOn={props.cur.type === 'on'}
+        $isOn={props.cur.type === 'on'}
         onClick={props.cur.toggle}
-        presence={curPresence.flag}
+        $presence={curPresence.flag}
         {...curPresence.attrs}
       >
         <Icons.Cur />
       </CurButton>
       <Next
-        available={!!props.next}
+        $available={!!props.next}
         onClick={props.next?.jump}
-        flag={nextPresence.flag}
+        $flag={nextPresence.flag}
         {...nextPresence.attrs}
       >
         <Icons.Next />
