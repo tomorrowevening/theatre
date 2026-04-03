@@ -388,7 +388,7 @@ const SVGLoadPopup: React.FC<SVGLoadPopupProps> = ({onLoad, onCancel}) => {
     setAnalysisError('')
 
     // Auto-analyze the file
-    analyzeAudio(file)
+    void analyzeAudio(file)
   }
 
   // Handle drag and drop

@@ -183,7 +183,7 @@ export type SubSequence = {
   duration?: number
   /**
    * Optional time scale factor. Default is 1.0 (normal speed).
-   * Values > 1.0 speed up, values < 1.0 slow down.
+   * Values \> 1.0 speed up, values \< 1.0 slow down.
    */
   timeScale?: number
   /**
