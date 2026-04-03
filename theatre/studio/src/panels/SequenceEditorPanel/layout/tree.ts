@@ -25,6 +25,7 @@ import {
   audioStore,
   sheetAudioKey,
 } from '@tomorrowevening/theatre-studio/panels/SequenceEditorPanel/audioStore'
+import {BAR_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 /**
  * Base "view model" for each row with common
@@ -136,7 +137,7 @@ export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_PrimitiveProp
   | SequenceEditorTree_SubSequence
 
-const HEIGHT_OF_ANY_TITLE = 28
+const HEIGHT_OF_ANY_TITLE = BAR_HEIGHT
 
 /**
  * Must run inside prism()

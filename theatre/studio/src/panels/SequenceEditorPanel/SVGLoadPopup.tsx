@@ -4,6 +4,7 @@ import BasicStringInput from '@tomorrowevening/theatre-studio/uiComponents/form/
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {analyzeAudioFile, isAudioFile, formatFileSize} from './audioAnalysis'
 import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -65,7 +66,7 @@ const ColorInputContainer = styled.div`
 
 const ColorInput = styled.input`
   width: 40px;
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
   border: 1px solid #3a3a3a;
   border-radius: 4px;
   background: transparent;

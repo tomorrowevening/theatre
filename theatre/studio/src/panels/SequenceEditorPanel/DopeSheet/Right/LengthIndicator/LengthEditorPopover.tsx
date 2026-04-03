@@ -8,6 +8,7 @@ import type {BasicNumberInputNudgeFn} from '@tomorrowevening/theatre-studio/uiCo
 import BasicNumberInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicNumberInput'
 import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/StudioStore'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const greaterThanZero = (v: number) => isFinite(v) && v > 0
 
@@ -15,7 +16,7 @@ const Container = styled.div`
   display: flex;
   gap: 8px;
   padding: 4px 8px;
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
   align-items: center;
 `
 

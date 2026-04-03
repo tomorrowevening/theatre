@@ -9,12 +9,13 @@ import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import type {StudioHistoricStateSequenceEditorMarker} from '@tomorrowevening/theatre-studio/store/types/historic'
 import BasicStringInput from '@tomorrowevening/theatre-studio/uiComponents/form/BasicStringInput'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const Container = styled.div`
   display: flex;
   gap: 8px;
   /* padding: 4px 8px; */
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
   align-items: center;
 `
 

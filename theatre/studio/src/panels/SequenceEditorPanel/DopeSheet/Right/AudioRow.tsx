@@ -17,6 +17,10 @@ import usePopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/use
 import BasicPopover from '@tomorrowevening/theatre-studio/uiComponents/Popover/BasicPopover'
 import RightRow from './Row'
 import AudioTrack from './AudioTrack/AudioTrack'
+import {
+  CONTROL_HEIGHT,
+  HEX_INPUT_WIDTH,
+} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const RightAudioRowTarget = styled.div`
   position: relative;
@@ -59,8 +63,8 @@ const HexColorInput = styled.input`
   background: #222;
   border: 1px solid #666;
   color: #fff;
-  width: 70px;
-  height: 28px;
+  width: ${HEX_INPUT_WIDTH}px;
+  height: ${CONTROL_HEIGHT}px;
   padding: 4px;
   border-radius: 2px;
   font-family: monospace;
@@ -273,7 +277,7 @@ const AudioRow: React.FC<{
                   borderRadius: '2px',
                   background: '#222',
                   color: '#FFF',
-                  height: '28px',
+                  height: `${CONTROL_HEIGHT}px`,
                 }}
               >
                 Done

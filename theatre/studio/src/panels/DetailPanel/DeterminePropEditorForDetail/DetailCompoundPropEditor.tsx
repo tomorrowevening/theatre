@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import {rowIndentationFormulaCSS} from '@tomorrowevening/theatre-studio/panels/DetailPanel/DeterminePropEditorForDetail/rowIndentationFormulaCSS'
 import {propNameTextCSS} from '@tomorrowevening/theatre-studio/propEditors/utils/propNameTextCSS'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 import useRefAndState from '@tomorrowevening/theatre-studio/utils/useRefAndState'
 import DeterminePropEditorForDetail from '@tomorrowevening/theatre-studio/panels/DetailPanel/DeterminePropEditorForDetail'
 import type SheetObject from '@tomorrowevening/theatre-core/sheetObjects/SheetObject'
@@ -74,8 +75,8 @@ const PropName = deriver(styled.div<{isHighlighted: PropHighlighted}>`
 `)
 
 const CollapseIcon = styled.span<{isCollapsed: boolean; isVector: boolean}>`
-  width: 28px;
-  height: 28px;
+  width: ${CONTROL_HEIGHT}px;
+  height: ${CONTROL_HEIGHT}px;
   font-size: 9px;
   display: flex;
   align-items: center;

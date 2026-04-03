@@ -6,6 +6,7 @@ import DeterminePropEditorForDetail from './DeterminePropEditorForDetail'
 import {useVal} from '@tomorrowevening/theatre-react'
 import uniqueKeyForAnyObject from '@tomorrowevening/theatre-shared/utils/uniqueKeyForAnyObject'
 import styled from 'styled-components'
+import {CONTROL_HEIGHT} from '@tomorrowevening/theatre-studio/styleConstants'
 
 const ActionButtonContainer = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const ActionButton = styled.button`
   background: rgba(255, 255, 255, 0.1);
 
   border: none;
-  height: 28px;
+  height: ${CONTROL_HEIGHT}px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.15);

@@ -18,6 +18,13 @@ import type {CommitOrDiscard} from '@tomorrowevening/theatre-studio/StudioStore/
 import useContextMenu from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@tomorrowevening/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {pointerEventsAutoInNormalMode} from '@tomorrowevening/theatre-studio/css'
+import {
+  BAR_HEIGHT,
+  CONTROL_HEIGHT,
+  HANDLE_WIDTH,
+  HANDLE_HOVER_WIDTH,
+  HEX_INPUT_WIDTH,
+} from '@tomorrowevening/theatre-studio/styleConstants'
 import randomColor from '@tomorrowevening/theatre-studio/utils/randomColor'
 import {pasteKeyframesAtCurrent, copyKeyframes} from './utils'
 
@@ -29,7 +36,7 @@ const BarContainer = styled.div`
 
 const Bar = styled.div<{$color: string}>`
   position: absolute;
-  height: 20px;
+  height: ${BAR_HEIGHT}px;
   background: ${(props) => props.$color};
   cursor: ew-resize;
   top: 50%;
@@ -45,8 +52,8 @@ const Bar = styled.div<{$color: string}>`
 
 const Handle = styled.div<{$position: 'left' | 'right'}>`
   position: absolute;
-  height: 20px;
-  width: 7px;
+  height: ${BAR_HEIGHT}px;
+  width: ${HANDLE_WIDTH}px;
   top: 50%;
   transform: translateY(-50%);
   display: block;
@@ -60,16 +67,16 @@ const Handle = styled.div<{$position: 'left' | 'right'}>`
     background: inherit;
     border-radius: ${(props) =>
       props.$position === 'left' ? '2px 0 0 2px' : '0 2px 2px 0'};
-    width: 7px;
-    height: 20px;
+    width: ${HANDLE_WIDTH}px;
+    height: ${BAR_HEIGHT}px;
   }
 
   &:after {
     position: absolute;
     display: block;
     content: ' ';
-    width: 15px;
-    height: 28px;
+    width: ${HANDLE_HOVER_WIDTH}px;
+    height: ${CONTROL_HEIGHT}px;
     top: 50%;
     transform: translateY(-50%);
     ${(props) =>
@@ -84,7 +91,7 @@ const Handle = styled.div<{$position: 'left' | 'right'}>`
 `
 
 const LeftHandle = styled(Handle)`
-  left: calc(-1 * 7px);
+  left: calc(-1 * ${HANDLE_WIDTH}px);
 `
 
 const RightHandle = styled(Handle)`
@@ -126,8 +133,8 @@ const HexColorInput = styled.input`
   background: #222;
   border: 1px solid #666;
   color: #fff;
-  width: 70px;
-  height: 28px;
+  width: ${HEX_INPUT_WIDTH}px;
+  height: ${CONTROL_HEIGHT}px;
   padding: 4px;
   border-radius: 2px;
   font-family: monospace;
@@ -521,7 +528,7 @@ function AggregateKeyframeBar_memo(props: IAggregateKeyframeBarProps) {
               borderRadius: '2px',
               background: '#222',
               color: '#FFF',
-              height: '28px',
+              height: `${CONTROL_HEIGHT}px`,
             }}
           >
             Done
