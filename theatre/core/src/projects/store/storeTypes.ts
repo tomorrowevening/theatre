@@ -29,7 +29,7 @@ export interface ProjectEphemeralState {
 /**
  * This is the state of each project that is consumable by `@tomorrowevening/theatre-core`.
  * If the studio is present, this part of the state joins the studio's historic state,
- * at {@link StudioHistoricState.coreByProject}
+ * at `StudioHistoricState.coreByProject`
  */
 export interface ProjectState_Historic {
   sheetsById: StrictRecord<SheetId, SheetState_Historic>

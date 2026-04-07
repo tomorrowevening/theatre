@@ -27,7 +27,7 @@ export type UnknownValidCompoundProps = {
  * which would allow us to differentiate between values at runtime
  * (e.g. `val.type = "Rgba"` vs `val.type = "Compound"` etc)
  */
-type UnknownShorthandProp =
+export type UnknownShorthandProp =
   | string
   | number
   | boolean
@@ -58,10 +58,11 @@ export type ShorthandCompoundPropsToInitialValue<
   ShorthandCompoundPropsToLonghandCompoundProps<P>
 >
 
-type LonghandCompoundPropsToInitialValue<P extends UnknownValidCompoundProps> =
-  {
-    [K in keyof P]: P[K]['valueType']
-  }
+export type LonghandCompoundPropsToInitialValue<
+  P extends UnknownValidCompoundProps,
+> = {
+  [K in keyof P]: P[K]['valueType']
+}
 
 export type PropsValue<P> = P extends UnknownValidCompoundProps
   ? LonghandCompoundPropsToInitialValue<P>

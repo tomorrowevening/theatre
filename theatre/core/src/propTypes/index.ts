@@ -1,4 +1,7 @@
-import type {$FixMe, $IntentionalAny} from '@tomorrowevening/theatre-shared/utils/types'
+import type {
+  $FixMe,
+  $IntentionalAny,
+} from '@tomorrowevening/theatre-shared/utils/types'
 import userReadableTypeOfValue from '@tomorrowevening/theatre-shared/utils/userReadableTypeOfValue'
 import type {Rgba} from '@tomorrowevening/theatre-shared/utils/color'
 import {
@@ -13,6 +16,10 @@ import type {
   UnknownShorthandCompoundProps,
   UnknownValidCompoundProps,
   ShorthandCompoundPropsToLonghandCompoundProps,
+  PropsValue,
+  UnknownShorthandProp,
+  LonghandCompoundPropsToInitialValue,
+  ShorthandPropToLonghandProp,
 } from './internals'
 import {propTypeSymbol, sanitizeCompoundProps} from './internals'
 // eslint-disable-next-line unused-imports/no-unused-imports
@@ -750,20 +757,20 @@ export interface IBasePropType<
    * all simple prop configs, such as `number`, `string`, or `rgba`. However, composite
    * configs such as `compound` or `enum` may deserialize+sanitize into a partial value. For example,
    * a prop config of `t.compound({x: t.number(0), y: t.number(0)})` may deserialize+sanitize into `{x: 10}`.
-   * This behavior is used by {@link SheetObject.getValues} to replace the missing sub-props
+   * This behavior is used by `SheetObject.getValues()` to replace the missing sub-props
    * with their default value.
    *
    * Admittedly, this partial deserialization behavior is not what the word "deserialize"
    * typically implies in most codebases, so feel free to change this name into a more
    * appropriate one.
    *
-   * Additionally, returning an `undefined` allows {@link SheetObject.getValues} to
+   * Additionally, returning an `undefined` allows `SheetObject.getValues()` to
    * replace the `undefined` with the default value of that prop.
    */
   deserializeAndSanitize: (json: unknown) => undefined | DeserializeType
 }
 
-interface ISimplePropType<LiteralIdentifier extends string, ValueType>
+export interface ISimplePropType<LiteralIdentifier extends string, ValueType>
   extends IBasePropType<LiteralIdentifier, ValueType, ValueType> {
   interpolate: Interpolator<ValueType>
 }
@@ -773,7 +780,7 @@ export interface PropTypeConfig_Number
   range?: [min: number, max: number]
   nudgeFn: NumberNudgeFn
   /**
-   * See {@link defaultNumberNudgeFn} to see how `nudgeMultiplier` is treated.
+   * See `defaultNumberNudgeFn` to see how `nudgeMultiplier` is treated.
    */
   nudgeMultiplier: number | undefined
 }
@@ -818,7 +825,7 @@ const defaultNumberNudgeFn: NumberNudgeFn = ({
 export interface PropTypeConfig_Boolean
   extends ISimplePropType<'boolean', boolean> {}
 
-type CommonOpts = {
+export type CommonOpts = {
   /**
    * Each prop type may be given a custom label instead of the name of the sub-prop
    * it is in.
@@ -848,11 +855,11 @@ export interface PropTypeConfig_Rgba extends ISimplePropType<'rgba', Rgba> {}
 export interface PropTypeConfig_Image extends ISimplePropType<'image', Asset> {}
 export interface PropTypeConfig_File extends ISimplePropType<'file', File> {}
 
-type DeepPartialCompound<Props extends UnknownValidCompoundProps> = {
+export type DeepPartialCompound<Props extends UnknownValidCompoundProps> = {
   [K in keyof Props]?: DeepPartial<Props[K]>
 }
 
-type DeepPartial<Conf extends PropTypeConfig> =
+export type DeepPartial<Conf extends PropTypeConfig> =
   Conf extends PropTypeConfig_AllSimples
     ? Conf['valueType']
     : Conf extends PropTypeConfig_Compound<infer T>
@@ -888,4 +895,12 @@ export type PropTypeConfig =
   | PropTypeConfig_Compound<$IntentionalAny>
   | PropTypeConfig_Enum
 
-export type {UnknownShorthandCompoundProps}
+export type {
+  UnknownShorthandCompoundProps,
+  UnknownValidCompoundProps,
+  PropsValue,
+  ShorthandCompoundPropsToLonghandCompoundProps,
+  UnknownShorthandProp,
+  LonghandCompoundPropsToInitialValue,
+  ShorthandPropToLonghandProp,
+}

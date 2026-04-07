@@ -13,11 +13,11 @@ import isEqualWith from 'lodash-es/isEqualWith'
 import isEqual from 'lodash-es/isEqual'
 import {useEffect, useMemo, useState, useRef} from 'react'
 
-type KeysMatching<T extends object, V> = {
+export type KeysMatching<T extends object, V> = {
   [K in keyof T]-?: T[K] extends V ? K : never
 }[keyof T]
 
-type OmitMatching<T extends object, V> = Omit<T, KeysMatching<T, V>>
+export type OmitMatching<T extends object, V> = Omit<T, KeysMatching<T, V>>
 
 // Because treeshaking studio relies on static checks like the following, we can't make including studio configurable at runtime.
 // What we can do, if there arises a need to use studio in production with theatric, is to let users provide their own studio instance.
@@ -82,7 +82,7 @@ export function getAssetUrl(asset: {
 const allProps: Record<string, UnknownShorthandCompoundProps[]> = {}
 const allActions: Record<string, Record<string, () => void>[]> = {}
 
-type Button = {
+export type Button = {
   type: 'button'
   onClick: () => void
 }
@@ -90,14 +90,14 @@ type Buttons = {
   [key: string]: Button
 }
 
-type ControlsAndButtons = {
+export type ControlsAndButtons = {
   [key: string]: {type: 'button'} | UnknownShorthandCompoundProps[string]
 }
 
 /**
  * The type of the `$set()` function returned by `useControls()`.
  */
-type Setter<Config extends UnknownShorthandCompoundProps> = <S>(
+export type Setter<Config extends UnknownShorthandCompoundProps> = <S>(
   pointer: (p: ISheetObject<Config>['props']) => Pointer<S>,
   value: S,
 ) => void
@@ -105,7 +105,7 @@ type Setter<Config extends UnknownShorthandCompoundProps> = <S>(
 /**
  * The type of the `$get()` function returned by `useControls()`.
  */
-type Getter<Config extends UnknownShorthandCompoundProps> = <S>(
+export type Getter<Config extends UnknownShorthandCompoundProps> = <S>(
   pointer: (p: ISheetObject<Config>['props']) => Pointer<S>,
 ) => S
 

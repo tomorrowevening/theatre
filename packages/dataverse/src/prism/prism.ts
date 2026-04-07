@@ -548,7 +548,7 @@ function safelyRun<T, U>(
 
 const hookScopeStack = new Stack<PrismScope>()
 
-type IRef<T> = {
+export type IRef<T> = {
   current: T
 }
 
@@ -813,17 +813,24 @@ function source<V>(
   return scope.source(subscribe, getValue)
 }
 
-type IPrismFn = {
+export type IPrismFn = {
   <T>(fn: () => T): Prism<T>
-  ref: typeof ref
-  effect: typeof effect
-  memo: typeof memo
-  ensurePrism: typeof ensurePrism
-  state: typeof state
-  scope: typeof scope
-  sub: typeof sub
-  inPrism: typeof inPrism
-  source: typeof source
+  ref: <T>(key: string, initialValue: T) => IRef<T>
+  effect: (key: string, cb: () => () => void, deps?: unknown[]) => void
+  memo: <T>(
+    key: string,
+    fn: () => T,
+    deps: undefined | unknown[] | readonly unknown[],
+  ) => T
+  ensurePrism: () => void
+  state: <T>(key: string, initialValue: T) => [T, (val: T) => void]
+  scope: <T>(key: string, fn: () => T) => T
+  sub: <T>(key: string, fn: () => T, deps: undefined | unknown[]) => T
+  inPrism: () => boolean
+  source: <V>(
+    subscribe: (fn: (val: V) => void) => VoidFn,
+    getValue: () => V,
+  ) => V
 }
 
 /**

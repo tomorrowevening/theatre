@@ -82,7 +82,7 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export type {IScrub} from '@tomorrowevening/theatre-studio/Scrub'
+export type {IScrub, IScrubApi} from '@tomorrowevening/theatre-studio/Scrub'
 export type {
   IStudio,
   IExtension,
@@ -94,7 +94,17 @@ export type {
   ToolConfig,
   ToolConfigIcon,
   ToolConfigSwitch,
+  ToolConfigOption,
+  ToolConfigFlyoutMenu,
+  ToolconfigFlyoutMenuItem,
+  ITransactionAPI,
   CreatePaneOpts,
   PaneDimension,
 } from '@tomorrowevening/theatre-studio/TheatreStudio'
+export type {PaneInstanceId} from '@tomorrowevening/theatre-shared/utils/ids'
+export type {Nominal} from '@tomorrowevening/theatre-shared/utils/Nominal'
+export type {
+  PanelPositionEdgeH,
+  PanelPositionEdgeV,
+} from '@tomorrowevening/theatre-studio/store/types/historic'
 export type {PanelPosition} from '@tomorrowevening/theatre-studio/store/types'
