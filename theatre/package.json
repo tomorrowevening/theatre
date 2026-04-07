@@ -19,7 +19,7 @@
     "build:api-json:local": "run-p build:api-json:core:local build:api-json:studio:local",
     "build:api-json:core:local": "api-extractor run --local --config core/devEnv/api-extractor.json",
     "build:api-json:studio:local": "api-extractor run --local --config studio/devEnv/api-extractor.json",
-    "build": "run-p build:ts build:js",
+    "build": "run-s build:ts build:js build:api-json",
     "clean": "rm -rf ./.temp && rm -rf ./core/dist && rm -rf ./studio/dist"
   },
   "devDependencies": {
