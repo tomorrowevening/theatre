@@ -20,7 +20,17 @@
     "test:compat:install": "yarn workspace @tomorrowevening/theatre-compat-tests run install-fixtures",
     "test:compat:run": "jest --config jest.compat-tests.config.js",
     "postinstall": "husky install",
-    "lint:all": "eslint . --ext ts,tsx --ignore-path=.gitignore --rulesdir ./devEnv/eslint/rules"
+    "lint:all": "eslint . --ext ts,tsx --ignore-path=.gitignore --rulesdir ./devEnv/eslint/rules",
+    "validate:api": "run-s validate:api:dataverse validate:api:react validate:api:theatric validate:api:theatre",
+    "validate:api:dataverse": "yarn workspace @tomorrowevening/theatre-dataverse run build:api-json",
+    "validate:api:react": "yarn workspace @tomorrowevening/theatre-react run build:api-json",
+    "validate:api:theatric": "yarn workspace @tomorrowevening/theatric run build:api-json",
+    "validate:api:theatre": "yarn workspace theatre run build:api-json",
+    "update:api-snapshots": "run-s update:api-snapshots:dataverse update:api-snapshots:react update:api-snapshots:theatric update:api-snapshots:theatre",
+    "update:api-snapshots:dataverse": "yarn workspace @tomorrowevening/theatre-dataverse run build:api-json:local",
+    "update:api-snapshots:react": "yarn workspace @tomorrowevening/theatre-react run build:api-json:local",
+    "update:api-snapshots:theatric": "yarn workspace @tomorrowevening/theatric run build:api-json:local",
+    "update:api-snapshots:theatre": "yarn workspace theatre run build:api-json:local"
   },
   "lint-staged": {
     "(theatre|packages|devEnv|compat-tests)/**/*.(t|j)s?(x)": [
@@ -36,7 +46,6 @@
   },
   "devDependencies": {
     "@cspotcode/zx": "^6.1.2",
-    "@microsoft/api-documenter": "^7.19.0",
     "@microsoft/api-extractor": "^7.47.0",
     "@types/eslint": "^8.44.2",
     "@types/jest": "^26.0.23",
@@ -58,6 +67,7 @@
     "jsonc-parser": "^3.1.0",
     "lint-staged": "^13.0.3",
     "node-gyp": "^10.0.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "sade": "^1.8.1",
     "typescript": "5.1.6",

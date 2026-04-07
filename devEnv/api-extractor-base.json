@@ -108,53 +108,20 @@
 
   /**
    * Configures how the API report file (*.api.md) will be generated.
+   *
+   * The API report is a single-file snapshot of the package's public API
+   * surface. It is committed to git under `etc/` and acts as a regression
+   * test: any change to the public API will produce a diff that must be
+   * reviewed and intentionally re-committed via `yarn build:api-json:local`.
+   *
+   * In CI / production builds (api-extractor run without --local), the
+   * temporary report is compared against the committed snapshot and the
+   * build fails if they differ.
    */
   "apiReport": {
-    /**
-     * (REQUIRED) Whether to generate an API report.
-     */
-    "enabled": false
-
-    /**
-     * The filename for the API report files.  It will be combined with "reportFolder" or "reportTempFolder" to produce
-     * a full file path.
-     *
-     * The file extension should be ".api.md", and the string should not contain a path separator such as "\" or "/".
-     *
-     * SUPPORTED TOKENS: <packageName>, <unscopedPackageName>
-     * DEFAULT VALUE: "<unscopedPackageName>.api.md"
-     */
-    // "reportFileName": "<unscopedPackageName>.api.md",
-
-    /**
-     * Specifies the folder where the API report file is written.  The file name portion is determined by
-     * the "reportFileName" setting.
-     *
-     * The API report file is normally tracked by Git.  Changes to it can be used to trigger a branch policy,
-     * e.g. for an API review.
-     *
-     * The path is resolved relative to the folder of the config file that contains the setting; to change this,
-     * prepend a folder token such as "<projectFolder>".
-     *
-     * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
-     * DEFAULT VALUE: "<projectFolder>/etc/"
-     */
-    // "reportFolder": "<projectFolder>/etc/",
-
-    /**
-     * Specifies the folder where the temporary report file is written.  The file name portion is determined by
-     * the "reportFileName" setting.
-     *
-     * After the temporary file is written to disk, it is compared with the file in the "reportFolder".
-     * If they are different, a production build will fail.
-     *
-     * The path is resolved relative to the folder of the config file that contains the setting; to change this,
-     * prepend a folder token such as "<projectFolder>".
-     *
-     * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
-     * DEFAULT VALUE: "<projectFolder>/temp/"
-     */
-    // "reportTempFolder": "<projectFolder>/temp/"
+    "enabled": true,
+    "reportFolder": "<projectFolder>/etc/",
+    "reportTempFolder": "../.temp/api-reports/"
   },
 
   /**
