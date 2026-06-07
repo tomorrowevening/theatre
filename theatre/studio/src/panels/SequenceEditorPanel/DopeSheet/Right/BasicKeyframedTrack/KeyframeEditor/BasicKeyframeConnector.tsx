@@ -76,8 +76,8 @@ const BasicKeyframeConnector: React.VFC<IBasicKeyframeConnectorProps> = (
   )
 
   const themeValues: IConnectorThemeValues = {
-    isPopoverOpen: isInCurveEditorPopoverSelection,
-    isSelected: props.selection !== undefined,
+    $isPopoverOpen: isInCurveEditorPopoverSelection,
+    $isSelected: props.selection !== undefined,
   }
 
   return (

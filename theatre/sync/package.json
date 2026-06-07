@@ -1,0 +1,51 @@
+{
+  "name": "@tomorrowevening/theatre-sync",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "description": "Transport-agnostic sync for Theatre.js — WebSocket or BroadcastChannel, lets a remote/mobile device mirror and control a desktop studio session",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomorrowevening/theatre",
+    "directory": "theatre/sync"
+  },
+  "author": {
+    "name": "Colin Duffy",
+    "email": "colin@tomorrowevening.com",
+    "url": "https://tomorrowevening.com/"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "require": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "start": "tsx server/index.ts",
+    "build:server": "esbuild server/index.ts --bundle --platform=node --external:ws --outfile=dist/server.js"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@tomorrowevening/theatre-core": "*",
+    "@tomorrowevening/theatre-studio": "*"
+  },
+  "peerDependenciesMeta": {
+    "@tomorrowevening/theatre-studio": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10",
+    "ws": "^8.18.0"
+  }
+}

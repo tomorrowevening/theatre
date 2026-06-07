@@ -3076,6 +3076,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tomorrowevening/theatre-sync@workspace:*, @tomorrowevening/theatre-sync@workspace:theatre/sync":
+  version: 0.0.0-use.local
+  resolution: "@tomorrowevening/theatre-sync@workspace:theatre/sync"
+  dependencies:
+    "@types/ws": ^8.5.10
+    ws: ^8.18.0
+  peerDependencies:
+    "@tomorrowevening/theatre-core": "*"
+    "@tomorrowevening/theatre-studio": "*"
+  peerDependenciesMeta:
+    "@tomorrowevening/theatre-studio":
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@tomorrowevening/theatric@workspace:*, @tomorrowevening/theatric@workspace:packages/theatric":
   version: 0.0.0-use.local
   resolution: "@tomorrowevening/theatric@workspace:packages/theatric"
@@ -3443,7 +3458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.7, @types/react-dom@npm:^18.3.7":
+"@types/react-dom@npm:^18.3.7":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
@@ -3606,6 +3621,15 @@ __metadata:
   version: 2.0.1
   resolution: "@types/which@npm:2.0.1"
   checksum: 14e963f2ffaa79caaa13044e977456085a1024cb519478f0f5f9dc8a4f33a0ac47f0a255ccbd008efde063c75b98e846b9258b5999bac6f595e06d5518920cb7
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.5.10":
+  version: 8.18.1
+  resolution: "@types/ws@npm:8.18.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0331b14cde388e2805af66cad3e3f51857db8e68ed91e5b99750915e96fe7572e58296dc99999331bbcf08f0ff00a227a0bb214e991f53c2a5aca7b0e71173fa
   languageName: node
   linkType: hard
 
@@ -10977,12 +11001,13 @@ __metadata:
     "@tomorrowevening/theatre-r3f": "workspace:*"
     "@tomorrowevening/theatre-react": "workspace:*"
     "@tomorrowevening/theatre-studio": "workspace:*"
+    "@tomorrowevening/theatre-sync": "workspace:*"
     "@tomorrowevening/theatric": "workspace:*"
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
     "@types/node": ^15.6.2
-    "@types/react": ^18.2.18
-    "@types/react-dom": ^18.2.7
+    "@types/react": ^18.3.28
+    "@types/react-dom": ^18.3.7
     "@vitejs/plugin-react": ^4.0.0
     "@vitejs/plugin-react-swc": ^3.3.2
     fast-glob: ^3.3.0
@@ -14123,6 +14148,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 316b33aba32f317cd217df66dbfc5b281a2f09ff36815de222bc859e3424d83766d9eb2bd4d667de658b6ab7be151f258318fb1da812416b30be13103e5b5c67
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.0":
+  version: 8.21.0
+  resolution: "ws@npm:8.21.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 83ff89ae011bc5c3c5605a45a0d50e12589143c7500ca4de83a8d43b3cd26e71f422cb3206fd1a9e6d541d666eeb66255c30d095d62d413b3c7afe5d2c5cb928
   languageName: node
   linkType: hard
 

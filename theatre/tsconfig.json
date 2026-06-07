@@ -19,6 +19,6 @@
     {"path": "../packages/dataverse"},
     {"path": "../packages/react"}
   ],
-  "include": ["./globals.d.ts", "./*/src/**/*", "./devEnv/**/*"],
+  "include": ["./globals.d.ts", "./*/src/**/*", "./*/server/**/*", "./devEnv/**/*"],
   "exclude": ["**/node_modules", "**/.*", "**/xeno", "**/dist", "**/.temp"]
 }
