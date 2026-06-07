@@ -42,6 +42,7 @@ Please note that these changes represent unofficial updates and may diverge from
 - Multiple audio files can be added to sequences
 - Many UX changes + features to Sequence Editor
 - Feature requests from [Discord members](https://discord.gg/bm9f8F9Y9N)
+- Remotely control Theatre via "theatre-sync"
 
 ---
 

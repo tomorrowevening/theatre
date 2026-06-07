@@ -108,7 +108,7 @@ if (isEditor) {
   }
   void import('@tomorrowevening/theatre-studio').then(({default: studio}) => {
     studio.extend(extensionConfig as any)
-    studio.extend(createSyncExtension(syncClient))
+    studio.extend(createSyncExtension(syncClient) as any)
     studio.initialize()
   })
 }
