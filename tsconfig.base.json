@@ -18,6 +18,7 @@
     "paths": {
       "@tomorrowevening/theatre-core": ["./theatre/core/src/index.ts"],
       "@tomorrowevening/theatre-studio": ["./theatre/studio/src/index.ts"],
+      "@tomorrowevening/theatre-sync": ["./theatre/sync/src/index.ts"],
       "@tomorrowevening/theatre-studio/*": ["./theatre/studio/src/*"],
       "@tomorrowevening/theatre-core/*": ["./theatre/core/src/*"],
       "@tomorrowevening/theatre-shared/*": ["./theatre/shared/src/*"],

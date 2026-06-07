@@ -22,14 +22,14 @@ const RowContainer = styled.div`
 `
 
 interface ColorPreviewPuckProps {
-  rgbaColor: Rgba
+  $rgbaColor: Rgba
 }
 
 const ColorPreviewPuck = styled.div.attrs<ColorPreviewPuckProps>((props) => ({
   style: {
     // weirdly, rgba2hex is needed to ensure initial render was correct background?
     // huge head scratcher.
-    background: rgba2hex(props.rgbaColor),
+    background: rgba2hex(props.$rgbaColor),
   },
 }))<ColorPreviewPuckProps>`
   height: 18px;
@@ -101,7 +101,7 @@ function RgbaPropEditor({
     <>
       <RowContainer>
         <ColorPreviewPuck
-          rgbaColor={value}
+          $rgbaColor={value}
           ref={containerRef}
           onClick={(e) => {
             popover.toggle(e, containerRef.current)

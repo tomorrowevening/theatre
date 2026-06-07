@@ -7,24 +7,24 @@ const CONNECTOR_HEIGHT = DOT_SIZE_PX / 2 + 1
 const CONNECTOR_WIDTH_UNSCALED = 1000
 
 export type IConnectorThemeValues = {
-  isPopoverOpen: boolean
-  isSelected: boolean
+  $isPopoverOpen: boolean
+  $isSelected: boolean
 }
 
 export const CONNECTOR_THEME = {
   normalColor: `#365b59`, // (greenish-blueish)ish
   selectedColor: `#8A7842`,
   barColor: (values: IConnectorThemeValues) => {
-    const base = values.isSelected
+    const base = values.$isSelected
       ? CONNECTOR_THEME.selectedColor
       : CONNECTOR_THEME.normalColor
-    return values.isPopoverOpen ? saturate(0.2, lighten(0.2, base)) : base
+    return values.$isPopoverOpen ? saturate(0.2, lighten(0.2, base)) : base
   },
   hoverColor: (values: IConnectorThemeValues) => {
-    const base = values.isSelected
+    const base = values.$isSelected
       ? CONNECTOR_THEME.selectedColor
       : CONNECTOR_THEME.normalColor
-    return values.isPopoverOpen
+    return values.$isPopoverOpen
       ? saturate(0.2, lighten(0.2, base))
       : saturate(0.1, lighten(0.1, base))
   },
@@ -69,8 +69,8 @@ export const ConnectorLine = React.forwardRef<
   IConnectorLineProps
 >((props, ref) => {
   const themeValues: IConnectorThemeValues = {
-    isPopoverOpen: props.isPopoverOpen,
-    isSelected: props.isSelected,
+    $isPopoverOpen: props.isPopoverOpen,
+    $isSelected: props.isSelected,
   }
 
   return (

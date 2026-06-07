@@ -1,5 +1,19 @@
 # Theatre.js changelog
 
+## 1.0.28
+
+* New features
+  * `theatre-sync` added — remotely control Theatre via WebSocket or BroadcastChannel transport
+  * `SyncClient` supports bidirectional state sync between a host and remote clients
+  * WebSocket server (`theatre/sync/server`) for cross-device synchronization
+
+## 1.0.27
+
+* Improvements
+  * Migrated `styled-components` from v5 to v6
+  * Style constants extracted for easier theming
+  * TypeScript build error fixes in DopeSheet and Graph Editor
+
 ## 1.0.26
 
 * Improvements
