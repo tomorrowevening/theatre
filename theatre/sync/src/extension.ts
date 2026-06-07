@@ -17,7 +17,7 @@ interface IExtension {
 import type {SyncClient} from './SyncClient'
 
 // Feather "wifi" icon — shown when connected
-const SVG_CONNECTED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+const SVG_CONNECTED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#00ff77" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
   <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
   <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
@@ -25,7 +25,7 @@ const SVG_CONNECTED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 2
 </svg>`
 
 // Feather "wifi-off" icon — shown when disconnected
-const SVG_DISCONNECTED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+const SVG_DISCONNECTED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <line x1="1" y1="1" x2="23" y2="23"/>
   <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
   <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
