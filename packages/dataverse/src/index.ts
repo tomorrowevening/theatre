@@ -13,7 +13,18 @@ export type {Prism} from './prism/Interface'
 export {default as iterateAndCountTicks} from './prism/iterateAndCountTicks'
 export {default as iterateOver} from './prism/iterateOver'
 export {default as prism} from './prism/prism'
+export type {IPrismFn, IRef} from './prism/prism'
 export {default as pointer, getPointerParts, isPointer} from './pointer'
-export type {Pointer, PointerType, PointerMeta} from './pointer'
+export type {
+  Pointer,
+  PointerType,
+  PointerMeta,
+  PathToProp,
+  PointerInner,
+  UnindexableTypesForPointer,
+  UnindexablePointer,
+} from './pointer'
 export {default as Ticker} from './Ticker'
+export type {ICallback} from './Ticker'
+export type {VoidFn} from './types'
 export {default as PointerProxy} from './PointerProxy'

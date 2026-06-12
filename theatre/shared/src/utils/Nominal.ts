@@ -16,7 +16,7 @@ const nominal = Symbol()
  *
  * Numbers cannot be added together if they are "nominal"
  *
- * See {@link nominal} for more details.
+ * See the `nominal` symbol for more details.
  */
 export type Nominal<N extends string> = string & {[nominal]: N}
 

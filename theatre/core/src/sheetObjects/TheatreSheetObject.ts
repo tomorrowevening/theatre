@@ -1,4 +1,7 @@
-import {privateAPI, setPrivateAPI} from '@tomorrowevening/theatre-core/privateAPIs'
+import {
+  privateAPI,
+  setPrivateAPI,
+} from '@tomorrowevening/theatre-core/privateAPIs'
 import type {IProject} from '@tomorrowevening/theatre-core/projects/TheatreProject'
 import type {ISheet} from '@tomorrowevening/theatre-core/sheets/TheatreSheet'
 import type {SheetObjectAddress} from '@tomorrowevening/theatre-shared/utils/addresses'
@@ -112,6 +115,11 @@ export interface ISheetObject<
    * obj.value // {position: {x: 2, y: 0}}
    * ```
    */
+  /**
+   * Gets the current initial value of the object.
+   */
+  get initialValue(): DeepPartialOfSerializableValue<this['value']>
+
   set initialValue(value: DeepPartialOfSerializableValue<this['value']>)
 }
 
@@ -208,5 +216,9 @@ export default class TheatreSheetObject<
 
   set initialValue(val: DeepPartialOfSerializableValue<this['value']>) {
     privateAPI(this).setInitialValue(val)
+  }
+
+  get initialValue(): DeepPartialOfSerializableValue<this['value']> {
+    return privateAPI(this).getInitialValue() as $FixMe
   }
 }

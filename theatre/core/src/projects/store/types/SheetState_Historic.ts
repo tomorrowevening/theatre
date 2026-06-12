@@ -110,7 +110,7 @@ export type Keyframe = {
   type?: KeyframeType
 }
 
-type TrackDataCommon<TypeName extends string> = {
+export type TrackDataCommon<TypeName extends string> = {
   type: TypeName
   /**
    * Initial name of the track for debugging purposes. In the future, let's

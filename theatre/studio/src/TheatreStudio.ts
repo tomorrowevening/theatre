@@ -498,7 +498,7 @@ export interface IStudio {
      * This is functionally the same as `studio.createContentOfSaveFile()`, but
      * returns a typed object instead of a JSON object.
      *
-     * See {@link __UNSTABLE_Project_OnDiskState} for more information.
+     * See `__UNSTABLE_Project_OnDiskState` from `@tomorrowevening/theatre-core` for more information.
      */
     __experimental_createContentOfSaveFileTyped(
       projectId: string,

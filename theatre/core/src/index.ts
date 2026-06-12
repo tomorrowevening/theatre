@@ -14,10 +14,79 @@ export {
 } from './coreExports'
 export type {IRafDriver} from './coreExports'
 export type {IProject, IProjectConfig} from './projects/TheatreProject'
-export type {ISequence} from './sequences/TheatreSequence'
+export type {ISequence, IAttachAudioArgs} from './sequences/TheatreSequence'
+export type {IPlaybackRange, IPlaybackDirection} from './sequences/Sequence'
+export type {
+  Keyframe,
+  KeyframeType,
+  SheetState_Historic,
+  HistoricPositionalSequence,
+  TrackData,
+  BasicKeyframedTrack,
+  SequenceMarker,
+  SequenceEvent,
+  SubSequence,
+  SequenceAudioAttachment,
+  TrackDataCommon,
+} from './projects/store/types/SheetState_Historic'
 export type {ISheetObject} from './sheetObjects/TheatreSheetObject'
-export type {ISheet} from './sheets/TheatreSheet'
-export type {UnknownShorthandCompoundProps} from './propTypes'
+export type {
+  ISheet,
+  SheetObjectActionsConfig,
+  SheetObjectAction,
+} from './sheets/TheatreSheet'
+export type {
+  UnknownShorthandCompoundProps,
+  UnknownValidCompoundProps,
+  PropsValue,
+  ShorthandCompoundPropsToLonghandCompoundProps,
+  UnknownShorthandProp,
+  LonghandCompoundPropsToInitialValue,
+  ShorthandPropToLonghandProp,
+} from './propTypes'
+export type {
+  CommonOpts,
+  ISimplePropType,
+  DeepPartialCompound,
+  DeepPartial,
+} from './propTypes'
+export type {
+  OnDiskState,
+  ProjectState_Historic,
+} from './projects/store/storeTypes'
+export type {
+  ProjectAddress,
+  SheetAddress,
+  SheetObjectAddress,
+  WithoutSheetInstance,
+  PathToProp_Encoded,
+  PathToProp,
+} from '@tomorrowevening/theatre-shared/utils/addresses'
+export {encodePathToProp} from '@tomorrowevening/theatre-shared/utils/addresses'
+export type {
+  VoidFn,
+  DeepPartialOfSerializableValue,
+  $IntentionalAny,
+  SerializableValue,
+  SerializableMap,
+  SerializablePrimitive,
+  StrictRecord,
+} from '@tomorrowevening/theatre-shared/utils/types'
+export type {
+  KeyframeId,
+  ProjectId,
+  SheetId,
+  SheetInstanceId,
+  ObjectAddressKey,
+  SequenceTrackId,
+  SequenceMarkerId,
+  SequenceEventId,
+  SequenceSubSequenceId,
+} from '@tomorrowevening/theatre-shared/utils/ids'
+export type {Asset, File} from '@tomorrowevening/theatre-shared/utils/assets'
+export type {Nominal} from '@tomorrowevening/theatre-shared/utils/Nominal'
+export type {Rgba} from '@tomorrowevening/theatre-shared/utils/color'
+export type {Notifiers, Notify} from '@tomorrowevening/theatre-shared/notify'
 import * as globalVariableNames from '@tomorrowevening/theatre-shared/globalVariableNames'
 import type StudioBundle from '@tomorrowevening/theatre-studio/StudioBundle'
 import CoreBundle from './CoreBundle'

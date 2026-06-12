@@ -14,14 +14,30 @@ import type {
   SerializableValue,
 } from '@tomorrowevening/theatre-shared/utils/types'
 import {valToAtom} from '@tomorrowevening/theatre-shared/utils/valToAtom'
-import type {PointerToPrismProvider, Prism, Pointer} from '@tomorrowevening/theatre-dataverse'
+import type {
+  PointerToPrismProvider,
+  Prism,
+  Pointer,
+} from '@tomorrowevening/theatre-dataverse'
 
-import {Atom, getPointerParts, pointer, prism, val} from '@tomorrowevening/theatre-dataverse'
+import {
+  Atom,
+  getPointerParts,
+  pointer,
+  prism,
+  val,
+} from '@tomorrowevening/theatre-dataverse'
 import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
-import type {Interpolator, PropTypeConfig} from '@tomorrowevening/theatre-core/propTypes'
+import type {
+  Interpolator,
+  PropTypeConfig,
+} from '@tomorrowevening/theatre-core/propTypes'
 import {getPropConfigByPath} from '@tomorrowevening/theatre-shared/propTypes/utils'
-import type {ILogger, IUtilContext} from '@tomorrowevening/theatre-shared/logger'
+import type {
+  ILogger,
+  IUtilContext,
+} from '@tomorrowevening/theatre-shared/logger'
 
 /**
  * Internally, the sheet's actual configured value is not a specific type, since we
@@ -333,5 +349,9 @@ export default class SheetObject implements PointerToPrismProvider {
   setInitialValue(val: DeepPartialOfSerializableValue<SheetObjectPropsValue>) {
     this.validateValue(this.propsP, val)
     this._initialValue.set(val)
+  }
+
+  getInitialValue(): DeepPartialOfSerializableValue<SheetObjectPropsValue> {
+    return this._initialValue.get()
   }
 }

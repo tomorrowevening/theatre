@@ -13,7 +13,7 @@ import {val} from '@tomorrowevening/theatre-dataverse'
 import {notify} from '@tomorrowevening/theatre-shared/notify'
 import type {IRafDriver} from '@tomorrowevening/theatre-core/rafDrivers'
 
-interface IAttachAudioArgs {
+export interface IAttachAudioArgs {
   /**
    * Either a URL to the audio file (eg "http://localhost:3000/audio.mp3"),
    * an instance of AudioBuffer, or an HTMLAudioElement with a valid src/currentSrc.
